@@ -54,12 +54,12 @@ function BranchEventsTab({
   setIsAddEventOpen,
 }: BranchEventsTabProps) {
   const renderOrganizerResults = (eventId: number) => (
-    <div className="absolute left-0 right-0 top-full z-10 mt-2 space-y-1 rounded-lg border border-slate-800 bg-slate-900/95 p-2 shadow-xl">
+    <div className="absolute left-0 right-0 top-full z-10 mt-2 space-y-1 rounded-lg border border-slate-800 bg-black p-2 shadow-xl">
       {organizerSearchResults[eventId].map((user) => (
         <button
           key={user.id}
           type="button"
-          className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-100 hover:bg-slate-800/60"
+          className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-100 hover:bg-black"
           onClick={() => setPendingOrganizer({ eventId, user })}
         >
           <div>
@@ -78,7 +78,7 @@ function BranchEventsTab({
     }
     const { user, eventId } = pendingOrganizer
     return (
-      <div className="mt-2 flex flex-col gap-2 rounded-lg border border-emerald-700/60 bg-emerald-900/30 p-3 text-sm text-emerald-50">
+      <div className="mt-2 flex flex-col gap-2 rounded-lg border border-emerald-700/60 bg-black p-3 text-sm text-emerald-50">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold">{user.name ?? 'User'}</p>
@@ -88,7 +88,7 @@ function BranchEventsTab({
           <div className="flex gap-2">
             <button
               type="button"
-              className="rounded-lg border border-emerald-500 px-3 py-2 text-xs font-semibold text-emerald-100 transition hover:bg-emerald-500/10"
+              className="rounded-lg border border-emerald-500 px-3 py-2 text-xs font-semibold text-emerald-100 transition hover:bg-black"
               onClick={() => addOrganizerMutation.mutate({ eventId, email: user.email })}
               disabled={addOrganizerMutation.isPending}
             >
@@ -96,7 +96,7 @@ function BranchEventsTab({
             </button>
             <button
               type="button"
-              className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-slate-800"
+              className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-black"
               onClick={() => setPendingOrganizer(null)}
               disabled={addOrganizerMutation.isPending}
             >
@@ -113,7 +113,7 @@ function BranchEventsTab({
       <div className="flex flex-wrap items-center gap-3">
         <p className="text-sm text-slate-300">Manage the events for your branch.</p>
         {branchName ? (
-          <span className="rounded-full border border-emerald-400/50 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">
+          <span className="rounded-full border border-emerald-400/50 bg-black px-3 py-1 text-xs font-semibold text-emerald-200">
             {branchName}
           </span>
         ) : null}
@@ -132,7 +132,7 @@ function BranchEventsTab({
 
       <div className="space-y-3">
         {branchEvents.map((event) => (
-          <div key={event.id} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+          <div key={event.id} className="rounded-xl border border-slate-800 bg-black p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-base font-semibold text-slate-100">{event.name}</p>
@@ -143,7 +143,7 @@ function BranchEventsTab({
                   <span
                     className={`rounded-full px-2 py-1 text-[11px] font-semibold ${
                       event.published
-                        ? 'border border-emerald-500/60 bg-emerald-500/10 text-emerald-200'
+                        ? 'border border-emerald-500/60 bg-black text-emerald-200'
                         : 'border border-amber-400/60 bg-amber-400/10 text-amber-100'
                     }`}
                   >
@@ -157,8 +157,8 @@ function BranchEventsTab({
                   type="button"
                   className={`relative inline-flex h-8 w-16 items-center rounded-full border text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
                     event.published
-                      ? 'border-emerald-400/70 bg-emerald-500/60 text-slate-900'
-                      : 'border-slate-700 bg-slate-800 text-slate-200'
+                      ? 'border-emerald-400/70 bg-black text-slate-900'
+                      : 'border-slate-700 bg-black text-slate-200'
                   } ${togglePublishMutation.isPending ? 'cursor-not-allowed opacity-60' : 'hover:border-emerald-300/70'}`}
                   onClick={() => togglePublishMutation.mutate({ eventId: event.id, publish: !event.published })}
                   disabled={togglePublishMutation.isPending}
@@ -166,7 +166,7 @@ function BranchEventsTab({
                   aria-label={event.published ? 'Unpublish event' : 'Publish event'}
                 >
                   <span
-                    className={`ml-1 inline-block h-6 w-6 transform rounded-full bg-white shadow transition ${
+                    className={`ml-1 inline-block h-6 w-6 transform rounded-full bg-black shadow transition ${
                       event.published ? 'translate-x-8' : 'translate-x-0'
                     }`}
                   />
@@ -176,14 +176,14 @@ function BranchEventsTab({
                 </button>
                 <button
                   type="button"
-                  className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={() => setActiveEventId((prev) => (prev === event.id ? null : event.id))}
                 >
                   View Details
                 </button>
                 <button
                   type="button"
-                  className="rounded-lg border border-rose-400/60 px-3 py-2 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-rose-400/60 px-3 py-2 text-sm font-semibold text-rose-100 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={() => deleteBranchEventMutation.mutate(event.id)}
                   disabled={event.published || deleteBranchEventMutation.isPending}
                 >
@@ -212,7 +212,7 @@ function BranchEventsTab({
                       </div>
                       <button
                         type="button"
-                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
                         onClick={() => removeOrganizerMutation.mutate({ eventId: event.id, userId: organizer.userId })}
                         disabled={removeOrganizerMutation.isPending}
                       >
@@ -224,7 +224,7 @@ function BranchEventsTab({
               )}
 
               {activeEventId === event.id ? (
-                <div className="mt-3 space-y-3 rounded-lg border border-slate-800 bg-slate-950/40 p-4">
+                <div className="mt-3 space-y-3 rounded-lg border border-slate-800 bg-black p-4">
                   {eventDetailsQuery.isLoading ? (
                     <p className="text-sm text-slate-400">Loading details…</p>
                   ) : null}
@@ -251,7 +251,7 @@ function BranchEventsTab({
                         <label className="flex flex-col gap-1 text-sm text-slate-200">
                           <span className="text-xs uppercase tracking-wide text-slate-400">Name</span>
                           {eventDetailsQuery.data.published ? (
-                            <span className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                            <span className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                               {eventDetailsQuery.data.name}
                             </span>
                           ) : (
@@ -268,7 +268,7 @@ function BranchEventsTab({
                         <label className="flex flex-col gap-1 text-sm text-slate-200">
                           <span className="text-xs uppercase tracking-wide text-slate-400">Venue</span>
                           {eventDetailsQuery.data.published ? (
-                            <span className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                            <span className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                               {eventDetailsQuery.data.venue ?? '—'}
                             </span>
                           ) : (
@@ -285,7 +285,7 @@ function BranchEventsTab({
                         <label className="flex flex-col gap-1 text-sm text-slate-200 lg:col-span-2">
                           <span className="text-xs uppercase tracking-wide text-slate-400">Description</span>
                           {eventDetailsQuery.data.published ? (
-                            <div className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                            <div className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                               {eventDetailsQuery.data.description ?? '—'}
                             </div>
                           ) : (
@@ -302,7 +302,7 @@ function BranchEventsTab({
                         <label className="flex flex-col gap-1 text-sm text-slate-200">
                           <span className="text-xs uppercase tracking-wide text-slate-400">Fees</span>
                           {eventDetailsQuery.data.published ? (
-                            <span className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                            <span className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                               ₹ {eventDetailsQuery.data.fees}
                             </span>
                           ) : (
@@ -321,7 +321,7 @@ function BranchEventsTab({
                           <label className="flex flex-col gap-1 text-sm text-slate-200">
                             <span className="text-xs uppercase tracking-wide text-slate-400">Min Team</span>
                             {eventDetailsQuery.data.published ? (
-                              <span className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                              <span className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                                 {eventDetailsQuery.data.minTeamSize}
                               </span>
                             ) : (
@@ -338,7 +338,7 @@ function BranchEventsTab({
                           <label className="flex flex-col gap-1 text-sm text-slate-200">
                             <span className="text-xs uppercase tracking-wide text-slate-400">Max Team</span>
                             {eventDetailsQuery.data.published ? (
-                              <span className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-slate-100">
+                              <span className="rounded-lg border border-slate-800 bg-black px-3 py-2 text-slate-100">
                                 {eventDetailsQuery.data.maxTeamSize}
                               </span>
                             ) : (

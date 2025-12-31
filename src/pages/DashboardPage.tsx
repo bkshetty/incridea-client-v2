@@ -92,8 +92,7 @@ function DashboardPage() {
 
   const [variableDrafts, setVariableDrafts] = useState<Record<string, string>>({})
   const [editingKey, setEditingKey] = useState<string | null>(null)
-  const [newVarKey, setNewVarKey] = useState('')
-  const [newVarValue, setNewVarValue] = useState('')
+
 
   const [userSearchDraft, setUserSearchDraft] = useState('')
   const [userSearchTerm, setUserSearchTerm] = useState('')
@@ -248,8 +247,6 @@ function DashboardPage() {
     onSuccess: () => {
       void variablesQuery.refetch()
       showToast('Variable saved', 'success')
-      setNewVarKey('')
-      setNewVarValue('')
       setEditingKey(null)
     },
     onError: (error) => {
@@ -533,8 +530,8 @@ function DashboardPage() {
   const hasAnyAccess = isAdmin || isBranchRep
   if (!hasAnyAccess) {
     return (
-      <section className="space-y-4">
-        <div className="card p-6">
+      <section className="min-h-screen space-y-4 bg-black px-2 pb-8 pt-4 text-slate-100 lg:px-3">
+        <div className="card p-6 border border-slate-800 bg-black">
           <h1 className="text-2xl font-semibold text-slate-50">Dashboard</h1>
           <p className="text-sm text-slate-400">You do not have access to dashboard tools.</p>
         </div>
@@ -543,7 +540,7 @@ function DashboardPage() {
   }
 
   return (
-    <div className="w-full max-w-full space-y-3 px-2 lg:px-3">
+    <div className="min-h-screen w-full max-w-full space-y-3 bg-black px-2 pb-8 pt-4 text-slate-100 lg:px-3">
       {isAddEventOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div
@@ -551,7 +548,7 @@ function DashboardPage() {
             onClick={() => setIsAddEventOpen(false)}
             aria-label="Close add event modal"
           />
-          <div className="relative z-10 w-full max-w-xl rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-2xl">
+          <div className="relative z-10 w-full max-w-xl rounded-2xl border border-slate-800 bg-black p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">New Event</p>
@@ -722,7 +719,7 @@ function DashboardPage() {
         </div>
       ) : null}
 
-      <div className="card space-y-3 p-5">
+      <div className="card space-y-3 border border-slate-800 bg-black p-5">
         <div className="flex items-center justify-center text-center">
           <div>
             <p className="muted">Dashboard</p>
@@ -734,14 +731,13 @@ function DashboardPage() {
 
         {isAdmin ? (
           <div className="grid gap-3 lg:grid-cols-2">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <div className="rounded-xl border border-slate-800 bg-black p-3">
               <p className="mb-2 text-xs font-semibold text-slate-100">Statuses</p>
-              <ul className="space-y-1">
                 {[{ label: 'Registrations', key: 'isRegistrationOpen' }, { label: 'Spot Registration', key: 'isSpotRegistration' }, { label: 'Committee Registration', key: 'isCommitteeRegOpen' }].map((item) => {
                   const rawValue = variableLookup[item.key] ?? settingsLookup[item.key]
                   const value = isTruthyVariable(rawValue)
                   return (
-                    <li key={item.key} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2">
+                    <li key={item.key} className="flex items-center justify-between bg-black px-3 py-2">
                       <span className="text-xs text-slate-200">{item.label}</span>
                       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold ${
                         value
@@ -754,12 +750,10 @@ function DashboardPage() {
                     </li>
                   )
                 })}
-              </ul>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <div className="rounded-xl border border-slate-800 bg-black p-3">
               <p className="mb-2 text-xs font-semibold text-slate-100">Fees</p>
-              <ul className="space-y-1">
                 {[
                   {
                     label: 'Alumni Registration Fee',
@@ -786,19 +780,18 @@ function DashboardPage() {
                     key: 'internalRegistrationOnSpot',
                   },
                 ].map((item) => (
-                  <li key={item.key} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2">
+                  <li key={item.key} className="flex items-center justify-between bg-black px-3 py-2">
                     <span className="text-xs text-slate-200">{item.label}</span>
                     <span className="text-xs font-semibold text-slate-100">{variableLookup[item.key] ?? (settingsLookup[item.key] ?? '—')}</span>
                   </li>
                 ))}
-              </ul>
             </div>
           </div>
         ) : null}
       </div>
 
       <section className="grid w-full gap-3 lg:grid-cols-[220px_1fr]">
-        <aside className="card h-full p-3 sm:p-4">
+        <aside className="card h-full border border-slate-800 bg-black p-3 sm:p-4">
           <div className="flex h-full flex-col gap-5">
             {isAdmin ? (
               <div className="flex flex-col gap-2">
@@ -838,7 +831,7 @@ function DashboardPage() {
           </div>
         </aside>
 
-        <div className="card space-y-4 p-6">
+        <div className="card space-y-4 p-6 bg-black">
           {activeTab === 'Settings' ? (
             <SettingsTab settingsQuery={settingsQuery} settings={settings} updateSettingMutation={updateSettingMutation} />
           ) : null}
@@ -851,10 +844,6 @@ function DashboardPage() {
               setEditingKey={setEditingKey}
               variableDrafts={variableDrafts}
               setVariableDrafts={setVariableDrafts}
-              newVarKey={newVarKey}
-              setNewVarKey={setNewVarKey}
-              newVarValue={newVarValue}
-              setNewVarValue={setNewVarValue}
               upsertVariableMutation={upsertVariableMutation}
             />
           ) : null}

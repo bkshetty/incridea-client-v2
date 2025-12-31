@@ -27,7 +27,7 @@ function LogsTab({ webLogsQuery, logsPage, setLogsPage }: LogsTabProps) {
         <div className="flex items-center gap-2 text-xs text-slate-400">
           <button
             type="button"
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
             onClick={() => setLogsPage((prev) => Math.max(1, prev - 1))}
             disabled={logsPage <= 1 || webLogsQuery.isFetching}
           >
@@ -45,9 +45,9 @@ function LogsTab({ webLogsQuery, logsPage, setLogsPage }: LogsTabProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-900/60">
+      <div className="overflow-x-auto rounded-lg border border-slate-800 bg-black">
         <table className="min-w-full text-sm text-slate-100">
-          <thead className="bg-slate-800/50 text-xs uppercase tracking-wide text-slate-400">
+          <thead className="bg-black text-xs uppercase tracking-wide text-slate-400">
             <tr>
               <th className="px-4 py-3 text-left">Time</th>
               <th className="px-4 py-3 text-left">User</th>
@@ -63,7 +63,7 @@ function LogsTab({ webLogsQuery, logsPage, setLogsPage }: LogsTabProps) {
               </tr>
             ) : (
               logs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-800/40">
+                <tr key={log.id} className="hover:bg-black">
                   <td className="px-4 py-3 text-slate-200 whitespace-nowrap">
                     {new Date(log.createdAt).toLocaleString()}
                   </td>

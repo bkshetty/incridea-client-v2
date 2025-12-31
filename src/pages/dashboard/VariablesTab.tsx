@@ -8,10 +8,6 @@ export interface VariablesTabProps {
   setEditingKey: (key: string | null) => void
   variableDrafts: Record<string, string>
   setVariableDrafts: (drafts: Record<string, string>) => void
-  newVarKey: string
-  setNewVarKey: (value: string) => void
-  newVarValue: string
-  setNewVarValue: (value: string) => void
   upsertVariableMutation: UseMutationResult<unknown, Error, { key: string; value: string }>
 }
 
@@ -22,39 +18,11 @@ function VariablesTab({
   setEditingKey,
   variableDrafts,
   setVariableDrafts,
-  newVarKey,
-  setNewVarKey,
-  newVarValue,
-  setNewVarValue,
   upsertVariableMutation,
 }: VariablesTabProps) {
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-        <p className="mb-3 text-sm font-semibold text-slate-100">Add / Update Variable</p>
-        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-          <input
-            className="input"
-            placeholder="Key"
-            value={newVarKey}
-            onChange={(event) => setNewVarKey(event.target.value)}
-          />
-          <input
-            className="input"
-            placeholder="Value"
-            value={newVarValue}
-            onChange={(event) => setNewVarValue(event.target.value)}
-          />
-          <button
-            className="button"
-            type="button"
-            onClick={() => newVarKey && upsertVariableMutation.mutate({ key: newVarKey, value: newVarValue })}
-            disabled={upsertVariableMutation.isPending}
-          >
-            {upsertVariableMutation.isPending ? 'Saving…' : 'Save'}
-          </button>
-        </div>
-      </div>
+
 
       <div className="space-y-3">
         {variablesQuery.isError ? (
@@ -66,7 +34,7 @@ function VariablesTab({
         {variables.map((variable) => (
           <div
             key={variable.key}
-            className="rounded-xl border border-slate-800 bg-slate-900/60 p-4"
+            className="rounded-xl border border-slate-800 bg-black p-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 space-y-2">
@@ -97,7 +65,7 @@ function VariablesTab({
                       </button>
                       <button
                         type="button"
-                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 sm:flex-1"
+                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-black sm:flex-1"
                         onClick={() => {
                           setVariableDrafts({ ...variableDrafts, [variable.key]: variable.value })
                           setEditingKey(null)

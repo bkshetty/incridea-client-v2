@@ -19,7 +19,7 @@ function SettingsTab({ settingsQuery, settings, updateSettingMutation }: Setting
       {settings.map((setting) => (
         <div
           key={setting.key}
-          className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3"
+          className="flex items-center justify-between rounded-lg border border-slate-800 bg-black px-4 py-3"
         >
           <div>
             <p className="text-sm font-semibold text-slate-100">{setting.key}</p>
@@ -32,13 +32,13 @@ function SettingsTab({ settingsQuery, settings, updateSettingMutation }: Setting
               onClick={() => updateSettingMutation.mutate({ key: setting.key, value: !setting.value })}
               disabled={updateSettingMutation.isPending}
               className={`relative inline-flex h-7 w-12 items-center rounded-full border transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 ${
-                setting.value ? 'border-sky-300/70 bg-sky-500/70' : 'border-slate-700 bg-slate-800'
+                setting.value ? 'border-sky-300/70 bg-black' : 'border-slate-700 bg-black'
               } ${updateSettingMutation.isPending ? 'cursor-not-allowed opacity-60' : 'hover:border-sky-300'}`}
             >
               <span className="sr-only">Toggle {setting.key}</span>
               <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-slate-950 shadow transition ${
-                  setting.value ? 'translate-x-6 bg-white' : 'translate-x-1 bg-slate-300'
+                className={`inline-block h-5 w-5 transform rounded-full bg-black shadow transition ${
+                  setting.value ? 'translate-x-6 bg-black' : 'translate-x-1 bg-black'
                 }`}
               />
             </button>

@@ -82,7 +82,7 @@ function UsersTab({
     <button
       key={user.id}
       type="button"
-      className="w-full rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left transition hover:border-sky-400/60"
+      className="w-full rounded-xl border border-slate-800 bg-black p-4 text-left text-slate-100 transition hover:border-sky-400/60"
       onClick={() => openRoleModal(user)}
       disabled={updateUserRolesMutation.isPending}
     >
@@ -108,7 +108,7 @@ function UsersTab({
   )
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-black text-slate-100">
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wide text-slate-400" htmlFor="userSearch">
           Search users
@@ -171,11 +171,11 @@ function UsersTab({
       {selectedUser ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div
-            className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
             onClick={closeRoleModal}
             aria-label="Close role modal"
           />
-          <div className="relative z-10 w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl">
+          <div className="relative z-10 w-full max-w-lg rounded-2xl border border-slate-800 bg-black p-6 shadow-2xl text-slate-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">Manage Roles</p>

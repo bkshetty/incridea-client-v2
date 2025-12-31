@@ -88,7 +88,7 @@ function Layout() {
   }, [token])
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-950 text-slate-50">
+    <div className={`flex min-h-screen flex-col ${location.pathname.startsWith('/dashboard') ? 'bg-black' : 'bg-slate-950'} text-slate-50`}>
       <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link to="/" className="flex items-center gap-3 text-lg font-semibold text-sky-300">
