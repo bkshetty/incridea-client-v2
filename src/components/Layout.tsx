@@ -65,7 +65,15 @@ function Layout() {
         setIsBranchRep(branchRep)
         setIsOrganiser(organiser)
       } catch {
-        await handleLogout()
+        // If auth fails, just clear local state but don't redirect
+        localStorage.removeItem('token')
+        localStorage.removeItem('userName')
+        localStorage.removeItem('userId')
+        setToken(null)
+        setUserName(null)
+        setUserRoles([])
+        setIsBranchRep(false)
+        setIsOrganiser(false)
       } finally {
         setIsLoading(false)
       }
