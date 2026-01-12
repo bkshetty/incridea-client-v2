@@ -14,6 +14,7 @@ import { showToast } from "../utils/toast";
 import EventRegistration from "../components/events/EventRegistration";
 import EventDetails from "../components/events/EventDetails";
 import { formatDate as formatDateIST, formatTime } from "../utils/date";
+import LiquidGlassCard from "../components/LiquidGlassCard";
 
 function parseIdFromSlug(slug: string | undefined) {
   if (!slug) {
@@ -144,8 +145,8 @@ function EventDetailPage() {
             top: 0;
             left: 0;
             right: 0;
-            height: 40%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 100%);
+            height: 18%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 100%);
             pointer-events: none;
             z-index: 5;
           }
@@ -160,7 +161,6 @@ function EventDetailPage() {
             animation: glassShimmer 4s ease-in-out infinite;
             pointer-events: none;
             z-index: 2;
-            filter: blur(20px);
           }`}
       </style>
       {/* overlay */}
@@ -176,11 +176,11 @@ function EventDetailPage() {
         </RouterLink>
 
         {/* GLASS CONTAINER: Event Header + Description + Coordinators */}
-        <div className="wave-container relative backdrop-blur-[24px] overflow-hidden rounded-[30px]">
+        <LiquidGlassCard className="w-full">
           {/* Event Header Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 sm:gap-6 p-4 sm:p-8 border-b border-white/10">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-3 sm:gap-4 lg:gap-6 p-0 sm:p-2 lg:p-4 border-b border-white/10">
             {/* LEFT: Poster Card */}
-            <div className="rounded-2xl border border-white/15 overflow-hidden shadow-xl">
+            <div className="rounded-xl sm:rounded-2xl border border-white/15 overflow-hidden shadow-xl max-w-full">
               <div className="relative aspect-[4/5] w-full bg-gradient-to-b from-white/20 to-black/40">
                 {event.image ? (
                   <img
@@ -265,7 +265,7 @@ function EventDetailPage() {
           </div>
 
           {/* Description + Coordinators Section */}
-          <div className="px-6 sm:px-8 py-8 sm:py-12 space-y-10 sm:space-y-16">
+          <div className="px-2 sm:px-4 lg:px-6 py-6 sm:py-10 lg:py-12 space-y-8 sm:space-y-12 lg:space-y-16">
             {/* Description Section */}
             <div className="space-y-3 sm:space-y-6">
               <div className="flex items-center justify-center gap-4">
@@ -336,7 +336,7 @@ function EventDetailPage() {
               </div>
             </div>
           </div>
-        </div>
+        </LiquidGlassCard>
 
         {/* Schedule Section */}
         {event.rounds.length > 0 && (

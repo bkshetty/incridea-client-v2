@@ -162,7 +162,7 @@ export default function EventRegistration({
           <div className="pt-2">
             {!team.confirmed && fees > 0 && (
               <button
-                className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
+                className="w-full rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 transition-colors"
                 onClick={() => alert("Payment integration pending")}
               >
                 Pay ₹{fees} to Confirm
@@ -171,7 +171,7 @@ export default function EventRegistration({
 
             {!team.confirmed && fees === 0 && (
               <button
-                className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
+                className="w-full rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 transition-colors"
                 onClick={() => confirmTeamMutation.mutate(team.id)}
                 disabled={confirmTeamMutation.isPending}
               >
@@ -240,10 +240,10 @@ export default function EventRegistration({
       <button
         className="group flex w-full shrink-0 items-center justify-center gap-2 rounded-full
           px-6 py-2.5 capitalize text-white font-semibold
-          bg-white/10 border border-white/20
+          bg-teal-600 border border-teal-500
           backdrop-blur-2xl
           shadow-[0_8px_30px_rgba(0,0,0,0.35)]
-          hover:bg-white/15 hover:border-white/30 hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]
+          hover:bg-teal-500 hover:border-teal-400 hover:shadow-[0_0_20px_rgba(20,184,166,0.25)]
           transition-all duration-300
           active:scale-[0.98]
           relative overflow-hidden"
