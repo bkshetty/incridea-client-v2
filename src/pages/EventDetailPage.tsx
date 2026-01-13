@@ -14,7 +14,7 @@ import { showToast } from "../utils/toast";
 import EventRegistration from "../components/events/EventRegistration";
 import EventDetails from "../components/events/EventDetails";
 import { formatDate as formatDateIST, formatTime } from "../utils/date";
-import LiquidGlassCard from "../components/LiquidGlassCard";
+import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 
 function parseIdFromSlug(slug: string | undefined) {
   if (!slug) {
@@ -105,7 +105,7 @@ function EventDetailPage() {
   return (
     <section
       className="relative min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/eventbg2.jpg')" }}
+      style={{ backgroundImage: "url('/eventpagebg/eventbg2.jpg')" }}
     >
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Macondo&family=Macondo+Swash+Caps&family=New+Rocker&display=swap');
