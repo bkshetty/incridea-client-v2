@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Link as RouterLink } from "react-router-dom";
 import {
@@ -72,20 +72,12 @@ function EventsPage() {
   const [categoryFilter, setCategoryFilter] = useState<
     PublicEventCategory | "ALL"
   >("ALL");
-  const [dayFilter, setDayFilter] = useState<DayFilterLabel>("All");
+  const [dayFilter] = useState<DayFilterLabel>("All");
   const [query, setQuery] = useState("");
 
-  const eventsQuery = { isLoading: false, isError: false };
   const dayConfig = undefined;
   const events = MOCK_EVENTS;
 
-  const availableDayFilters = useMemo<DayFilterLabel[]>(() => {
-    const labels: DayFilterLabel[] = ["All"];
-    DAY_FILTERS.forEach(({ label, key }) => {
-      if (dayConfig?.[key as EventDayKey]) labels.push(label);
-    });
-    return labels;
-  }, [dayConfig]);
 
   const activeDayKey = useMemo<EventDayKey | null>(() => {
     if (dayFilter === "All") return null;
