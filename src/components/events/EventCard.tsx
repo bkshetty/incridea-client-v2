@@ -1,5 +1,7 @@
 import { MapPin, Calendar, Users } from "lucide-react";
 import type { PublicEvent } from "../../api/public";
+
+import Glass from "../ui/Glass";
 import { formatDate } from "../../utils/date";
 
 const CATEGORY_THEMES = {
@@ -63,21 +65,10 @@ const EventCard = ({ event, index }: EventCardProps) => {
           }}
         >
           {/* Inner Content Area (Glass Effect) */}
-          <div
-            className="flex h-full w-full flex-col gap-[8px] border border-white/10 p-[20px_16px_10px] backdrop-blur-[20px] transition-all duration-500 group-hover:border-white/30"
-            style={{
-              backgroundColor: "rgba(18, 20, 28, 0.6)",
-            }}
+          <Glass
+            className="flex h-full w-full flex-col gap-[8px] p-[20px_16px_10px]"
           >
-            <div
-              className="pointer-events-none absolute inset-0 animate-shine bg-[linear-gradient(120deg,transparent_35%,rgba(255,255,255,0.05)_50%,transparent_65%)] bg-size-[280%_100%]"
-              style={{
-                animationDuration: `${10 + (index % 5) * 2}s`,
-                animationDelay: `${(index % 7) * 0.5}s`,
-              }}
-            />
-
-            <div className="mb-[6px] w-full aspect-1080/1350 rounded-[16px] overflow-hidden bg-black/40 border border-white/10">
+            <div className="mb-[6px] w-full aspect-1080/1350 rounded-[16px] overflow-hidden bg-black/20 border border-white/10">
               <img
                 src={
                   event.image ||
@@ -121,7 +112,7 @@ const EventCard = ({ event, index }: EventCardProps) => {
                 </span>
               </div>
             </div>
-          </div>
+          </Glass>
         </div>
 
         {/* Dynamic Category Tag - 1/4th size reduction + Theme Colors */}
@@ -136,16 +127,6 @@ const EventCard = ({ event, index }: EventCardProps) => {
           {theme.label}
         </div>
       </div>
-
-      <style>{`
-        @keyframes shine {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-        .animate-shine {
-          animation: shine 12s infinite linear;
-        }
-      `}</style>
     </div>
   );
 };

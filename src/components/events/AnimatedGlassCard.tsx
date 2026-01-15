@@ -13,7 +13,7 @@ const AnimatedGlassCard = ({
   title = "Event Name",
 }: AnimatedGlassCardProps) => {
   return (
-    <div className="relative w-[300px] aspect-[1452/2447.19] group perspective-[1200px]">
+    <div className="relative w-[300px] aspect-[1452/2447.19] group perspective-distant">
 
       {/* SVG GLASS */}
       <svg
@@ -113,7 +113,7 @@ const AnimatedGlassCard = ({
         }}
       >
         {/* IMAGE: 4:5 Aspect Ratio (1080x1350) */}
-        <div className="w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-black/30 shadow-sm border border-white/20">
+        <div className="w-full aspect-4/5 rounded-[16px] overflow-hidden bg-black/30 shadow-sm border border-white/20">
           <img
             src={imageUrl}
             alt="Event"
@@ -129,19 +129,19 @@ const AnimatedGlassCard = ({
         {/* DETAILS */}
         <div className="mt-auto space-y-2 pb-5 pl-1">
           {/* Date */}
-          <div className="flex h-[32px] w-[230px] items-center gap-[8px] rounded-full border border-white/[0.13] bg-white/[0.085] px-3 backdrop-blur-[6px] text-white pl-5">
+          <div className="flex h-[32px] w-[230px] items-center gap-[8px] rounded-full border border-white/13 bg-white/8.5 px-3 backdrop-blur-[6px] text-white pl-5">
             <Calendar size={13} className="opacity-80" />
             <span className="text-[11px] font-medium tracking-wide">5 Mar, 9.30 AM</span>
           </div>
 
           {/* Team */}
-          <div className="flex h-[32px] w-[230px] items-center gap-[8px] rounded-full border border-white/[0.13] bg-white/[0.085] px-3 backdrop-blur-[6px] text-white pl-5">
+          <div className="flex h-[32px] w-[230px] items-center gap-[8px] rounded-full border border-white/13 bg-white/8.5 px-3 backdrop-blur-[6px] text-white pl-5">
             <Users size={13} className="opacity-80" />
             <span className="text-[11px] font-medium tracking-wide">5 per team</span>
           </div>
 
           {/* Location */}
-          <div className="flex h-[32px] w-[130px] items-center gap-[8px] rounded-full border border-white/[0.13] bg-white/[0.085] px-3 backdrop-blur-[6px] text-white pl-5">
+          <div className="flex h-[32px] w-[130px] items-center gap-[8px] rounded-full border border-white/13 bg-white/8.5 px-3 backdrop-blur-[6px] text-white pl-5">
             <MapPin size={13} className="opacity-80" />
             <span className="text-[11px] font-medium tracking-wide">NITTE</span>
           </div>

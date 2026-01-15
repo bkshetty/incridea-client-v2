@@ -14,7 +14,7 @@ import { showToast } from "../utils/toast";
 import EventRegistration from "../components/events/EventRegistration";
 import EventDetails from "../components/events/EventDetails";
 import { formatDate as formatDateIST, formatTime } from "../utils/date";
-import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+import Glass from "../components/ui/Glass";
 
 function parseIdFromSlug(slug: string | undefined) {
   if (!slug) {
@@ -103,12 +103,18 @@ function EventDetailPage() {
   const event: PublicEventDetail = data.event;
 
   return (
-    <section
-      className="relative min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/eventpagebg/eventbg2.jpg')" }}
-    >
-      <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Macondo&family=Macondo+Swash+Caps&family=New+Rocker&display=swap');
+    <>
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url(/temp_event_bg.png)",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+      <section className="relative min-h-screen w-full overflow-x-hidden">
+        <style>
+          {`@import url('https://fonts.googleapis.com/css2?family=Macondo&family=Macondo+Swash+Caps&family=New+Rocker&display=swap');
           @keyframes glassShimmer {
             0% {
               transform: translateX(-120%);
@@ -162,9 +168,7 @@ function EventDetailPage() {
             pointer-events: none;
             z-index: 2;
           }`}
-      </style>
-      {/* overlay */}
-      <div className="absolute inset-0 " />
+        </style>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
         <RouterLink
@@ -176,12 +180,12 @@ function EventDetailPage() {
         </RouterLink>
 
         {/* GLASS CONTAINER: Event Header + Description + Coordinators */}
-        <LiquidGlassCard className="w-full">
+        <Glass className="w-full">
           {/* Event Header Section */}
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-3 sm:gap-4 lg:gap-6 p-0 sm:p-2 lg:p-4 border-b border-white/10">
             {/* LEFT: Poster Card */}
             <div className="rounded-xl sm:rounded-2xl border border-white/15 overflow-hidden shadow-xl max-w-full">
-              <div className="relative aspect-[4/5] w-full bg-gradient-to-b from-white/20 to-black/40">
+              <div className="relative aspect-4/5 w-full bg-linear-to-b from-white/20 to-black/40">
                 {event.image ? (
                   <img
                     src={event.image}
@@ -189,7 +193,7 @@ function EventDetailPage() {
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/25 to-black/70 flex items-center justify-center text-black/40">
+                  <div className="absolute inset-0 bg-linear-to-b from-white/60 via-white/25 to-black/70 flex items-center justify-center text-black/40">
                     <div className="text-center text-sm">
                       <div className="font-semibold">Portrait</div>
                       <div>1080 × 1350 px (4:5)</div>
@@ -269,14 +273,14 @@ function EventDetailPage() {
             {/* Description Section */}
             <div className="space-y-3 sm:space-y-6">
               <div className="flex items-center justify-center gap-4">
-                <div className="h-1 w-16 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500" />
+                <div className="h-1 w-16 rounded-full bg-linear-to-r from-teal-500 to-cyan-500" />
                 <h2
                   className="text-2xl sm:text-4xl font-bold text-white text-center leading-tight"
                   style={{ fontFamily: "'Macondo', cursive" }}
                 >
                   Description
                 </h2>
-                <div className="h-1 w-16 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500" />
+                <div className="h-1 w-16 rounded-full bg-linear-to-r from-teal-500 to-cyan-500" />
               </div>
 
               <div
@@ -288,19 +292,19 @@ function EventDetailPage() {
             </div>
 
             {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <div className="h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
 
             {/* Event Coordinators Section */}
             <div className="space-y-3 sm:space-y-8">
               <div className="flex items-center justify-center gap-4">
-                <div className="h-1 w-12 sm:w-16 rounded-full bg-gradient-to-r from-pink-500 to-rose-500" />
+                <div className="h-1 w-12 sm:w-16 rounded-full bg-linear-to-r from-pink-500 to-rose-500" />
                 <h2
                   className="text-lg sm:text-4xl font-bold text-white text-center leading-tight"
                   style={{ fontFamily: "'Macondo', cursive" }}
                 >
                   Event Coordinators
                 </h2>
-                <div className="h-1 w-12 sm:w-16 rounded-full bg-gradient-to-r from-pink-500 to-rose-500" />
+                <div className="h-1 w-12 sm:w-16 rounded-full bg-linear-to-r from-pink-500 to-rose-500" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 max-w-2xl mx-auto">
@@ -336,7 +340,7 @@ function EventDetailPage() {
               </div>
             </div>
           </div>
-        </LiquidGlassCard>
+        </Glass>
 
         {/* Schedule Section */}
         {event.rounds.length > 0 && (
@@ -372,6 +376,7 @@ function EventDetailPage() {
         )}
       </div>
     </section>
+    </>
   );
 }
 function InfoPill({ label, value }: { label: string; value: string }) {
