@@ -78,3 +78,12 @@ export async function initiatePayment(registrationId: string) {
   const { data } = await apiClient.post<PaymentInitiateResponse>('/payment/initiate', { registrationId })
   return data
 }
+
+export async function verifyPayment(paymentDetails: {
+  razorpay_order_id: string
+  razorpay_payment_id: string
+  razorpay_signature: string
+}) {
+  const { data } = await apiClient.post<{ status: string; message: string }>('/payment/verify', paymentDetails)
+  return data
+}

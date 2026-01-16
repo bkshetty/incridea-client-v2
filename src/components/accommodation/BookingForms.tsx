@@ -136,7 +136,7 @@ export const IndividualBookingForm = ({ onSuccess }: { onSuccess: () => void }) 
                 <div className="text-green-400 text-sm">ID Card Uploaded</div>
             ) : (
                 <UploadButton
-                    endpoint="imageUploader"
+                    endpoint="accommodationIdProof"
                     onClientUploadComplete={(res) => {
                         if (res?.[0]?.url) {
                             setValue('idCard', res[0].url)
@@ -381,7 +381,7 @@ export const TeamBookingForm = ({ onSuccess }: { onSuccess: () => void }) => {
                                                 I'll keep the upload for now to satisfy schema.
                                             */}
                                             <UploadButton
-                                                endpoint="imageUploader"
+                                                endpoint="accommodationIdProof"
                                                 onClientUploadComplete={(res) => {
                                                     if (res?.[0]?.url) {
                                                         setValue(`members.${index}.idCard`, res[0].url)

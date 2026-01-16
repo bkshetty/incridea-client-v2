@@ -1,14 +1,14 @@
 import { generateUploadButton } from "@uploadthing/react"
  
-export interface ClientUploadRouter {
+export type ClientUploadRouter = {
   accommodationIdProof: {
-    input: undefined
+    input: any
     output: { fileUrl: string }
   }
-  imageUploader: {
-      input: undefined
+  pdfUploader: {
+      input: any
       output: { fileUrl: string }
   }
 }
 
-export const UploadButton = generateUploadButton<ClientUploadRouter>();
+export const UploadButton = generateUploadButton<any>();
