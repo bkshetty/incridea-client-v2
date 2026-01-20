@@ -14,6 +14,7 @@ import PrivacyPage from '../pages/PrivacyPage.tsx'
 import RulesPage from '../pages/RulesPage.tsx'
 import QuizPage from '../pages/QuizPage.tsx'
 import RegisterPage from '../pages/RegisterPage.tsx'
+import Gallery from '../pages/Gallery.tsx'
 
 const AuthRedirect = () => {
     const params = new URLSearchParams(window.location.search)
@@ -43,6 +44,7 @@ function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:slug" element={<EventDetailPage />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/refund" element={<RefundPage />} />
         <Route path="/guidelines" element={<GuidelinesPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
@@ -56,7 +58,7 @@ function AppRoutes() {
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-  )
+  );
 }
 
 export default AppRoutes

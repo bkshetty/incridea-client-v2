@@ -51,7 +51,7 @@ const Navbar = ({
           <div className="flex items-center gap-4">
             <a
               href={`${import.meta.env.VITE_DASHBOARD_URL}/profile`}
-              className="hidden md:flex items-center gap-2 text-white hover:text-purple-300 transition-colors font-['Orbitron'] text-sm  cursor-target"
+              className="hidden md:flex items-center gap-2 text-white hover:text-utton-300 transition-colors font-['Orbitron'] text-sm  cursor-target"
               title="Profile"
             >
               <User size={18} />
