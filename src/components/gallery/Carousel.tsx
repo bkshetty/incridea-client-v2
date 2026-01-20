@@ -96,7 +96,7 @@ const Carousel: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#050510] font-sans">
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans">
       <div
         className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
@@ -108,7 +108,6 @@ const Carousel: React.FC = () => {
           backgroundPosition: "0 0, 50px 50px",
         }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1a1a3a_0%,#050510_100%)]" />
 
       {/* Added ref={carouselRef} here to capture local scrolling */}
       <div

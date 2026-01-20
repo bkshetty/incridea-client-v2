@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 const Gallery: React.FC = () => {
   return (
-    <div className="relative min-h-screen w-full bg-[#050510] overflow-hidden">
+    <div className="relative min-h-screen w-full overflow-hidden">
 
       {/* 1. The 3D Carousel Component */}
       <main className="relative z-10 w-full h-screen">
