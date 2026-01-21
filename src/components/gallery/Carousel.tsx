@@ -21,7 +21,19 @@ const Carousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null); // Ref to capture wheel events locally
-  const [isHovered, setIsHovered] = useState(false); 
+  const [isHovered, setIsHovered] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const [bp, setBp] = useState<"sm" | "md" | "lg">("lg");
+
+  useEffect(() => {
+    const updateBP = () => {
+      const w = window.innerWidth;
+      setBp(w < 640 ? "sm" : w < 1024 ? "md" : "lg");
+    };
+    updateBP();
+    window.addEventListener("resize", updateBP);
+    return () => window.removeEventListener("resize", updateBP);
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % videoData.length);
@@ -66,23 +78,30 @@ const Carousel: React.FC = () => {
     const isRight = offset === 1 || offset === -(videoData.length - 1);
     const isLeft = offset === -1 || offset === videoData.length - 1;
 
+    const cfg =
+      bp === "lg"
+        ? { near: 300, far: 500, scaleCenter: 1.1, scaleSide: 0.8, rot: 30 }
+        : bp === "md"
+          ? { near: 220, far: 380, scaleCenter: 1.07, scaleSide: 0.85, rot: 25 }
+          : { near: 140, far: 240, scaleCenter: 1.03, scaleSide: 0.9, rot: 20 };
+
     if (isCenter) {
       return {
-        transform: "translateX(0) scale(1.1) translateZ(100px)",
+        transform: `translateX(0) scale(${cfg.scaleCenter}) translateZ(100px)`,
         zIndex: 10,
         opacity: 1,
         filter: "grayscale(0%)",
       };
     } else if (isRight) {
       return {
-        transform: "translateX(300px) scale(0.8) rotateY(-30deg)",
+        transform: `translateX(${cfg.near}px) scale(${cfg.scaleSide}) rotateY(-${cfg.rot}deg)`,
         zIndex: 5,
         opacity: 0.6,
         filter: "grayscale(80%)",
       };
     } else if (isLeft) {
       return {
-        transform: "translateX(-300px) scale(0.8) rotateY(30deg)",
+        transform: `translateX(-${cfg.near}px) scale(${cfg.scaleSide}) rotateY(${cfg.rot}deg)`,
         zIndex: 5,
         opacity: 0.6,
         filter: "grayscale(80%)",
@@ -90,7 +109,7 @@ const Carousel: React.FC = () => {
     } else {
       const dir = offset > 0 ? 1 : -1;
       return {
-        transform: `translateX(${dir * 500}px) scale(0.6) rotateY(${dir * -45}deg)`,
+        transform: `translateX(${dir * cfg.far}px) scale(${Math.min(cfg.scaleSide, 0.75)}) rotateY(${dir * -45}deg)`,
         zIndex: 1,
         opacity: 0,
         pointerEvents: "none" as const,
@@ -111,17 +130,28 @@ const Carousel: React.FC = () => {
           backgroundPosition: "0 0, 50px 50px",
         }}
       />
-
       {/* Added ref={carouselRef} here to capture local scrolling */}
       <div
         ref={carouselRef}
-        className="carousel-container relative z-10 w-full max-w-[1200px] h-[600px] flex flex-col items-center justify-center [perspective:1000px]"
+        className="carousel-container relative z-10 w-full max-w-[1200px] h-[60vh] md:h-[600px] flex flex-col items-center justify-center [perspective:1000px]"
       >
         {/* Scrolling happens only when hovering over the carousel */}
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className=" relative w-full h-[400px] flex items-center justify-center [transform-style:preserve-3d]"
+          onTouchStart={(e) => {
+            touchStartX.current = e.changedTouches[0]?.clientX ?? null;
+          }}
+          onTouchEnd={(e) => {
+            const endX = e.changedTouches[0]?.clientX ?? null;
+            if (touchStartX.current != null && endX != null) {
+              const dx = endX - touchStartX.current;
+              if (dx > 40) prevSlide();
+              else if (dx < -40) nextSlide();
+            }
+            touchStartX.current = null;
+          }}
+          className=" relative w-full h-[35vh] md:h-[400px] flex items-center justify-center [transform-style:preserve-3d]"
         >
           {videoData.map((item, index) => (
             <div
@@ -130,7 +160,7 @@ const Carousel: React.FC = () => {
                 if (index === currentIndex) setSelectedVideo(item.videoId);
                 else setCurrentIndex(index);
               }}
-              className="absolute w-[500px] h-[281px] rounded-[20px] overflow-hidden cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-black select-none"
+              className="absolute w-[80vw] max-w-[500px] aspect-video rounded-[20px] overflow-hidden cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-black select-none"
               style={getItemStyle(index)}
             >
               <img
@@ -142,7 +172,7 @@ const Carousel: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-[50px] w-[350px] h-[60px] bg-white/5 backdrop-blur-md border border-white/10 rounded-[50px] flex justify-between items-center px-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-20">
+        <div className="mt-[50px] w-[90%] max-w-[350px] h-[60px] bg-white/5 backdrop-blur-md border border-white/10 rounded-[50px] flex justify-between items-center px-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-20">
           <button
             onClick={prevSlide}
             className="w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center hover:bg-white/10 hover:border-white transition-all duration-300"
@@ -160,7 +190,7 @@ const Carousel: React.FC = () => {
 
       {selectedVideo && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="relative w-full max-w-[900px] aspect-video bg-black shadow-[0_0_30px_rgba(90,100,255,0.3)] rounded-lg overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-[95%] md:max-w-[900px] aspect-video bg-black shadow-[0_0_30px_rgba(90,100,255,0.3)] rounded-lg overflow-hidden animate-in zoom-in-95 duration-300">
             <button
               onClick={() => setSelectedVideo(null)}
               className="absolute -top-10 right-0 text-white hover:text-red-500 transition-colors flex items-center gap-1 font-bold"
