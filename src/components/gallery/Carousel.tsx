@@ -24,6 +24,9 @@ const Carousel: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const [bp, setBp] = useState<"sm" | "md" | "lg">("lg");
+  const autoPlayTimer = useRef<number | null>(null);
+  const AUTO_PLAY_DELAY = 5000;
+  
 
   useEffect(() => {
     const updateBP = () => {
@@ -43,6 +46,28 @@ const Carousel: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + videoData.length) % videoData.length);
   }, []);
 
+  // Autoplay logic with reset on interaction
+  const resetAutoplay = useCallback(() => {
+    if (autoPlayTimer.current) {
+      window.clearTimeout(autoPlayTimer.current);
+    }
+    autoPlayTimer.current = window.setTimeout(() => {
+      if (!selectedVideo) {
+        nextSlide();
+      }
+      resetAutoplay(); // loop again
+    }, AUTO_PLAY_DELAY);
+  }, [nextSlide, selectedVideo]);
+
+  useEffect(() => {
+    resetAutoplay();
+    return () => {
+      if (autoPlayTimer.current) {
+        window.clearTimeout(autoPlayTimer.current);
+      }
+    };
+  }, [resetAutoplay]);
+
   // Updated Scroll wheel logic
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -53,6 +78,7 @@ const Carousel: React.FC = () => {
 
       // PREVENT VERTICAL PAGE SCROLL
       e.preventDefault();
+      resetAutoplay();
 
       // Trigger carousel movement instead
       if (e.deltaY > 0) nextSlide();
@@ -140,6 +166,7 @@ const Carousel: React.FC = () => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onTouchStart={(e) => {
+            resetAutoplay();
             touchStartX.current = e.changedTouches[0]?.clientX ?? null;
           }}
           onTouchEnd={(e) => {
@@ -174,13 +201,19 @@ const Carousel: React.FC = () => {
 
         <div className="mt-[50px] w-[90%] max-w-[350px] h-[60px] bg-white/5 backdrop-blur-md border border-white/10 rounded-[50px] flex justify-between items-center px-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-20">
           <button
-            onClick={prevSlide}
+            onClick={() => {
+              prevSlide();
+              resetAutoplay();
+            }}
             className="w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center hover:bg-white/10 hover:border-white transition-all duration-300"
           >
             <ChevronLeft size={20} />
           </button>
           <button
-            onClick={nextSlide}
+            onClick={() => {
+              nextSlide();
+              resetAutoplay();
+            }}
             className="w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center hover:bg-white/10 hover:border-white transition-all duration-300"
           >
             <ChevronRight size={20} />
