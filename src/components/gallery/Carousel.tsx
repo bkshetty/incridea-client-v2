@@ -21,6 +21,7 @@ const Carousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null); // Ref to capture wheel events locally
+  const [isHovered, setIsHovered] = useState(false); 
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % videoData.length);
@@ -35,6 +36,8 @@ const Carousel: React.FC = () => {
     const handleWheel = (e: WheelEvent) => {
       // If a video is playing in the modal, allow normal behavior or return
       if (selectedVideo) return;
+      // Only handle scroll if hovering over the carousel
+      if (!isHovered) return;
 
       // PREVENT VERTICAL PAGE SCROLL
       e.preventDefault();
@@ -55,7 +58,7 @@ const Carousel: React.FC = () => {
         element.removeEventListener("wheel", handleWheel);
       }
     };
-  }, [selectedVideo, nextSlide, prevSlide]);
+  }, [selectedVideo, nextSlide, prevSlide, isHovered]);
 
   const getItemStyle = (index: number) => {
     const offset = index - currentIndex;
@@ -114,7 +117,12 @@ const Carousel: React.FC = () => {
         ref={carouselRef}
         className="carousel-container relative z-10 w-full max-w-[1200px] h-[600px] flex flex-col items-center justify-center [perspective:1000px]"
       >
-        <div className="relative w-full h-[400px] flex items-center justify-center [transform-style:preserve-3d]">
+        {/* Scrolling happens only when hovering over the carousel */}
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className=" relative w-full h-[400px] flex items-center justify-center [transform-style:preserve-3d]"
+        >
           {videoData.map((item, index) => (
             <div
               key={item.id}
