@@ -86,3 +86,11 @@
 .animate-float {
   will-change: transform;
 }
+
+body.hide-target-cursor {
+  cursor: auto !important;
+}
+
+body.hide-target-cursor .target-cursor-root {
+  display: none !important;
+}

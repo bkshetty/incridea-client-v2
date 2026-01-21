@@ -98,6 +98,20 @@ const Carousel: React.FC = () => {
     };
   }, [selectedVideo, nextSlide, prevSlide, isHovered]);
 
+  // Hide target cursor when video modal is open
+  useEffect(() => {
+    const body = document.body;
+    if (selectedVideo) {
+      body.classList.add("hide-target-cursor");
+    } else {
+      body.classList.remove("hide-target-cursor");
+    }
+
+    return () => {
+      body.classList.remove("hide-target-cursor");
+    };
+  }, [selectedVideo]);
+
   const getItemStyle = (index: number) => {
     const offset = index - currentIndex;
     const isCenter = offset === 0;
