@@ -51,7 +51,7 @@ const CoreTeamCard: React.FC<CoreTeamCardProps> = ({
                     {/* Designation / Subtitle - Glass Text Effect */}
                     <p
                         className="text-white/80 text-[10px] font-semibold uppercase tracking-widest text-center"
-                        style={{ filter: "url(#displacementFilter)" }}
+                        
                     >
                         {subtitle}
                     </p>
