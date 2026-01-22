@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu, ChevronLeft, Home, Calendar, Image, Info, Phone, Music } from "lucide-react";
+import { ChevronLeft, Home, Calendar, Image, Info, Phone, Music, User } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import GlassSurface from "./GlassSurface";
 
 interface MobileMenuProps {
     onLogout: () => void;
@@ -20,6 +19,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
         { icon: Music, path: "/pronite", label: "Pronite" },
         { icon: Image, path: "/gallery", label: "Gallery" },
         { icon: Info, path: "/about", label: "About" },
+        { icon: User, path: "/profile", label: "Profile" },
         { icon: Phone, path: "/contact", label: "Contact" },
     ];
 
@@ -85,13 +85,57 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
     };
 
     return (
-        <div className="lg:hidden">
+        <div className="lg:hidden mr-3">
             {/* Toggle Button */}
+            {/* Toggle Button */}
+            {/* Dimensional Rift Button */}
+            {/* Shattered Dimension Button */}
+            {/* Dimensional Flux Button */}
             <button
                 onClick={toggleMenu}
-                className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 hover:text-purple-300 transition-all shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
+                className="group relative z-50 p-2 md:p-3 rounded-xl text-white hover:opacity-80 transition-all overflow-hidden"
+                aria-label="Toggle Menu"
             >
-                <Menu size={24} />
+                <div className="relative w-8 h-6 flex flex-col justify-between items-center transform group-hover:scale-110 transition-transform duration-300">
+                    {/* Top Bar */}
+                    <motion.span
+                        animate={isOpen ? { rotate: 45, y: 11, backgroundPosition: ["0% 50%", "100% 50%"] } : { rotate: 0, y: 0, backgroundPosition: ["0% 50%", "100% 50%"] }}
+                        transition={{
+                            backgroundPosition: { duration: 3, repeat: Infinity, ease: "linear" },
+                            default: { type: "spring", stiffness: 300, damping: 20 }
+                        }}
+                        style={{ backgroundSize: "200% auto" }}
+                        className="w-full h-0.5 rounded-full bg-gradient-to-r from-cyan-300 via-purple-500 to-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+                    />
+
+                    {/* Middle Bar */}
+                    <motion.span
+                        animate={isOpen ? { opacity: 0, x: 20 } : { opacity: 1, x: 0, backgroundPosition: ["100% 50%", "0% 50%"] }}
+                        transition={{
+                            backgroundPosition: { duration: 3, repeat: Infinity, ease: "linear" },
+                            default: { type: "spring", stiffness: 300, damping: 20 }
+                        }}
+                        style={{ backgroundSize: "200% auto" }}
+                        className="w-2/3 h-0.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 shadow-[0_0_8px_rgba(192,132,252,0.8)] group-hover:w-full transition-all duration-300"
+                    />
+
+                    {/* Bottom Bar */}
+                    <motion.span
+                        animate={isOpen ? { rotate: -45, y: -11, backgroundPosition: ["0% 50%", "100% 50%"] } : { rotate: 0, y: 0, backgroundPosition: ["0% 50%", "100% 50%"] }}
+                        transition={{
+                            backgroundPosition: { duration: 3, repeat: Infinity, ease: "linear" },
+                            default: { type: "spring", stiffness: 300, damping: 20 }
+                        }}
+                        style={{ backgroundSize: "200% auto" }}
+                        className="w-full h-0.5 rounded-full bg-gradient-to-r from-cyan-300 via-purple-500 to-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+                    />
+
+                    {/* Chromatic Aberration Ghosts (Hover Effect) */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none mix-blend-screen">
+                        <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-400/0 via-cyan-400/30 to-cyan-400/0 blur-sm transform -translate-x-1 skew-x-12" />
+                        <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-500/0 via-purple-500/30 to-purple-500/0 blur-sm transform translate-x-1 -skew-x-12" />
+                    </div>
+                </div>
             </button>
 
             <AnimatePresence>
@@ -114,24 +158,15 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                             initial="initial"
                             animate="animate"
                             exit="exit"
-                            className="fixed inset-0 z-50 flex"
+                            className="fixed inset-0 z-50 flex h-dvh"
                         >
-                            <GlassSurface
-                                width="100%"
-                                height="100%"
-                                borderRadius={0}
-                                opacity={0.6}
-                                blur={20}
-                                backgroundOpacity={0.8}
-                                className="w-full h-full"
-                                forceDark
-                            >
+                            <div className="w-full h-full bg-black/40 backdrop-blur-sm">
                                 <motion.div
                                     variants={contentVariants}
-                                    className="flex flex-col w-full h-full pt-6 pb-10 px-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]"
+                                    className="flex flex-col w-full h-full pt-4 pb-4 px-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]"
                                 >
                                     {/* Header: Back Arrow */}
-                                    <motion.div className="flex justify-start mb-8">
+                                    <motion.div className="flex justify-start mb-4">
                                         <button
                                             onClick={toggleMenu}
                                             className="p-2 -ml-2 text-white/80 hover:bg-white/10 rounded-full transition-colors"
@@ -141,10 +176,10 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                     </motion.div>
 
                                     {/* Title */}
-                                    <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl font-extrabold text-white mb-10 tracking-tight">Menu</motion.h1>
+                                    <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-extrabold text-white mb-6 md:mb-10 tracking-tight">Menu</motion.h1>
 
                                     {/* Main Navigation */}
-                                    <div className="flex flex-col gap-6 md:gap-10 w-full flex-grow">
+                                    <div className="flex flex-col gap-4 md:gap-10 w-full flex-grow pl-4 md:pl-16">
                                         {links.map(({ icon: Icon, path, label }) => (
                                             <motion.div
                                                 key={path}
@@ -155,11 +190,11 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                                     to={path}
                                                     onClick={toggleMenu}
                                                     className={({ isActive }) =>
-                                                        `flex items-center gap-5 text-2xl md:text-4xl font-medium transition-colors ${isActive ? "text-purple-300" : "text-white/80 hover:text-white"
+                                                        `flex items-center gap-4 text-xl sm:text-2xl md:text-4xl font-medium transition-colors ${isActive ? "text-purple-300" : "text-white/80 hover:text-white"
                                                         }`
                                                     }
                                                 >
-                                                    <Icon className="w-6 h-6 md:w-10 md:h-10" strokeWidth={1.5} />
+                                                    <Icon className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
                                                     {label}
                                                 </NavLink>
                                             </motion.div>
@@ -167,7 +202,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                     </div>
 
                                     {/* Footer Links (Privacy, Logout, etc) */}
-                                    <div className="flex flex-col gap-4 md:gap-6 mt-8 pt-8 border-t border-white/10">
+                                    <div className="flex flex-col gap-3 md:gap-6 mt-4 pt-4 border-t border-white/10 pl-4 md:pl-16">
                                         {[
                                             { path: "/privacy", label: "Privacy Policy" },
                                             { path: "/rules", label: "Terms & Conditions" },
@@ -178,7 +213,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                                 <NavLink
                                                     to={path}
                                                     onClick={toggleMenu}
-                                                    className="text-base md:text-2xl font-medium text-white/60 hover:text-white transition-colors"
+                                                    className="text-base md:text-lg font-medium text-white/60 hover:text-white transition-colors"
                                                 >
                                                     {label}
                                                 </NavLink>
@@ -194,7 +229,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                                     onLogout();
                                                     toggleMenu();
                                                 }}
-                                                className="text-xl md:text-3xl font-bold text-white flex items-center gap-3 mt-4 hover:opacity-70 transition-opacity"
+                                                className="text-xl md:text-2xl  font-bold text-white flex items-center gap-3 mt-4 hover:opacity-70 transition-opacity"
                                             >
                                                 Logout
                                             </motion.button>
@@ -203,7 +238,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                                 <NavLink
                                                     to="/login"
                                                     onClick={toggleMenu}
-                                                    className="text-xl md:text-3xl font-bold text-white flex items-center gap-3 mt-4 hover:opacity-70 transition-opacity"
+                                                    className="text-xl md:text-2xl font-bold text-white flex items-center gap-3 mt-4 hover:opacity-70 transition-opacity"
                                                 >
                                                     Sign In
                                                 </NavLink>
@@ -211,7 +246,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                         )}
                                     </div>
                                 </motion.div>
-                            </GlassSurface>
+                            </div>
                         </motion.div>
                     </>
                 )}

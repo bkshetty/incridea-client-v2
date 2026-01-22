@@ -7,7 +7,6 @@ import { logoutUser, fetchMe } from '../api/auth'
 
 function Layout() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('userName') ? 'logged-in' : null)
-  const [userName, setUserName] = useState<string | null>(localStorage.getItem('userName'))
   const [isLoading, setIsLoading] = useState(true)
 
 
@@ -23,66 +22,62 @@ function Layout() {
     localStorage.removeItem('userName')
     localStorage.removeItem('userId')
     setToken(null)
-    setUserName(null)
 
   }
 
   const fetchProfile = async () => {
-      // setIsLoading(true) // Don't flicker loading on focus check
-      try {
-        const { user } = await fetchMe()
-        const name = user && typeof user === 'object'
-          ? typeof user.name === 'string'
-            ? user.name
-            : typeof user.email === 'string'
-              ? user.email
-              : null
-          : null
+    // setIsLoading(true) // Don't flicker loading on focus check
+    try {
+      const { user } = await fetchMe()
+      const name = user && typeof user === 'object'
+        ? typeof user.name === 'string'
+          ? user.name
+          : typeof user.email === 'string'
+            ? user.email
+            : null
+        : null
 
 
-        if (name) {
-          setUserName(name)
-          setToken('logged-in')
-          localStorage.setItem('userName', name)
-          if (!localStorage.getItem('token')) {
-              localStorage.setItem('token', 'cookie-session')
-          }
+      if (name) {
+        setToken('logged-in')
+        localStorage.setItem('userName', name)
+        if (!localStorage.getItem('token')) {
+          localStorage.setItem('token', 'cookie-session')
         }
-
-      } catch {
-        // If auth fails, just clear local state
-        localStorage.removeItem('token')
-        localStorage.removeItem('userName')
-        localStorage.removeItem('userId')
-        setToken(null)
-        setUserName(null)
-      } finally {
-        setIsLoading(false)
       }
+
+    } catch {
+      // If auth fails, just clear local state
+      localStorage.removeItem('token')
+      localStorage.removeItem('userName')
+      localStorage.removeItem('userId')
+      setToken(null)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
   useEffect(() => {
     void fetchProfile()
 
     const handleStorageChange = (event: StorageEvent) => {
-        if (event.key === 'token' && event.newValue === null) {
-            setToken(null)
-            setUserName(null)
-            // No strict redirect for client as guest view is allowed
-        }
+      if (event.key === 'token' && event.newValue === null) {
+        setToken(null)
+        // No strict redirect for client as guest view is allowed
+      }
     }
 
     const handleFocus = () => {
-       // Re-verify session when returning to the tab
-       void fetchProfile() 
+      // Re-verify session when returning to the tab
+      void fetchProfile()
     }
 
     window.addEventListener('storage', handleStorageChange)
     window.addEventListener('focus', handleFocus)
 
     return () => {
-        window.removeEventListener('storage', handleStorageChange)
-        window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('focus', handleFocus)
     }
   }, [])
 
@@ -90,12 +85,11 @@ function Layout() {
     <div className={`flex min-h-screen flex-col text-slate-50`}>
       <Navbar
         token={token}
-        userName={userName}
         onLogout={handleLogout}
         isLoading={isLoading}
       />
 
-      <main className="w-screen flex justify-center items-center flex-1 px-4 pt-32 pb-10">
+      <main className="w-screen flex justify-center items-center flex-1 px-4 lg:pl-24 pt-32 pb-10">
         <Outlet />
       </main>
 

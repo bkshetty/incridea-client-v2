@@ -5,6 +5,7 @@ import {
   Info,
   Phone,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -15,11 +16,12 @@ const Sidebar = () => {
     { icon: Image, path: "/gallery", label: "Gallery" },
     { icon: Info, path: "/about", label: "About" },
     { icon: Phone, path: "/contact", label: "Contact" },
+    { icon: User, path: "/profile", label: "Profile" },
     { icon: ShieldCheck, path: "/privacy", label: "Privacy" },
   ];
 
   return (
-    <div className="hidden lg:block fixed left-1/2 -translate-x-1/2 bottom-6 md:left-6 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 md:bottom-auto z-99999">
+    <div className="hidden lg:block fixed left-1/2 -translate-x-1/2 bottom-6 md:left-6 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 md:bottom-auto md:mt-13 z-99999">
       <div
         className="
           flex flex-row justify-center items-center p-3 gap-3
