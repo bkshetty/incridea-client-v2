@@ -17,8 +17,23 @@ const videoData: CarouselItem[] = [
   { id: "7", videoId: "GqqK4c2rDhM", title: "Thumbnail 7" },
 ];
 
-const Carousel: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(3);
+interface CarouselProps {
+  currentIndex?: number;
+  onIndexChange?: (index: number) => void;
+}
+
+const Carousel: React.FC<CarouselProps> = ({ 
+  currentIndex: externalIndex, 
+  onIndexChange 
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(externalIndex ?? 3);
+
+  // Sync with external index if provided
+  useEffect(() => {
+    if (externalIndex !== undefined && externalIndex !== currentIndex) {
+      setCurrentIndex(externalIndex);
+    }
+  }, [externalIndex]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null); // Ref to capture wheel events locally
   const [isHovered, setIsHovered] = useState(false);
@@ -39,12 +54,16 @@ const Carousel: React.FC = () => {
   }, []);
 
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % videoData.length);
-  }, []);
+    const newIndex = (currentIndex + 1) % videoData.length;
+    setCurrentIndex(newIndex);
+    onIndexChange?.(newIndex);
+  }, [currentIndex, onIndexChange]);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + videoData.length) % videoData.length);
-  }, []);
+    const newIndex = (currentIndex - 1 + videoData.length) % videoData.length;
+    setCurrentIndex(newIndex);
+    onIndexChange?.(newIndex);
+  }, [currentIndex, onIndexChange]);
 
   // Autoplay logic with reset on interaction
   const resetAutoplay = useCallback(() => {
@@ -199,7 +218,10 @@ const Carousel: React.FC = () => {
               key={item.id}
               onClick={() => {
                 if (index === currentIndex) setSelectedVideo(item.videoId);
-                else setCurrentIndex(index);
+                else {
+                  setCurrentIndex(index);
+                  onIndexChange?.(index);
+                }
               }}
               className="absolute w-[80vw] max-w-[500px] aspect-video rounded-[20px] overflow-hidden cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-black select-none"
               style={getItemStyle(index)}
@@ -213,7 +235,7 @@ const Carousel: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-[50px] w-[90%] max-w-[350px] h-[60px] bg-white/5 backdrop-blur-md border border-white/10 rounded-[50px] flex justify-between items-center px-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-20">
+        <div className="mt-6 w-[90%] max-w-[350px] h-[60px] bg-white/5 backdrop-blur-md border border-white/10 rounded-[50px] flex justify-between items-center px-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-20">
           <button
             onClick={() => {
               prevSlide();
