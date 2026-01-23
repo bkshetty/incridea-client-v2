@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface HorizontalTimelineProps {
   items: string[];
@@ -11,12 +11,27 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
   activeIndex,
   onItemClick,
 }) => {
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress = scrollTop / docHeight;
+      const index = Math.round(progress * (items.length - 1));
+
+      onItemClick(index);
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [items.length, onItemClick]);
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
       <div className="relative flex items-center justify-between">
         {/* Horizontal connecting line */}
         <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-neutral-700 -translate-y-1/2" />
-        
+
         {/* Active progress line */}
         <div
           className="absolute top-1/2 left-0 h-[2px] bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 -translate-y-1/2 transition-all duration-500 ease-out"
