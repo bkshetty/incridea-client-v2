@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Carousel from "../components/gallery/Carousel";
-import TimelineYears from "../components/gallery/TimelineYears";
 import { HorizontalTimeline } from "@/components/timeline/HorizontalTimeline";
 
 const Gallery: React.FC = () => {
@@ -19,8 +18,6 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      <TimelineYears />
-
       {/* 1. The 3D Carousel Component */}
 <main className="relative z-10 w-full h-screen flex flex-col justify-end">
   <Carousel 
