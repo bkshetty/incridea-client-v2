@@ -14,7 +14,14 @@ const teamMembers = [
   { imageSrc: '/chill.jpg', title: 'Adithya SN', subtitle: 'Tech Lead' },
 ];
 
-// Credits data for other committees
+export default function CoreTeamPage() {
+  const teamImages = [
+    '/temp_event_bg.png',
+    '/temp_event_bg.png',
+    '/temp_event_bg.png',
+  ];
+
+  // Credits data for other committees
 const creditsData = [
   {
     title: 'Requirement Committee',
@@ -29,13 +36,6 @@ const creditsData = [
     members: Array(28).fill('Adithya S Nayak')
   },
 ];
-
-export default function CoreTeamPage() {
-  const teamImages = [
-    '/temp_event_bg.png',
-    '/temp_event_bg.png',
-    '/temp_event_bg.png',
-  ];
 
   return (
     <>
@@ -57,33 +57,34 @@ export default function CoreTeamPage() {
         />
 
         {/* Animated Title - Fade Up */}
-        <motion.h1
-          className="font-['Michroma'] text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold mt-12 text-white tracking-wider"
-          initial={{ opacity: 0, y: 80 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 1,
-            ease: "easeOut",
-            delay: 0.5
-          }}
-        >
-          OUR CORE
-        </motion.h1>
+        <div className="relative pt-20 mt-4 flex flex-col items-center justify-center w-full">
+          <motion.h1
+            className="font-['Michroma'] text-3xl sm:text-5xl sm:top-23 md:top-20 lg:top-13  top-26 text-center md:text-6xl absolute lg:text-8xl font-bold w-full mt-12 bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider"
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 1,
+              ease: "easeOut",
+              delay: 0.5
+            }}
+          >
+            OUR CORE
+          </motion.h1>
 
-        {/* Team Members Grid */}
-        <div className="flex flex-wrap  gap-16 mt-16 w-full max-w-6xl justify-center">
-          {teamMembers.map((member, index) => (
-            <CoreTeamCard
-              key={index}
-              imageSrc={member.imageSrc}
-              title={member.title}
-              subtitle={member.subtitle}
-            />
-          ))}
+          {/* Team Members Grid */}
+          <div className="flex flex-wrap relative z-20 gap-16 mt-16 w-full max-w-6xl justify-center">
+            {teamMembers.map((member, index) => (
+              <CoreTeamCard
+                key={index}
+                imageSrc={member.imageSrc}
+                title={member.title}
+                subtitle={member.subtitle}
+              />
+            ))}
+          </div>
         </div>
-
-        {/* Movie Credits Section */}
-        <div className="w-full mt-5">
+        {/* movie credits section */}
+      <div className="w-full mt-5">
           <MovieCredits sections={creditsData} />
         </div>
       </section>
