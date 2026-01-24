@@ -4,6 +4,8 @@ import { HorizontalTimeline } from "@/components/gallery/HorizontalTimeline";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 import { motion } from "framer-motion";
+import { ImageWithSkeleton } from "../components/gallery/Skeleton";
+
 const timelineItems = ["2018", "2019", "2020", "2021", "2022", "2023", "2024"];
 
 const Gallery: React.FC = () => {
@@ -24,7 +26,7 @@ const Gallery: React.FC = () => {
           };
         }),
       })),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -47,10 +49,12 @@ const Gallery: React.FC = () => {
           setTimelineIndex((prev) => (prev === nextIndex ? prev : nextIndex));
         }
       },
-      { root: container, threshold: [0.35, 0.55, 0.75] }
+      { root: container, threshold: [0.35, 0.55, 0.75] },
     );
 
-    sectionRefs.current.forEach((section) => section && observer.observe(section));
+    sectionRefs.current.forEach(
+      (section) => section && observer.observe(section),
+    );
     return () => observer.disconnect();
   }, []);
 
@@ -63,7 +67,7 @@ const Gallery: React.FC = () => {
       const sectionTop = section.offsetTop;
       container.scrollTo({
         top: sectionTop - stickyHeaderHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -83,7 +87,10 @@ const Gallery: React.FC = () => {
 
       {gallerySections.map((section, index) => (
         <React.Fragment key={section.year}>
-          <div className="relative w-full flex items-center justify-start z-0 pt-8" style={{ maxWidth: "1200px", width: "95%", margin: "0 auto" }}>
+          <div
+            className="relative w-full flex items-center justify-start z-0 pt-8"
+            style={{ maxWidth: "1200px", width: "95%", margin: "0 auto" }}
+          >
             <motion.h1
               className="font-['Michroma'] text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-left bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider"
               initial={{ opacity: 0, y: 80 }}
@@ -91,13 +98,13 @@ const Gallery: React.FC = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{
                 duration: 1,
-                ease: "easeOut"
+                ease: "easeOut",
               }}
             >
               {section.year}
             </motion.h1>
           </div>
-          
+
           <section
             data-index={index}
             ref={(el) => {
@@ -133,11 +140,11 @@ const Gallery: React.FC = () => {
                       },
                     }}
                   >
-                    <img
+                    {/* Integrated Skeleton + Image Component */}
+                    <ImageWithSkeleton
                       src={item.url}
                       alt={`Gallery ${item.id}`}
-                      loading="lazy"
-                      style={{ width: "100%", display: "block" }}
+                      height={item.height}
                     />
                   </Box>
                 ))}
