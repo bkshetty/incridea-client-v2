@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Carousel from "../components/gallery/Carousel";
-import { HorizontalTimeline } from "@/components/timeline/HorizontalTimeline";
+import { HorizontalTimeline } from "@/components/gallery/HorizontalTimeline";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 
