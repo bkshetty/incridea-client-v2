@@ -1,16 +1,14 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import Carousel from "../components/gallery/Carousel";
-import TimelineYears from "../components/gallery/TimelineYears";
 import { HorizontalTimeline } from "@/components/timeline/HorizontalTimeline";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 
 const Gallery: React.FC = () => {
-  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [timelineIndex, setTimelineIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
-  const carouselSectionRef = useRef<HTMLElement>(null);
 
-  // Timeline labels matching carousel items
+  // Timeline labels for gallery years
   const timelineItems = [
     "2018",
     "2019", 
@@ -28,64 +26,64 @@ const Gallery: React.FC = () => {
     height: Math.floor(Math.random() * 200) + 300
   }));
 
-  // Handle scroll to update timeline year and auto-scroll to next section
-  const handleGalleryScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+  // Handle main page scroll to update timeline year
+  const handlePageScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
-    const scrollHeight = target.scrollHeight - target.clientHeight;
-    if (scrollHeight <= 0) return;
-    const scrollPercentage = target.scrollTop / scrollHeight;
+    const scrollTop = target.scrollTop;
     
     // Hide TimelineYears when scrolling starts
-    if (target.scrollTop > 10 && !isScrolling) {
+    if (scrollTop > 10 && !isScrolling) {
       setIsScrolling(true);
-    } else if (target.scrollTop <= 10 && isScrolling) {
+    } else if (scrollTop <= 10 && isScrolling) {
       setIsScrolling(false);
     }
     
-    const newIndex = Math.min(
-      Math.floor(scrollPercentage * timelineItems.length),
-      timelineItems.length - 1
-    );
-    if (newIndex !== carouselIndex && newIndex >= 0) {
-      setCarouselIndex(newIndex);
-    }
+    // Calculate which year based on scroll position
+    // Gallery section is approximately 0-70% of total scroll
+    const totalHeight = target.scrollHeight - target.clientHeight;
+    const galleryEndPixels = totalHeight * 0.7; // Gallery takes 70% of scroll
     
-    // Auto-scroll to carousel section when reaching bottom of gallery
-    if (scrollPercentage >= 0.98) {
-      carouselSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollTop < galleryEndPixels) {
+      // We're in the gallery section
+      const galleryScrollPercentage = scrollTop / galleryEndPixels;
+      const newIndex = Math.min(
+        Math.floor(galleryScrollPercentage * timelineItems.length),
+        timelineItems.length - 1
+      );
+      if (newIndex !== timelineIndex && newIndex >= 0) {
+        setTimelineIndex(newIndex);
+      }
     }
-  }, [carouselIndex, timelineItems.length, isScrolling]);
+  }, [timelineIndex, timelineItems.length, isScrolling]);
 
   return (
-    <div className="relative h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
-      <div className={`transition-opacity duration-300 ${isScrolling ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <TimelineYears />
-      </div>
+    <div 
+      className="relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-slate-950 scrollbar-hide"
+      onScroll={handlePageScroll}
+    >
+      
 
-      {/* Section 1: Timeline + Masonry Gallery (snaps as one unit) */}
-      <section className="relative z-10 w-full h-screen snap-start snap-always flex flex-col">
-        {/* Timeline at top */}
-        <div className="w-full bg-slate-950/50 backdrop-blur-md border-b border-slate-800 py-4 shrink-0">
+      {/* Section 1: Timeline + Masonry Gallery */}
+      <section className="relative z-10 w-full min-h-screen">
+        {/* Sticky Timeline at top */}
+        <div className="sticky top-0 z-20 w-full bg-slate-950/50 backdrop-blur-md border-b border-slate-800 py-4">
           <HorizontalTimeline
             items={timelineItems}
-            activeIndex={carouselIndex}
-            onItemClick={setCarouselIndex}
+            activeIndex={timelineIndex}
+            onItemClick={setTimelineIndex}
           />
         </div>
 
-        {/* Scrollable Image Gallery - fills remaining space */}
+        {/* Image Gallery - no internal scroll, flows naturally */}
         <Box
-          onScroll={handleGalleryScroll}
           sx={{
-            flex: 1,
             maxWidth: '1200px',
             width: '95%',
             margin: '16px auto',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             padding: 3,
             backgroundColor: 'transparent',
             borderRadius: '16px',
+            paddingBottom: '40px', // Add spacing before carousel
           }}
         >
           <Masonry columns={{ xs: 2, sm: 2, md: 3, lg: 4 }} spacing={2}>
@@ -119,15 +117,9 @@ const Gallery: React.FC = () => {
         </Box>
       </section>
 
-      {/* Section 2: Carousel + CTA (snaps here on scroll) */}
-      <section 
-        ref={carouselSectionRef}
-        className="relative z-10 w-full h-screen snap-start snap-always flex flex-col justify-center"
-      >
-        <Carousel 
-          currentIndex={carouselIndex}
-          onIndexChange={setCarouselIndex}
-        />
+      {/* Section 2: Carousel + CTA */}
+      <section className="relative z-10 w-full min-h-screen flex flex-col justify-center py-12">
+        <Carousel />
 
         {/* Bottom CTA */}
         <div className="w-full py-6 text-center">
