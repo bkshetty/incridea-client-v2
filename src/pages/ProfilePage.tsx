@@ -28,7 +28,6 @@ function ProfilePage() {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editFullName, setEditFullName] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
@@ -139,7 +138,6 @@ function ProfilePage() {
 
   const handleCloseModal = () => {
     setShowChangePassword(false);
-    setShowPasswordForm(false);
     setShowEditProfile(false);
     setEditFullName("");
     form.reset();
@@ -156,7 +154,7 @@ function ProfilePage() {
       <div className="absolute inset-0 bg-black/40"></div>
       <section className="relative h-screen overflow-y-auto pt-32 md:pt-24 pb-12 flex flex-col items-center justify-start">
         {/* Profile Card */}
-        <div className="w-full max-w-[95%] sm:max-w-[85%] md:max-w-[70%] lg:max-w-[60%] mt-4 px-2 sm:px-4">
+        <div className="w-full max-w-[92%] sm:max-w-[80%] md:max-w-[72%] lg:max-w-[65%] mt-4 px-2 sm:px-4">
           <div className="relative">
             <LiquidGlassCard className="p-4 md:p-6">
               {/* Edit Profile Button */}
@@ -224,7 +222,9 @@ function ProfilePage() {
                         <button
                           className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-3xl transition-colors duration-200 w-full sm:w-auto sm:flex-1 sm:min-w-[10rem] sm:max-w-[15rem]"
                           type="button"
-                          onClick={() => setShowChangePassword(true)}
+                          onClick={() => {
+                            setShowChangePassword(true);
+                          }}
                         >
                           Change password
                         </button>
@@ -249,7 +249,7 @@ function ProfilePage() {
         {/* My Missions Section */}
         {/* TODO: Replace hardcoded missions with mapped events once signup events API is available. */}
         {/* Cards count should equal number of events user has signed up for. */}
-        <div className="w-full max-w-[95%] sm:max-w-[70%] mt-12">
+        <div className="w-full max-w-[92%] sm:max-w-[80%] md:max-w-[72%] lg:max-w-[65%] mt-12">
           <LiquidGlassCard className="p-6 md:p-8">
             {/* Header */}
             <div className="flex justify-center mb-8">
@@ -267,27 +267,27 @@ function ProfilePage() {
                 {
                   title: "Design Bootcamp",
                   code: "DB1N9R4",
-                  image: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+                  image: null,
                 },
                 {
                   title: "Hackathon 2026",
                   code: "HX7K2P9",
-                  image: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  image: null,
                 },
                 {
                   title: "Code Sprint Championship",
                   code: "CS9M4L1",
-                  image: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                  image: null,
                 },
                 {
                   title: "Web Dev Masters",
                   code: "WD2X8B5",
-                  image: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                  image: null,
                 },
                 {
                   title: "AI Innovation Summit",
                   code: "AI6P3K7",
-                  image: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                  image: null,
                 },
               ].map((mission) => (
                 <LiquidGlassCard
@@ -295,13 +295,21 @@ function ProfilePage() {
                   className="!w-49 !max-w-49 !p-4.5 flex flex-col gap-2"
                 >
                   {/* Mission Image/Poster */}
-                  <div
-                    className="w-full aspect-[4/5] bg-cover bg-center relative overflow-hidden rounded-xl flex-shrink-0 object-cover"
-                    style={{
-                      backgroundImage: mission.image,
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="relative aspect-[4/5] w-full bg-linear-to-b from-white/20 to-black/40 rounded-xl overflow-hidden">
+                    {mission.image ? (
+                      <img
+                        src={mission.image}
+                        alt={mission.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-linear-to-b from-white/60 via-white/25 to-black/70 flex items-center justify-center text-black/40">
+                        <div className="text-center text-sm">
+                          <div className="font-semibold">Portrait</div>
+                          <div>1080 × 1350 px (4:5)</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Mission Card Content */}
@@ -481,95 +489,72 @@ function ProfilePage() {
                 </button>
               </div>
 
-              {!showPasswordForm ? (
-                <div className="space-y-3">
-                  <p className="text-sm text-slate-400">Choose an option:</p>
+              <form
+                className="space-y-4"
+                onSubmit={(event) => void onSubmit(event)}
+              >
+                <div className="space-y-2">
+                  <label className="label" htmlFor="currentPassword">
+                    Current password
+                  </label>
+                  <input
+                    id="currentPassword"
+                    type="password"
+                    className="input"
+                    {...form.register("currentPassword", { required: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="label" htmlFor="newPassword">
+                    New password
+                  </label>
+                  <input
+                    id="newPassword"
+                    type="password"
+                    className="input"
+                    {...form.register("newPassword", { required: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="label" htmlFor="confirmNewPassword">
+                    Confirm new password
+                  </label>
+                  <input
+                    id="confirmNewPassword"
+                    type="password"
+                    className="input"
+                    {...form.register("confirmNewPassword", {
+                      required: true,
+                    })}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
                   <button
-                    className="w-full p-2 md:p-3 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors duration-200"
-                    type="button"
-                    onClick={() => setShowPasswordForm(true)}
+                    className="button"
+                    type="submit"
+                    disabled={changePasswordMutation.isPending}
                   >
-                    Change Password
+                    {changePasswordMutation.isPending
+                      ? "Updating…"
+                      : "Update password"}
                   </button>
                   <button
-                    className="w-full p-2 md:p-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200"
+                    className="button secondary"
                     type="button"
-                    onClick={() => {
-                      handleResetRequest();
-                      handleCloseModal();
-                    }}
+                    onClick={handleCloseModal}
+                    disabled={changePasswordMutation.isPending}
                   >
-                    Send Reset Link to Email
+                    Cancel
                   </button>
                 </div>
-              ) : (
-                <form
-                  className="space-y-4"
-                  onSubmit={(event) => void onSubmit(event)}
-                >
-                  <div className="space-y-2">
-                    <label className="label" htmlFor="currentPassword">
-                      Current password
-                    </label>
-                    <input
-                      id="currentPassword"
-                      type="password"
-                      className="input"
-                      {...form.register("currentPassword", { required: true })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="label" htmlFor="newPassword">
-                      New password
-                    </label>
-                    <input
-                      id="newPassword"
-                      type="password"
-                      className="input"
-                      {...form.register("newPassword", { required: true })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="label" htmlFor="confirmNewPassword">
-                      Confirm new password
-                    </label>
-                    <input
-                      id="confirmNewPassword"
-                      type="password"
-                      className="input"
-                      {...form.register("confirmNewPassword", {
-                        required: true,
-                      })}
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      className="button"
-                      type="submit"
-                      disabled={changePasswordMutation.isPending}
-                    >
-                      {changePasswordMutation.isPending
-                        ? "Updating…"
-                        : "Update password"}
-                    </button>
-                    <button
-                      className="button secondary"
-                      type="button"
-                      onClick={handleCloseModal}
-                      disabled={changePasswordMutation.isPending}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                  {changePasswordMutation.isError && (
-                    <p className="text-sm text-rose-300">
-                      {changePasswordMutation.error instanceof Error
-                        ? changePasswordMutation.error.message
-                        : "Failed to update password."}
-                    </p>
-                  )}
-                </form>
-              )}
+                {changePasswordMutation.isError && (
+                  <p className="text-sm text-rose-300">
+                    {changePasswordMutation.error instanceof Error
+                      ? changePasswordMutation.error.message
+                      : "Failed to update password."}
+                  </p>
+                )}
+              </form>
             </LiquidGlassCard>
           </div>
         )}
