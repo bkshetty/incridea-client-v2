@@ -180,12 +180,11 @@ const Gallery: React.FC = () => {
           <Carousel />
         </Box>
       </section>
-
-      <footer className="w-full py-20 text-center opacity-10">
-        <p className="font-['Orbitron'] text-[10px] text-white tracking-[0.5em] uppercase">
-          Timeline Terminal
-        </p>
-      </footer>
+         <div className="w-full py-0 -mt-20 md:-mt-12 text-center">
+      <p className="font-['Orbitron'] text-xs sm:text-sm text-white/40 hover:text-white/60 tracking-[0.5em] uppercase animate-pulse transition-colors duration-300">
+        Scroll or click timeline items to navigate
+      </p>
+      </div>
     </div>
   );
 };
