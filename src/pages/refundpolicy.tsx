@@ -13,7 +13,13 @@ function RefundPolicy() {
             </div>
             <div className="relative min-h-screen overflow-x-hidden overflow-y-auto p-4 md:p-10 pt-32 text-gray-100 flex justify-center">
             <div className="w-[95%] md:w-[85%] max-w-7xl">
-                <LiquidGlassCard className="!p-8 md:!p-12 !rounded-3xl !drop-shadow-none !bg-transparent" >
+                <style>{`
+                    .refund-policy-card .card__content {
+                        border-radius: 0 !important;
+                        overflow: visible !important;
+                    }
+                `}</style>
+                <LiquidGlassCard className="refund-policy-card !p-8 md:!p-12 !rounded-3xl !drop-shadow-none !bg-transparent !overflow-visible" >
                     <div className="mb-8">
                         <h1 className="text-4xl tracking-wider md:text-5xl font-life-craft text-fuchsia-100 drop-shadow-[0_0_15px_rgba(232,121,249,0.3)]">Refund Policy</h1>
                         <p className="mt-1 text-xs md:text-sm font-bold uppercase tracking-[0.3em] text-fuchsia-300/60">Guidelines & Regulations</p>
