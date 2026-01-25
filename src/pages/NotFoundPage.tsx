@@ -21,11 +21,21 @@ function NotFoundPage() {
           }
 
           .floating-image {
-            animation: float 6s ease-in-out infinite;
+            animation: none;
           }
 
           .floating-text {
-            animation: float 8s ease-in-out infinite;
+            animation: none;
+          }
+
+          @media (min-width: 768px) {
+            .floating-image {
+              animation: float 6s ease-in-out infinite;
+            }
+
+            .floating-text {
+              animation: float 8s ease-in-out infinite;
+            }
           }
 
           /* Glitch Effect */
@@ -76,8 +86,8 @@ function NotFoundPage() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 px-6">
-          <div className="flex-shrink-0 floating-image flex justify-center w-full md:w-auto">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-0 md:gap-12 px-6">
+          <div className="flex-shrink-0 floating-image flex justify-center items-center w-full md:w-auto">
             <img
               /* I have updated this back to your JPEG name. 
                  If this still fails, please rename your file to simply 'img.jpg' 
@@ -88,16 +98,16 @@ function NotFoundPage() {
             />
           </div>
 
-          <div className="text-center md:text-left flex flex-col items-center md:items-start floating-text">
+          <div className="text-center md:text-left flex flex-col items-center justify-center md:items-start floating-text">
             <h1
-              className="text-7xl md:text-8xl font-bold mb-4 jersey-10-regular glitch"
+              className="text-7xl md:text-8xl font-bold mb-2 md:mb-4 jersey-10-regular glitch"
               data-text="404 Not Found"
               style={{ color: "#ffffff", letterSpacing: "0.05em" }}
             >
               404 Not Found
             </h1>
             <p
-              className="text-lg md:text-3xl mb-8 leading-relaxed max-w-md jersey-10-regular"
+              className="text-lg md:text-3xl mb-4 md:mb-8 leading-relaxed max-w-md jersey-10-regular"
               style={{ color: "#ffffff" }}
             >
               Access denied: Ryouko sealed the rift,
