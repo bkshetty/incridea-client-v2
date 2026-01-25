@@ -14,14 +14,17 @@ const Gallery: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const galleryRef = useRef<HTMLDivElement | null>(null);
 
+  // We remove the hardcoded pixel 'height' from the data generation
   const gallerySections = useMemo(
     () =>
       timelineItems.map((year) => ({
         year,
         images: Array.from({ length: 8 }, (_, i) => ({
           id: `${year}-${i}`,
-          url: `https://picsum.photos/400/${300 + (i % 3) * 50}?random=${year}-${i}`,
-          height: 300 + (i % 3) * 50,
+          // We use standard placeholder sizes to imply the ratio (e.g., 4:3, 3:4, 1:1)
+          url: `https://picsum.photos/600/${[450, 600, 800][i % 3]}?random=${year}-${i}`,
+          // Aspect ratios to keep constant: 4/3, 1/1, 3/4
+          ratio: ["aspect-[4/3]", "aspect-square", "aspect-[3/4]"][i % 3],
         })),
       })),
     [],
@@ -68,14 +71,12 @@ const Gallery: React.FC = () => {
   };
 
   return (
-    /* Changed bg-[#0a0a0a] to bg-transparent to show layout background */
     <div className="relative w-full h-screen overflow-hidden bg-transparent selection:bg-cyan-500/30">
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
         className="relative w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide touch-pan-y"
       >
-        {/* Changed bg-black/60 to bg-transparent */}
         <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-xl border-b border-white/5 py-2 md:py-4 transition-all duration-300">
           <HorizontalTimeline
             items={timelineItems}
@@ -104,6 +105,8 @@ const Gallery: React.FC = () => {
                 {section.year}
               </motion.h1>
 
+              {/* Masonry automatically handles the vertical arrangement 
+                  as columns change (2 to 3 to 4) based on screen size */}
               <Masonry
                 columns={{ xs: 2, sm: 3, lg: 4 }}
                 spacing={{ xs: 1.5, sm: 2, md: 3 }}
@@ -111,12 +114,14 @@ const Gallery: React.FC = () => {
                 {section.images.map((item) => (
                   <Box
                     key={item.id}
-                    className="rounded-lg md:rounded-2xl overflow-hidden border border-white/5 shadow-2xl hover:border-cyan-500/30 transition-all duration-500"
+                    className={`relative w-full rounded-lg md:rounded-2xl overflow-hidden border border-white/5 shadow-2xl hover:border-cyan-500/30 transition-all duration-500 ${item.ratio}`}
                   >
                     <ImageWithSkeleton
                       src={item.url}
                       alt={item.id}
-                      height={item.height}
+                      // We pass '100%' or nothing to allow the aspect-ratio
+                      // class to define the height container
+                      className="w-full h-full object-cover"
                     />
                   </Box>
                 ))}
@@ -125,7 +130,6 @@ const Gallery: React.FC = () => {
           ))}
         </main>
 
-        {/* Removed black gradient background, set to bg-transparent */}
         <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 md:py-24 border-t border-white/5">
           <div className="mb-6 md:mb-12 text-center px-4">
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
