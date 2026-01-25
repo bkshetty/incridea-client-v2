@@ -7,6 +7,18 @@ const ComingSoon = () => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.matchMedia('(max-width: 1024px)').matches);
+    };
+
+    handleResize(); // Init
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const isTouchRef = useRef(false);
 
   useEffect(() => {
@@ -128,16 +140,17 @@ const ComingSoon = () => {
       {/* ================= LIGHT RAYS (FULL WIDTH, GOES OVER PHOTO) ================= */}
       <LightRays
         className="absolute inset-0"
-        raysColor="#a78bfa"
+        raysColor={isMobile ? "#ffffff" : "#a78bfa"}
         raysSpeed={0.75}
-        lightSpread={0.25}
-        rayLength={5}
+        lightSpread={isMobile ? 0.2 : 0.25}
+        rayLength={isMobile ? 12 : 5}
         fadeDistance={1.4}
         saturation={0.9}
         noiseAmount={0.1}
         distortion={0.06}
         followMouse={true}
         mouseInfluence={0.35}
+        originOffset={[0, 0]}
       />
 
       {/* ================= CONTENT ================= */}

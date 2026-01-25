@@ -44,6 +44,7 @@ interface LightRaysProps {
     mouseInfluence?: number;
     noiseAmount?: number;
     distortion?: number;
+    originOffset?: [number, number];
     className?: string;
 }
 
@@ -59,7 +60,9 @@ const LightRays: React.FC<LightRaysProps> = ({
     followMouse = true,
     mouseInfluence = 0.1,
     noiseAmount = 0.0,
+
     distortion = 0.0,
+    originOffset = [0, 0],
     className = ''
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -232,6 +235,7 @@ void main() {
 
                 rayPos: { value: [0, 0] },
                 rayDir: { value: [0, 1] },
+                originOffset: { value: originOffset },
 
                 raysColor: { value: hexToRgb(raysColor) },
                 raysSpeed: { value: raysSpeed },
@@ -271,7 +275,8 @@ void main() {
                 uniforms.iResolution.value = [w, h];
 
                 const { anchor, dir } = getAnchorAndDir(raysOrigin, w, h);
-                uniforms.rayPos.value = anchor;
+                const [offsetX, offsetY] = originOffset;
+                uniforms.rayPos.value = [anchor[0] + offsetX * w, anchor[1] + offsetY * h];
                 uniforms.rayDir.value = dir;
             };
 
@@ -378,7 +383,8 @@ void main() {
         const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
         const dpr = renderer.dpr;
         const { anchor, dir } = getAnchorAndDir(raysOrigin, wCSS * dpr, hCSS * dpr);
-        u.rayPos.value = anchor;
+        const [offsetX, offsetY] = originOffset;
+        u.rayPos.value = [anchor[0] + offsetX * wCSS * dpr, anchor[1] + offsetY * hCSS * dpr];
         u.rayDir.value = dir;
     }, [
         raysColor,
