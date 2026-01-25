@@ -1,83 +1,98 @@
-import { useScroll, useTransform, motion } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from "react";
 
+// FIX: Use web-ready paths, not C:\ paths.
+// These look for files inside your "public/assets" folder.
+const PORTAL_IMG_URL = "/assets/portal.png"; 
+const MASCOT_IMG_URL = "/assets/mascot.png"; 
 
-type TimelineEntry = {
-  title: string;
-  content: React.ReactNode;
-};
+const defaultYears = ["2018", "2019", "2020", "2022", "2023", "2024", "2025"];
 
-export const TimelineLayout = ({ data }: { data: TimelineEntry[] }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(0);
+interface TimelineYearsProps {
+  years?: string[];
+  scrollProgress: number; 
+}
 
-  useEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      setHeight(rect.height);
+const TimelineYears: React.FC<TimelineYearsProps> = ({ 
+  years = defaultYears, 
+  scrollProgress 
+}) => {
+  
+  // Calculate the Mascot's scale to create the "Enter/Exit" portal effect
+  const mascotStyle = useMemo(() => {
+    // 1. Find the spacing between years
+    const step = 1 / (years.length - 1);
+    
+    // 2. Find the distance to the CLOSEST portal
+    let minDistance = 1;
+    years.forEach((_, index) => {
+      const portalPosition = index * step;
+      const distance = Math.abs(scrollProgress - portalPosition);
+      if (distance < minDistance) minDistance = distance;
+    });
+
+    // 3. Animation Threshold
+    const threshold = 0.05; 
+    
+    // 4. Calculate Scale
+    let scale = 1;
+    if (minDistance < threshold) {
+      scale = minDistance / threshold; 
     }
-  }, [ref]);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 10%", "end 50%"],
-  });
-
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+    return {
+      top: `${scrollProgress * 100}%`,
+      transform: `translateY(-50%) scale(${scale})`,
+      opacity: scale < 0.1 ? 0 : 1, 
+    };
+  }, [scrollProgress, years.length]);
 
   return (
-    <div className="w-full md:px-10" ref={containerRef}>
-      <div className="mx-auto max-w-7xl px-4 pt-10 md:px-8 lg:px-10">
-        <h2 className="mb-4 line-clamp-1 w-fit max-w-4xl rounded-md p-2 font-Teknaf text-3xl font-semibold text-white shadow-md md:text-4xl">
-          Incridea Timeline
-        </h2>
-        <p className="text-md max-w-sm space-x-3 text-neutral-500 md:text-base">
-          Capturing the essence of the olden days through nostalgic and timeless
-          images for Incredia, preserving cherished memories and history in a
-          beautifully artistic frame.{" "}
-        </p>
-      </div>
+    <div className="pointer-events-none fixed left-6 top-1/2 -translate-y-1/2 z-50 hidden h-[70vh] w-32 md:flex flex-col justify-between">
+      <div className="relative h-full w-full">
+        {/* The Vertical Line */}
+        <div className="absolute left-[18px] top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-white/30 to-transparent" />
 
-      <div ref={ref} className="relative mx-auto max-w-7xl pb-20">
-        {data.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-start pt-10 md:gap-10 md:pt-40"
-          >
-            <div className="sticky top-40 z-40 flex max-w-xs flex-col items-center self-start md:w-full md:flex-row lg:max-w-sm">
-              <div className="absolute left-5 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-200 dark:bg-black md:left-5">
-                <div className="h-4 w-4 rounded-full border border-neutral-300 bg-neutral-400 p-2 dark:border-neutral-700 dark:bg-neutral-800" />
-              </div>
-              <h3 className="hidden font-Teknaf text-xl font-bold text-neutral-400 dark:text-neutral-200 md:block md:pl-20 md:text-3xl">
-                {item.title}
-              </h3>
-            </div>
+        {/* --- THE FLOATING MASCOT --- */}
+        <div
+          className="absolute left-[2px] w-10 h-10 z-20 transition-transform duration-75 ease-out"
+          style={mascotStyle}
+        >
+           <img 
+             src={MASCOT_IMG_URL} 
+             alt="Mascot" 
+             className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]"
+           />
+        </div>
 
-            <div className="relative w-full pl-20 pr-4 md:pl-4">
-              <h3 className="relative bottom-1 right-5 mb-4 block text-left font-Teknaf text-xl font-bold text-neutral-400 dark:text-neutral-200 md:hidden">
-                {item.title}
-              </h3>
-              {item.content}{" "}
-            </div>
+        {/* --- THE YEAR PORTALS --- */}
+        {years.map((year, index) => {
+          const position = years.length === 1 ? 0 : (index / (years.length - 1)) * 100;
+          
+          return (
             <div
-              style={{
-                height: height + "px",
-              }}
-              className="absolute left-8 top-0 h-full w-[2px] overflow-hidden bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-200 to-transparent to-[99%] [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] dark:via-neutral-700 md:left-8"
+              key={year}
+              className="absolute flex items-center gap-4 w-full"
+              style={{ top: `${position}%`, transform: "translateY(-50%)" }}
             >
-              <motion.div
-                style={{
-                  height: heightTransform,
-                  opacity: opacityTransform,
-                }}
-                className="absolute inset-x-0 top-0 w-[2px] rounded-full bg-gradient-to-t from-purple-500 from-[0%] via-blue-500 via-[10%] to-transparent"
-              />
+              {/* The Portal Image */}
+              <div className="relative w-10 h-10 flex-shrink-0 flex items-center justify-center">
+                 <img 
+                   src={PORTAL_IMG_URL}
+                   alt="Portal"
+                   className="w-full h-full object-contain animate-pulse-slow" 
+                 />
+              </div>
+
+              {/* Year Label */}
+              <span className="text-sm font-bold text-white/90 font-['Orbitron'] tracking-widest shadow-black drop-shadow-md">
+                {year}
+              </span>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
+
+export default TimelineYears;
