@@ -125,7 +125,7 @@ function ProfilePage() {
       <div className="absolute inset-0 bg-black/40"></div>
       <section className="relative h-screen overflow-y-auto pt-32 md:pt-24 pb-12 flex flex-col items-center justify-start">
         {/* Profile Card */}
-        <div className="w-full max-w-[95%] sm:max-w-[92%] md:max-w-[90%] lg:max-w-[90%] mt-4 px-3 sm:px-4">
+        <div className="w-full max-w-[95%] sm:max-w-[90%] md:max-w-[85%] lg:max-w-[85%] mt-4 px-3 sm:px-4">
           <div className="relative flex w-full gap-4 items-start flex-col md:flex-row">
             <LiquidGlassCard className="p-4 md:p-6 rounded-3xl w-full md:flex-[0_0_33%]">
               <div className="mt-4"></div>
@@ -143,9 +143,9 @@ function ProfilePage() {
                   Edit profile
                 </span>
               </button>
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-5">
                 {/* Avatar with badge QR */}
-                <div className="relative flex items-center justify-center">
+                <div className="relative flex items-center justify-center mt-3">
                   <div
                     className={`w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center shadow-xl transition-transform duration-500 ${
                       isRotating ? "rotate-180" : "rotate-0"
@@ -171,7 +171,7 @@ function ProfilePage() {
                 </div>
 
                 {/* Text */}
-                <div className="text-center space-y-1">
+                <div className="text-center space-y-2">
                   <p className="text-2xl md:text-3xl font-semibold text-slate-50">
                     {userName}
                   </p>
@@ -179,7 +179,7 @@ function ProfilePage() {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex flex-col gap-3 justify-center items-center w-full">
+                <div className="flex flex-col gap-4 justify-center items-center w-full">
                   <button
                     className="px-6 py-2 card card--dark text-white font-medium rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60"
                     type="button"
@@ -204,13 +204,13 @@ function ProfilePage() {
             </LiquidGlassCard>
 
             {/* Missions Card on the right */}
-            <LiquidGlassCard className="p-4 md:p-5 rounded-3xl w-full md:flex-[0_0_67%]">
+            <LiquidGlassCard className="p-4 md:p-5 rounded-3xl w-full md:flex-[0_0_35%]\">
               <div className="grid gap-4 md:grid-rows-[auto_auto]">
                 {/* Top Section: Enrolled Missions */}
                 <div className="flex flex-col">
-                  <div className="flex justify-center mb-4 mt-2">
+                  <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2
-                      className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-400"
+                      className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white text-center w-full"
                       style={{ fontFamily: "'New Rocker', cursive" }}
                     >
                       My Missions
@@ -300,9 +300,9 @@ function ProfilePage() {
 
                 {/* Bottom Section: Recommended Missions */}
                 <div className="flex flex-col">
-                  <div className="flex justify-center mb-4 mt-2">
+                  <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2
-                      className="text-2xl sm:text-3xl lg:text-4xl font-bold text-amber-400"
+                      className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white text-center w-full"
                       style={{ fontFamily: "'New Rocker', cursive" }}
                     >
                       Recommended Missions
