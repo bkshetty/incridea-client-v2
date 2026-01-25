@@ -149,12 +149,12 @@ const Gallery: React.FC = () => {
           ))}
         </main>
 
-        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-2 md:py-4 border-t border-white/5 overflow-x-hidden">
-          <div className="-mb-6 md:-mb-10 text-center px-4">
+        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-0 md:py-4 border-t border-white/5 overflow-x-hidden">
+          <div className="-mb-12 md:-mb-10 text-center px-4">
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
               Memories in Motion
             </h2>
-            <div className="h-[2px] w-12 md:w-24 bg-cyan-500 mx-auto mt-1 rounded-full shadow-[0_0_15px_#06b6d4]" />
+            <div className="h-[2px] w-12 md:w-24 bg-cyan-500 mx-auto mt-0 md:mt-1 rounded-full shadow-[0_0_15px_#06b6d4]" />
           </div>
 
           <Box sx={{ width: "100%", overflow: "hidden" }}>
@@ -162,7 +162,7 @@ const Gallery: React.FC = () => {
           </Box>
         </section>
 
-        <div className="w-full py-6 text-center">
+        <div className="w-full py-0 -mt-20 md:-mt-12 text-center">
           <p className="font-['Orbitron'] text-[9px] text-white/30 tracking-[0.5em] uppercase animate-pulse">
             Scroll or click side items to navigate the timeline
           </p>
