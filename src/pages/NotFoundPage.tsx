@@ -68,11 +68,12 @@ function NotFoundPage() {
         `}
       </style>
       <section
-        className="relative flex items-center justify-center min-h-screen w-full overflow-hidden"
+        className="fixed inset-0 flex items-center justify-center w-full h-full overflow-auto"
         style={{
           backgroundImage: "url(/notfound/bg1.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       >
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 px-6">

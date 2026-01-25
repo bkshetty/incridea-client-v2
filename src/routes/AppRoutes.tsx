@@ -61,8 +61,8 @@ function AppRoutes() {
         <Route path="/accommodation" element={<AccommodationPage />} />
         <Route path="/techteam" element={<TechTeamPage />} />
         <Route path="/coreteam" element={<CoreTeamPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
