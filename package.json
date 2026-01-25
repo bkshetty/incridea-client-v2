@@ -40,6 +40,7 @@
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.3",
     "uploadthing": "^7.1.0",
+    "vite-plugin-svgr": "^4.5.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {
@@ -53,6 +54,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",

@@ -9,150 +9,294 @@ const REG_AMOUNT_IN_INR = {
 
 function GuidelinesPage() {
   return (
-    <div className="overflow-y-auto overflow-x-hidden p-10 pt-32 text-gray-100">
-      <div className="mx-auto w-full max-w-7xl">
-        <h1 className="text-center text-4xl tracking-wider md:text-6xl font-life-craft">
-          Guidelines and Regulations for Participating in Incridea 2026
-        </h1>
-        <div>
-          <p className="mt-6 text-center">
-            The fest is open to all students from engineering as well as Nitte sister institutions. This article
-            outlines the guidelines and regulations that participants need to follow.
-          </p>
+    <>
+      {/* Embedded CSS - Liquid Glass Effect + Custom Font */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          /* Custom Font */
+          @font-face {
+            font-family: 'Sterion';
+            src: url('../public/fonts/Sterion.woff') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
 
-          <h2 className="my-6 text-2xl font-semibold">Participant Registration, Entry, Identification and Access</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>
-              Registration for the fest can only be done through the official website of Incridea{' '}
-              <a className="underline hover:text-blue-500" href={BASE_URL} target="_blank" rel="noreferrer">
-                ({BASE_URL})
-              </a>.
-            </li>
-            <li>
-              There are two different categories of participants, who will have access to all the events and pronites.
-            </li>
-            <li>Students of NMAM Institute of Technology, Nitte - ₹ {REG_AMOUNT_IN_INR.INTERNAL}</li>
-            <li>Students of external engineering colleges and Nitte sister institutions - ₹ {REG_AMOUNT_IN_INR.EXTERNAL}</li>
-            <li>
-              Only students from engineering institutions and Nitte sister institutes are eligible to register.
-              Registrations from non-engineering colleges or fraudulent entries will be disqualified without refund.
-            </li>
-            <li>
-              Event registrations can be done either through website or on-spot, which may vary according to the event,
-              please check the Incridea website for further information regarding the same.
-            </li>
-            <li>All participants must present a valid PID (Participant Identification) during registration for events and pronites entry.</li>
-            <li>
-              The PID provided must belong to the participant registering for the events, and the organisers reserve the right to
-              verify its authenticity.
-            </li>
-            <li>Attendees must present their physical college IDs to access the events and pronites.</li>
-            <li>Any participant found to have provided false or misleading information will be disqualified.</li>
-            <li>
-              Participants are responsible for ensuring the accuracy and validity of their PID and other personal information.
-              Failure to provide a valid PID will result in the participant being ineligible to participate in the events and pronites.
-            </li>
-          </ul>
+          .font-sterion {
+            font-family: 'Sterion', sans-serif;
+          }
 
-          <h2 className="my-6 text-2xl font-semibold">Event Rules</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>
-              The organisers of any event hold the right to change the rules of their event prior to its commencement as they see fit,
-              without any obligation of notice.
-            </li>
-            <li>NMAM Institute of Technology &amp; Nitte University is not responsible for any loss or damage to participants&apos; personal belongings.</li>
-            <li>Other rules pertaining to the respective events are given in their respective web-pages.</li>
-          </ul>
+          /* Fix horizontal scrollbar */
+          body {
+            overflow-x: hidden;
+          }
+          
+          .card {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+            padding: 0.75rem;
+            overflow: hidden;
+            border-radius: 1rem;
+            transition: opacity 0.26s ease-out;
+            filter: drop-shadow(-0.5rem -0.625rem 2.875rem #0000005f);
+            backdrop-filter: brightness(1.1) blur(0.125rem) url(#displacementFilter);
+            -webkit-backdrop-filter: brightness(1.1) blur(0.125rem) url(#displacementFilter);
+            position: relative;
+            border: 0.0625rem solid rgba(255, 255, 255, 0.18);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent 60%), rgba(21, 21, 21, 0.50);
+            box-shadow: inset 0 0 0 0.0625rem rgba(255, 255, 255, 0.08), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.22);
+            box-sizing: border-box;
+          }
+          
+          @media (min-width: 640px) {
+            .card {
+              padding: 1.25rem;
+              border-radius: 1.5rem;
+            }
+          }
+          
+          @media (min-width: 1024px) {
+            .card {
+              padding: 2rem;
+              border-radius: 1.75rem;
+            }
+          }
+          
+          .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: inherit;
+            box-shadow: inset 0 0 0 0.0625rem rgba(255, 255, 255, 0.08), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.22);
+            pointer-events: none;
+          }
+          
+          .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04), transparent 60%);
+            pointer-events: none;
+          }
+          
+          .card__content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+          }
+        `
+      }} />
 
-          <h2 className="my-6 text-2xl font-semibold">Prohibited Conduct</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>The consumption of alcoholic drinks, use of tobacco products, hallucinogenic drugs or other illegal substances on the campus premises is strictly prohibited.</li>
-            <li>Anyone trying to enter the campus under the influence of such substances will be denied access.</li>
-          </ul>
+      <div className="min-h-screen text-white relative overflow-x-hidden">
+        {/* Full Screen Background Image */}
+        <div 
+          className="fixed inset-0 w-full h-full -z-10"
+          style={{
+            backgroundImage: 'url(/temp_event_bg.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+        
+        {/* Dark Overlay */}
+        <div className="fixed inset-0 bg-black/40 -z-10" />
 
-          <h2 className="my-6 text-2xl font-semibold">Accommodation for external engineering students</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>The accommodation will be provided for the participants if they have opted for the same in the Incridea website or filled out the Google form provided.</li>
-            <li>The accommodation service will be of two types, on-campus and external; the locations of the accommodation will be provided later up on booking of the service.</li>
-            <li>Details regarding payment and other relevant information will be provided by the point of contact.</li>
-            <li>Allotment will be on a first-come-first-serve basis, of which on-campus will be allotted first.</li>
-            <li>
-              <p className="font-semibold">The rules and regulations for the on-campus accommodation:</p>
-              <ul className="mt-2 list-disc pl-4 space-y-2">
-                <li>Separate accommodation for male and female participants.</li>
-                <li>The gate of the building in which accommodation is provided will be closed within half an hour from the end of the program every night.</li>
-                <li>The gate of the building will only be opened at 6 AM, so it is advised to carry necessary things well in advance.</li>
-              </ul>
-            </li>
-            <li>
-              If the accommodation provided is external, then participants will be given details of the place of stay and they may book the same directly; transportation will be provided for the participants from college to place of stay and vice versa.
-            </li>
-          </ul>
+        {/* Gradient Orbs */}
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute top-20 left-10 w-64 h-64 md:w-96 md:h-96 rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-20 blur-3xl"></div>
+          <div className="absolute top-40 right-20 w-72 h-72 md:w-112.5 md:h-112.5 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 opacity-20 blur-3xl"></div>
+          <div className="absolute bottom-20 left-1/2 w-56 h-56 md:w-80 md:h-80 rounded-full bg-linear-to-br from-purple-600 to-blue-600 opacity-15 blur-3xl"></div>
+          <div className="absolute bottom-32 right-10 w-48 h-48 md:w-64 md:h-64 rounded-full bg-linear-to-br from-cyan-400 to-teal-400 opacity-20 blur-3xl"></div>
+        </div>
 
-          <h2 className="my-6 text-2xl font-semibold">Campus Rules and Regulations</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>All the participants when inside the campus, must follow the rules and regulations of the campus.</li>
-            <li>If found guilty of any violations, strict actions will be taken.</li>
-            <li>Contact concerned organisers, core team, security officials or any other concerned authorities for any help or grievances.</li>
-          </ul>
+        <div className="px-4 pb-16 pt-10 md:px-6 relative z-10">
+          <div className="mx-auto flex max-w-4xl flex-col gap-8">
+           
 
-          <p className="mt-3">
-            By participating in Incridea, participants agree to abide by the guidelines and regulations outlined above. Any participant found
-            violating the rules may be immediately expelled from the campus, registration for all events may be cancelled, and they will be
-            penalized appropriately. NMAM Institute of Technology &amp; Nitte University reserve the right to take any appropriate legal actions
-            in any case that requires it.
-          </p>
+            {/* Main Content Card */}
+            <section className="card">
+              <div className="card__content">
+                 {/* Header */}
+            <header className="space-y-3 text-center">
+              <h1 className="text-5xl font-bold text-white md:text-6xl tracking-tight drop-shadow-lg font-sterion">
+                Guidelines and Regulations for Participating in Incridea 2026
+              </h1>
+              <p className="mx-auto max-w-3xl text-base text-slate-100 md:text-xl drop-shadow-md">
+                The fest is open to all students from engineering as well as Nitte sister institutions
+              </p>
+            </header>
+                <div className="text-gray-100">
+                  {/* ... keep all your existing content here ... */}
+                  <p className="mt-6 text-center">
+                    The fest is open to all students from engineering as well as Nitte sister institutions. This article
+                    outlines the guidelines and regulations that participants need to follow.
+                  </p>
 
-          <p className="mb-4 mt-3">
-            For further information regarding the fest and live updates, check out our website and Instagram handle.
-          </p>
+                  <h2 className="my-6 text-2xl font-semibold">Participant Registration, Entry, Identification and Access</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>
+                      Registration for the fest can only be done through the official website of Incridea{' '}
+                      <a className="underline hover:text-blue-500" href={BASE_URL} target="_blank" rel="noreferrer">
+                        ({BASE_URL})
+                      </a>.
+                    </li>
+                    <li>
+                      There are two different categories of participants, who will have access to all the events and pronites.
+                    </li>
+                    <li>Students of NMAM Institute of Technology, Nitte - ₹ {REG_AMOUNT_IN_INR.INTERNAL}</li>
+                    <li>Students of external engineering colleges and Nitte sister institutions - ₹ {REG_AMOUNT_IN_INR.EXTERNAL}</li>
+                    <li>
+                      Only students from engineering institutions and Nitte sister institutes are eligible to register.
+                      Registrations from non-engineering colleges or fraudulent entries will be disqualified without refund.
+                    </li>
+                    <li>
+                      Event registrations can be done either through website or on-spot, which may vary according to the event,
+                      please check the Incridea website for further information regarding the same.
+                    </li>
+                    <li>All participants must present a valid PID (Participant Identification) during registration for events and pronites entry.</li>
+                    <li>
+                      The PID provided must belong to the participant registering for the events, and the organisers reserve the right to
+                      verify its authenticity.
+                    </li>
+                    <li>Attendees must present their physical college IDs to access the events and pronites.</li>
+                    <li>Any participant found to have provided false or misleading information will be disqualified.</li>
+                    <li>
+                      Participants are responsible for ensuring the accuracy and validity of their PID and other personal information.
+                      Failure to provide a valid PID will result in the participant being ineligible to participate in the events and pronites.
+                    </li>
+                  </ul>
 
-          <h2 className="my-6 text-2xl font-semibold">Championship Rules</h2>
-          <ul className="mt-2 list-disc pl-4 space-y-2">
-            <li>
-              <p className="font-semibold">Events will be classified into 4 categories:</p>
-              <div className="my-3 flex w-max flex-row border-2 text-center md:ml-4">
-                <div className="flex flex-col border-r-2 font-semibold">
-                  <div className="border-b-2 p-2">Event Category</div>
-                  <div className="border-b-2 p-2">Winner</div>
-                  <div className="border-b-2 p-2">Runner-Up</div>
-                  <div className="p-2">Second Runner-Up</div>
-                </div>
-                <div className="flex flex-col border-r-2">
-                  <div className="border-b-2 p-2 font-semibold">Diamond</div>
-                  <div className="border-b-2 p-2">600</div>
-                  <div className="border-b-2 p-2">550</div>
-                  <div className="p-2">500</div>
-                </div>
-                <div className="flex flex-col border-r-2">
-                  <div className="border-b-2 p-2 font-semibold">Gold</div>
-                  <div className="border-b-2 p-2">450</div>
-                  <div className="border-b-2 p-2">400</div>
-                  <div className="p-2">350</div>
-                </div>
-                <div className="flex flex-col border-r-2">
-                  <div className="border-b-2 p-2 font-semibold">Silver</div>
-                  <div className="border-b-2 p-2">300</div>
-                  <div className="border-b-2 p-2">250</div>
-                  <div className="p-2">200</div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="border-b-2 p-2 font-semibold">Bronze</div>
-                  <div className="border-b-2 p-2">150</div>
-                  <div className="border-b-2 p-2">100</div>
-                  <div className="p-2">50</div>
+                  <h2 className="my-6 text-2xl font-semibold">Event Rules</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>
+                      The organisers of any event hold the right to change the rules of their event prior to its commencement as they see fit,
+                      without any obligation of notice.
+                    </li>
+                    <li>NMAM Institute of Technology &amp; Nitte University is not responsible for any loss or damage to participants&apos; personal belongings.</li>
+                    <li>Other rules pertaining to the respective events are given in their respective web-pages.</li>
+                  </ul>
+
+                  <h2 className="my-6 text-2xl font-semibold">Prohibited Conduct</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>The consumption of alcoholic drinks, use of tobacco products, hallucinogenic drugs or other illegal substances on the campus premises is strictly prohibited.</li>
+                    <li>Anyone trying to enter the campus under the influence of such substances will be denied access.</li>
+                  </ul>
+
+                  <h2 className="my-6 text-2xl font-semibold">Accommodation for external engineering students</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>The accommodation will be provided for the participants if they have opted for the same in the Incridea website or filled out the Google form provided.</li>
+                    <li>The accommodation service will be of two types, on-campus and external; the locations of the accommodation will be provided later up on booking of the service.</li>
+                    <li>Details regarding payment and other relevant information will be provided by the point of contact.</li>
+                    <li>Allotment will be on a first-come-first-serve basis, of which on-campus will be allotted first.</li>
+                    <li>
+                      <p className="font-semibold">The rules and regulations for the on-campus accommodation:</p>
+                      <ul className="mt-2 list-disc pl-4 space-y-2">
+                        <li>Separate accommodation for male and female participants.</li>
+                        <li>The gate of the building in which accommodation is provided will be closed within half an hour from the end of the program every night.</li>
+                        <li>The gate of the building will only be opened at 6 AM, so it is advised to carry necessary things well in advance.</li>
+                      </ul>
+                    </li>
+                    <li>
+                      If the accommodation provided is external, then participants will be given details of the place of stay and they may book the same directly; transportation will be provided for the participants from college to place of stay and vice versa.
+                    </li>
+                  </ul>
+
+                  <h2 className="my-6 text-2xl font-semibold">Campus Rules and Regulations</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>All the participants when inside the campus, must follow the rules and regulations of the campus.</li>
+                    <li>If found guilty of any violations, strict actions will be taken.</li>
+                    <li>Contact concerned organisers, core team, security officials or any other concerned authorities for any help or grievances.</li>
+                  </ul>
+
+                  <p className="mt-3">
+                    By participating in Incridea, participants agree to abide by the guidelines and regulations outlined above. Any participant found
+                    violating the rules may be immediately expelled from the campus, registration for all events may be cancelled, and they will be
+                    penalized appropriately. NMAM Institute of Technology &amp; Nitte University reserve the right to take any appropriate legal actions
+                    in any case that requires it.
+                  </p>
+
+                  <p className="mb-4 mt-3">
+                    For further information regarding the fest and live updates, check out our website and Instagram handle.
+                  </p>
+
+                  <h2 className="my-6 text-2xl font-semibold">Championship Rules</h2>
+                  <ul className="mt-2 list-disc pl-4 space-y-2">
+                    <li>
+                      <p className="font-semibold">Events will be classified into 4 categories:</p>
+                      <div className="my-3 flex w-max flex-row border-2 text-center md:ml-4">
+                        <div className="flex flex-col border-r-2 font-semibold">
+                          <div className="border-b-2 p-2">Event Category</div>
+                          <div className="border-b-2 p-2">Winner</div>
+                          <div className="border-b-2 p-2">Runner-Up</div>
+                          <div className="p-2">Second Runner-Up</div>
+                        </div>
+                        <div className="flex flex-col border-r-2">
+                          <div className="border-b-2 p-2 font-semibold">Diamond</div>
+                          <div className="border-b-2 p-2">600</div>
+                          <div className="border-b-2 p-2">550</div>
+                          <div className="p-2">500</div>
+                        </div>
+                        <div className="flex flex-col border-r-2">
+                          <div className="border-b-2 p-2 font-semibold">Gold</div>
+                          <div className="border-b-2 p-2">450</div>
+                          <div className="border-b-2 p-2">400</div>
+                          <div className="p-2">350</div>
+                        </div>
+                        <div className="flex flex-col border-r-2">
+                          <div className="border-b-2 p-2 font-semibold">Silver</div>
+                          <div className="border-b-2 p-2">300</div>
+                          <div className="border-b-2 p-2">250</div>
+                          <div className="p-2">200</div>
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="border-b-2 p-2 font-semibold">Bronze</div>
+                          <div className="border-b-2 p-2">150</div>
+                          <div className="border-b-2 p-2">100</div>
+                          <div className="p-2">50</div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>To be eligible for the championship, a college must qualify for the final round of at least 3 technical events and 2 non-technical events.</li>
+                    <li>
+                      The college that accumulates the highest points will be announced as the winner, and the college with the second-highest points will be declared the runner-up. The second runner-up will not be recognized with a prize; it is included only for calculating the championship points.
+                    </li>
+                    <li>The point system does not apply to special events.</li>
+                  </ul>
                 </div>
               </div>
-            </li>
-            <li>To be eligible for the championship, a college must qualify for the final round of at least 3 technical events and 2 non-technical events.</li>
-            <li>
-              The college that accumulates the highest points will be announced as the winner, and the college with the second-highest points will be declared the runner-up. The second runner-up will not be recognized with a prize; it is included only for calculating the championship points.
-            </li>
-            <li>The point system does not apply to special events.</li>
-          </ul>
+            </section>
+          </div>
+        </div>
+
+        {/* SVG Filter for Displacement Effect */}
+        <svg className="absolute w-0 h-0">
+          <defs>
+            <filter id="displacementFilter">
+              <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
+              <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="2" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
+
+        {/* Fixed Character SVG */}
+        <div className="fixed bottom-0 right-0 w-64 h-auto z-50 pointer-events-none">
+          <img 
+            src="../src/assets/character.svg" 
+            alt="Character" 
+            className="w-full h-full object-contain"
+          />
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
