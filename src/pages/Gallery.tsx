@@ -163,9 +163,9 @@ const Gallery: React.FC = () => {
         </section>
 
         <div className="w-full py-0 -mt-20 md:-mt-12 text-center">
-          <p className="font-['Orbitron'] text-[9px] text-white/30 tracking-[0.5em] uppercase animate-pulse">
-            Scroll or click side items to navigate the timeline
-          </p>
+            <p className="font-['Orbitron'] text-xs sm:text-sm text-white/40 hover:text-white/60 tracking-[0.5em] uppercase animate-pulse transition-colors duration-300">
+              Scroll or click timeline items to navigate
+            </p>
         </div>
       </div>
     </div>
