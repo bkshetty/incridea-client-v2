@@ -177,7 +177,7 @@ const Carousel: React.FC<CarouselProps> = ({
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans">
+    <div className="relative min-h-fit w-full flex items-center justify-center overflow-hidden font-sans">
       <div
         className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
