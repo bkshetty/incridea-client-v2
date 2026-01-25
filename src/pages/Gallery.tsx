@@ -56,15 +56,24 @@ const Gallery: React.FC = () => {
     const galleryElement = galleryRef.current;
     if (!container || !galleryElement) return;
 
-    const galleryHeight = galleryElement.offsetHeight - container.clientHeight;
-    const targetScroll =
-      galleryElement.offsetTop +
-      (index / (timelineItems.length - 1)) * galleryHeight;
+    // 1. Get all year sections
+    const sections = galleryElement.querySelectorAll("section");
+    const targetSection = sections[index];
 
-    container.scrollTo({
-      top: targetScroll,
-      behavior: "smooth",
-    });
+    if (targetSection) {
+      /**
+       * 2. Calculate Offset
+       * We subtract a "buffer" (e.g., 80px to 100px) to account for the
+       * Sticky Timeline Header so the title isn't hidden behind it.
+       */
+      const headerOffset = window.innerWidth < 768 ? 70 : 100;
+      const targetScroll = targetSection.offsetTop - headerOffset;
+
+      container.scrollTo({
+        top: targetScroll,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
