@@ -30,36 +30,40 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
   const currentColor = THEME_COLORS[activeIndex % THEME_COLORS.length];
 
   // 2. RESPONSIVE OFFSET CALCULATION
+  // Calculates the exact pixel center of the first portal based on screen size.
   const [baseOffset, setBaseOffset] = useState(96); // Default Desktop
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      // MATCHING HTML LAYOUT BREAKPOINTS:
-      // Mobile (<768px): 36px
-      // Tablet (>=768px): 72px
-      // Desktop (>=1024px): 96px
+      // MATCHING HTML LAYOUT:
+      // Mobile (<768px): Padding px-2 (8px) + Width w-14 (56px)/2 = 36px
+      // Tablet (>=768px): Padding px-6 (24px) + Width w-24 (96px)/2 = 72px
+      // Desktop (>=1024px): Padding px-10 (40px) + Width w-28 (112px)/2 = 96px
+      
       if (width < 768) {
-        setBaseOffset(36);
+        setBaseOffset(36); 
       } else if (width < 1024) {
-        setBaseOffset(72);
+        setBaseOffset(72); 
       } else {
-        setBaseOffset(96);
+        setBaseOffset(96); 
       }
     };
 
-    handleResize();
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 3. MASCOT PHYSICS & ANIMATION
   const mascotStyle = useMemo(() => {
+    // --- POSITIONING LOGIC ---
     const rawProgress = Math.min(Math.max(scrollProgress, 0), 1);
-    // Visual 0.0 means "On top of 2018".
+    
+    // Start Offset: Visual 0.0 means "On top of 2018". 
+    // We keep this raw so the math aligns perfectly with the portal centers.
     const effectiveProgress = rawProgress;
 
-    const step = 1 / (Math.max(items.length - 1, 1));
+    const step = 1 / (items.length - 1);
     let minDistance = 1;
     let closestPortalIndex = 0;
 
@@ -72,50 +76,56 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       }
     });
 
-    // --- VORTEX ANIMATION LOGIC ---
-    const threshold = 0.03; // Distance threshold to trigger "dive"
+    // --- ANIMATION LOGIC (VORTEX PHYSICS) ---
+    // Threshold: How close (in %) the mascot must be to trigger the "dive".
+    const threshold = 0.03;
     let opacity = 1;
     let scale = 1;
 
-    // Check overlap
+    // Only trigger animation if we are physically overlapping the portal
     if (minDistance < threshold) {
-      // EXCEPTION: 2018 (Index 0) -> No animation
+      // EXCEPTION: 2018 (Index 0) -> No animation, he stands solid.
       if (closestPortalIndex === 0) {
         opacity = 1;
         scale = 1;
       } else {
-        // ANIMATION FOR 2019+
+        // ANIMATION FOR 2019-2025
+        // ratio: 0 = Dead Center (Inside), 1 = Edge (Outside)
         const ratio = minDistance / threshold;
-        
-        // Non-linear Opacity: Fades out sharply near center
-        opacity = Math.pow(ratio, 1.5);
-        
-        // Vortex Scale: Shrinks to 60%
+
+        // OPACITY CURVE (Non-Linear): 
+        // He stays visible longer, then fades out sharply near the center.
+        // This fixes the "ghosting" or "awkward fade" issue.
+        opacity = Math.pow(ratio, 1.5); 
+
+        // SCALE CURVE (Vortex):
+        // Shrinks to 60% size to mimic depth perception.
         scale = 0.6 + (0.4 * Math.pow(ratio, 0.5));
       }
     }
 
     // --- CSS POSITIONING ---
+    // Dynamic Calc matches the responsive baseOffset exactly.
     const cssPosition = `calc(${baseOffset}px + (${effectiveProgress} * (100% - ${baseOffset * 2}px)))`;
 
     return {
       cssPosition,
-      effectiveProgress,
-      closestPortalIndex,
       style: {
         left: cssPosition,
-        transform: `translateX(-50%) translateY(-50%) scaleX(-1) scale(${scale})`,
+        // Responsive Scaling handled by scale() multiplier
+        transform: `translateX(-50%) translateY(-50%) scaleX(-1) scale(${scale})`, 
         opacity: opacity,
         zIndex: 50,
-        // PERFORMANCE FIX: Only animate opacity/scale with transition. 
-        // Position changes are instant to prevent lag.
+        // CRITICAL FIX FOR LAG:
+        // Removed 'left' and 'transform' from transition. 
+        // This ensures movement is instant and locked to your scroll.
         transition: "opacity 0.05s linear, scale 0.05s linear"
       }
     };
   }, [scrollProgress, items.length, baseOffset]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 md:px-6 lg:px-10 py-6 md:py-10 flex items-center relative overflow-x-hidden perspective-container">
+    <div className="w-full max-w-7xl mx-auto px-2 md:px-6 lg:px-10 py-8 md:py-16 flex items-center relative overflow-x-hidden">
       <style>
         {`
           @keyframes portalPulse {
@@ -134,16 +144,9 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
             animation: fluidFloat 3s ease-in-out infinite;
             filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.8));
           }
-          .perspective-container {
-            perspective: 1000px;
-          }
-          .portal-3d-wrapper {
-            transform-style: preserve-3d;
-            will-change: transform;
-          }
-          /* Responsive Sizing */
-          .mascot-container { width: 4rem; height: 4rem; }
-          @media (min-width: 768px) { .mascot-container { width: 7rem; height: 7rem; } }
+          /* Responsive Mascot Container Sizing */
+          .mascot-container { width: 4rem; height: 4rem; } /* Mobile */
+          @media (min-width: 768px) { .mascot-container { width: 7rem; height: 7rem; } } /* Tablet/Desktop */
         `}
       </style>
 
@@ -167,11 +170,11 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
           className="absolute top-1/2 pointer-events-none mascot-container"
           style={mascotStyle.style}
         >
-          <img
-            src={mascotImg}
-            alt="Mascot"
-            className="w-full h-full object-contain mascot-hero"
-          />
+           <img
+             src={mascotImg}
+             alt="Mascot"
+             className="w-full h-full object-contain mascot-hero"
+           />
         </div>
 
         {/* --- PORTALS --- */}
@@ -180,43 +183,39 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
             const isActive = index === activeIndex;
             const portalColor = THEME_COLORS[index % THEME_COLORS.length];
 
-            // 3D Rotation Calculation
-            const step = 1 / (Math.max(items.length - 1, 1));
-            const portalPos = index * step;
-            const diff = mascotStyle.effectiveProgress - portalPos;
-            // Limit rotation to +/- 45 degrees
-            const rotateY = Math.max(-45, Math.min(45, diff * -400));
-
             return (
               <button
                 key={index}
                 onClick={() => onItemClick(index)}
-                className="relative z-10 flex flex-col items-center focus:outline-none touch-manipulation perspective-container"
+                className="relative z-10 flex flex-col items-center focus:outline-none touch-manipulation"
               >
-                {/* Responsive Portal Wrapper */}
+                {/* Responsive Portal Size */}
                 <div className="relative flex items-center justify-center
-                  w-14 h-14 md:w-24 md:h-24 lg:w-28 lg:h-28">
-                  
+                  w-14 h-14       /* Mobile */
+                  md:w-24 md:h-24 /* Tablet */
+                  lg:w-28 lg:h-28 /* Desktop */
+                ">
                   <div
                     className={`
-                      relative z-10 transition-all duration-300 ease-out portal-3d-wrapper
-                      w-10 h-10 md:w-16 md:h-16 lg:w-20 lg:h-20
-                      ${isActive ? "grayscale-0" : "opacity-30 grayscale"}
+                      relative z-10 transition-all duration-500
+                      w-10 h-10       /* Mobile Inner */
+                      md:w-16 md:h-16 /* Tablet Inner */
+                      lg:w-20 lg:h-20 /* Desktop Inner */
+                      ${isActive ? "scale-110 grayscale-0" : "opacity-30 grayscale"}
                     `}
                     style={{
-                      transform: `scale(${isActive ? 1.1 : 1}) rotateY(${rotateY}deg)`,
                       animation: isActive ? "portalPulse 4s infinite ease-in-out" : "none"
                     }}
                   >
-                    <img
-                      src={portalImg}
-                      alt="Portal"
-                      className="w-full h-full object-contain"
-                    />
+                     <img
+                       src={portalImg}
+                       alt="Portal"
+                       className="w-full h-full object-contain"
+                     />
                   </div>
                 </div>
 
-                {/* Year Text */}
+                {/* YEAR TEXT */}
                 <span
                   className={`
                     -mt-1 md:-mt-2 

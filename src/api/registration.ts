@@ -1,12 +1,15 @@
 import apiClient from './client'
 
 export interface TeamMember {
-  userId: number
+  id: number
+  pidId: number
   teamId: number
-  User?: {
-    id: number
-    name: string
-    email: string
+  PID?: {
+    User: {
+      id: number
+      name: string
+      email: string
+    }
   }
 }
 
@@ -17,6 +20,13 @@ export interface Team {
   leaderId: number
   confirmed: boolean
   TeamMembers: TeamMember[]
+  Leader?: {
+    User: {
+      id: number
+      name: string
+      email: string
+    }
+  }
 }
 
 export async function registerSoloEvent(eventId: number) {
@@ -67,4 +77,44 @@ export interface PaymentInitiateResponse {
 export async function initiatePayment(registrationId: string) {
   const { data } = await apiClient.post<PaymentInitiateResponse>('/payment/initiate', { registrationId })
   return data
+}
+
+
+export async function verifyPaymentSignature(response: any) {
+  const { data } = await apiClient.post<any>('/payment/verify', response)
+  return data
+}
+
+export async function getPaymentStatus() {
+  try {
+     const { data } = await apiClient.get<any>('/payment/my-status')
+     if (data.status === 'success' && data.pid && data.receipt) {
+         return { 
+           status: 'success', 
+           message: 'Payment verified', 
+           pid: data.pid, 
+           receipt: data.receipt, 
+           processingStep: 'COMPLETED'
+         }
+     }
+     if (data.status === 'processing' || data.status === 'pending') {
+        return {
+          status: 'pending',
+          message: data.message || 'Processing...',
+          processingStep: data.processingStep,
+          receipt: data.receipt,
+          pid: data.pid
+        }
+     }
+     if (data.status === 'failed') {
+         return {
+             status: 'failed',
+             message: data.message || 'Payment Verification Failed',
+             processingStep: null
+         }
+     }
+  } catch (e) {
+    // Ignore error
+  }
+  return { status: 'pending', message: 'Payment verification pending', processingStep: null }
 }

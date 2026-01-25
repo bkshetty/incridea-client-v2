@@ -3,9 +3,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { fetchRegistrationConfig, type RegistrationConfigResponse } from '../api/public'
-import { initiatePayment } from '../api/registration'
+import { initiatePayment, verifyPaymentSignature } from '../api/registration'
 import { fetchMe } from '../api/auth'
 import { showToast } from '../utils/toast'
+import PaymentProcessingModal from '../components/PaymentProcessingModal'
+// verifyPayment removed from here, used in Modal now
 
 function RegisterPage() {
   const navigate = useNavigate()
@@ -47,12 +49,30 @@ function RegisterPage() {
   }, [isUserLoading, isUserError])
 
   const user = userData?.user
-  const [registrationOption, setRegistrationOption] = useState('')
+  
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean
+    status: 'SUCCESS' | 'FAILED' | 'PENDING'
+    pid?: string | null
+  }>({
+    isOpen: false,
+    status: 'PENDING',
+    pid: null,
+  })
+
+  // Redirect if user already has PID and modal is closed
+  useEffect(() => {
+    if (user?.pid && !modalState.isOpen) {
+      navigate('/')
+    }
+  }, [user?.pid, modalState.isOpen, navigate])
 
   const { data: registrationConfig, isLoading: isConfigLoading } = useQuery<RegistrationConfigResponse>({
     queryKey: ['registration-config'],
     queryFn: fetchRegistrationConfig,
   })
+  
+  const [registrationOption, setRegistrationOption] = useState('')
 
   const computedSelection = useMemo(() => {
       if (!user) return 'NMAMIT';
@@ -85,12 +105,6 @@ function RegisterPage() {
     // Simplification: Check user props.
     // If we can't fully determine, we might show a selection? But user data is already fixed.
     
-    const isNmamit = computedSelection === 'NMAMIT';
-    // const isAlumni = ... // How to detect?
-    // In `authController`: `yearOfGraduation: user.Alumni?.yearOfGraduation`.
-    // If `yearOfGraduation` is present, they are Alumni? 
-    // Or if `user.roles` or `user.category` says it.
-    
     // Strict logic from Auth Page:
     // Selection 'NMAMIT' -> collegeId 1.
     // Selection 'ALUMNI' -> collegeId 1.
@@ -100,7 +114,7 @@ function RegisterPage() {
     
     // Let's proceed with minimal logic and refine if needed.
     
-    if (isNmamit) {
+    if (computedSelection === 'NMAMIT') {
         // Check for Alumni?
         // Assuming for now standard NMAMIT logic if we don't have alumni flag.
         
@@ -178,11 +192,6 @@ function RegisterPage() {
              name: "Incridea'26 - Registration",
              description: 'Fest Registration',
              order_id: data.orderId,
-             handler: async function (response: any) {
-                 console.log(response)
-                 showToast('Payment Successful!', 'success')
-                 navigate('/')
-             },
              prefill: {
                  name: user?.name,
                  email: user?.email,
@@ -190,7 +199,43 @@ function RegisterPage() {
              },
              theme: {
                  color: '#460c78' 
-             }
+             },
+             handler: async function (response: any) {
+                setModalState({ 
+                  isOpen: true, 
+                  status: 'PENDING',
+                })
+
+                try {
+                  await verifyPaymentSignature(response)
+                } catch (error) {
+                  console.error('Payment verification request failed', error)
+                  setModalState({
+                    isOpen: true,
+                    status: 'FAILED',
+                    pid: null,
+                  })
+                }
+              },
+              modal: {
+                ondismiss: async function () {
+                   setModalState((prev) => ({ ...prev, isOpen: true, status: 'PENDING', pid: null }))
+                   const { data: updatedUser } = await refetchUser()
+                    if (updatedUser?.user?.pid) {
+                      setModalState({
+                        isOpen: true,
+                        status: 'SUCCESS',
+                        pid: updatedUser.user.pid,
+                      })
+                    } else {
+                       setModalState({
+                        isOpen: true,
+                        status: 'FAILED',
+                        pid: null,
+                      })
+                    }
+                },
+              },
          }
          
          const paymentObject = new (window as any).Razorpay(options)
@@ -204,6 +249,7 @@ function RegisterPage() {
          showToast(err.response?.data?.message || 'Error initiating payment', 'error')
      }
   }
+
 
   if (isUserLoading || isConfigLoading) {
       return <div className="p-8 text-center text-slate-400">Loading...</div>
@@ -276,6 +322,20 @@ function RegisterPage() {
              Complete Registration
            </button>
       </div>
+
+      <PaymentProcessingModal 
+        isOpen={modalState.isOpen}
+        onClose={() => {
+            setModalState(prev => ({ ...prev, isOpen: false }))
+            // Optionally refetch user or redirect
+            if (modalState.status === 'SUCCESS' || modalState.pid) {
+                navigate('/')
+            }
+        }}
+        userId={user?.id}
+        completedPid={modalState.pid}
+        failed={modalState.status === 'FAILED'}
+      />
     </section>
   )
 }
