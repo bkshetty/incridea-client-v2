@@ -27,46 +27,66 @@ const Gallery: React.FC = () => {
     [],
   );
 
-  const handleScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      const target = e.currentTarget;
-      const galleryElement = galleryRef.current;
-      if (!target || !galleryElement) return;
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const galleryElement = galleryRef.current;
+    if (!target || !galleryElement) return;
 
-      const galleryTop = galleryElement.offsetTop;
-      const galleryHeight = galleryElement.offsetHeight - target.clientHeight;
+    const sections = galleryElement.querySelectorAll("section");
+    const headerHeight = window.innerWidth < 768 ? 64 : 80; // Match your HorizontalTimeline height
 
-      const relativeScroll = Math.max(0, target.scrollTop - galleryTop);
-      const progress = Math.min(1, relativeScroll / galleryHeight);
+    let currentActive = 0;
 
-      setScrollProgress(progress);
+    // Find which section is currently at the header level
+    sections.forEach((section, index) => {
+      const rect = section.getBoundingClientRect();
+      const containerRect = target.getBoundingClientRect();
+      const relativeTop = rect.top - containerRect.top;
 
-      const newIndex = Math.min(
-        Math.floor(progress * timelineItems.length),
-        timelineItems.length - 1,
+      // If the top of the section has reached the header
+      if (relativeTop <= headerHeight + 20) {
+        currentActive = index;
+      }
+    });
+
+    setActiveIndex(currentActive);
+
+    // Calculate progress based on active index for smooth mascot movement
+    // This ensures mascot is ON the portal when the section is active
+    const totalItems = timelineItems.length;
+    const progressPerItem = 1 / (totalItems - 1);
+
+    // We calculate a "smooth" progress by looking at the current section's position
+    const activeSection = sections[currentActive];
+    const nextSection = sections[currentActive + 1];
+
+    let subProgress = 0;
+    if (activeSection && nextSection) {
+      const rect = activeSection.getBoundingClientRect();
+      const nextRect = nextSection.getBoundingClientRect();
+      const distance = nextRect.top - rect.top;
+      const traveled = Math.abs(
+        rect.top - target.getBoundingClientRect().top - headerHeight,
       );
+      subProgress = Math.min(1, traveled / distance);
+    }
 
-      if (newIndex !== activeIndex) setActiveIndex(newIndex);
-    },
-    [activeIndex],
-  );
+    const calculatedProgress =
+      currentActive * progressPerItem + subProgress * progressPerItem;
+    setScrollProgress(Math.min(1, calculatedProgress));
+  }, []);
 
   const handleTimelineClick = (index: number) => {
     const container = scrollContainerRef.current;
     const galleryElement = galleryRef.current;
     if (!container || !galleryElement) return;
 
-    // 1. Get all year sections
     const sections = galleryElement.querySelectorAll("section");
     const targetSection = sections[index];
 
     if (targetSection) {
-      /**
-       * 2. Calculate Offset
-       * We subtract a "buffer" (e.g., 80px to 100px) to account for the
-       * Sticky Timeline Header so the title isn't hidden behind it.
-       */
-      const headerOffset = window.innerWidth < 768 ? 70 : 100;
+      // Offset matches the header height precisely
+      const headerOffset = window.innerWidth < 768 ? 64 : 80;
       const targetScroll = targetSection.offsetTop - headerOffset;
 
       container.scrollTo({
@@ -83,7 +103,7 @@ const Gallery: React.FC = () => {
         onScroll={handleScroll}
         className="relative w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide touch-pan-y"
       >
-        <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-xl border-b border-white/5 py-2 md:py-4 transition-all duration-300">
+        <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-xl border-b border-white/5 transition-all duration-300">
           <HorizontalTimeline
             items={timelineItems}
             activeIndex={activeIndex}
@@ -94,22 +114,20 @@ const Gallery: React.FC = () => {
 
         <main
           ref={galleryRef}
-          className="w-full flex flex-col items-center pt-4 md:pt-10 overflow-x-hidden"
+          className="w-full flex flex-col items-center pt-0 overflow-x-hidden"
         >
           {gallerySections.map((section) => (
             <section
               key={section.year}
-              className="w-full max-w-7xl px-4 sm:px-6 md:px-10 mb-12 md:mb-24"
+              // Added scroll-margin-top to help browser positioning
+              className="w-full max-w-7xl px-4 sm:px-6 md:px-10 mb-12 md:mb-24 scroll-mt-20"
             >
               <motion.h1
-                className="font-['Michroma'] text-2xl sm:text-2xl md:text-3xl lg:text-5xl mb-2 sm:mb-4 font-bold bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider"
-                initial={{ opacity: 0, y: 80 }}
+                className="font-['Michroma'] text-2xl sm:text-2xl md:text-3xl lg:text-5xl mb-0 font-bold bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider py-4"
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{
-                  duration: 1,
-                  ease: "easeOut",
-                }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 0.8 }}
               >
                 {section.year}
               </motion.h1>
@@ -121,7 +139,6 @@ const Gallery: React.FC = () => {
                 {section.images.map((item) => (
                   <Box
                     key={item.id}
-                    /* MINIMAL FIX: Move the ratio class here. Remove className from child component to fix TS error */
                     className={`relative w-full rounded-lg md:rounded-2xl overflow-hidden border border-white/5 shadow-2xl hover:border-cyan-500/30 transition-all duration-500 ${item.ratio}`}
                   >
                     <ImageWithSkeleton src={item.url} alt={item.id} />
