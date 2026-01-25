@@ -13,18 +13,14 @@ function GuidelinesPage() {
       {/* Embedded CSS - Liquid Glass Effect + Custom Font */}
       <style dangerouslySetInnerHTML={{
         __html: `
-          /* Custom Font */
-          @font-face {
-            font-family: 'Sterion';
-            src: url('../public/fonts/Sterion.woff') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-          }
+           @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-          .font-sterion {
-            font-family: 'Sterion', sans-serif;
-          }
+    /* Montserrat utility classes */
+    .font-montserrat {
+      font-family: "Montserrat", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+    }
 
           /* Fix horizontal scrollbar */
           body {
@@ -127,7 +123,7 @@ function GuidelinesPage() {
               <div className="card__content">
                  {/* Header */}
             <header className="space-y-3 text-center">
-              <h1 className="text-5xl font-bold text-white md:text-6xl tracking-tight drop-shadow-lg font-sterion">
+              <h1 className="text-5xl font-montserrat-bold text-white md:text-6xl tracking-tight drop-shadow-lg">
                 Guidelines and Regulations for Participating in Incridea 2026
               </h1>
               <p className="mx-auto max-w-3xl text-base text-slate-100 md:text-xl drop-shadow-md">
