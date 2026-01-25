@@ -11,8 +11,10 @@ const timelineItems = ["2018", "2019", "2020", "2022", "2023", "2024", "2025"];
 const Gallery: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isTimelineVisible, setIsTimelineVisible] = useState(true); // New state for visibility
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const galleryRef = useRef<HTMLDivElement | null>(null);
+  const carouselSectionRef = useRef<HTMLDivElement | null>(null); // Ref for carousel
 
   const gallerySections = useMemo(
     () =>
@@ -27,60 +29,56 @@ const Gallery: React.FC = () => {
     [],
   );
 
-  /**
-   * CONSTANTS FOR ALIGNMENT
-   * Navbar Height: 112px
-   * Timeline Height: 80px
-   * Total Offset: 192px
-   */
   const NAVBAR_HEIGHT = 112;
   const TIMELINE_HEIGHT = 80;
   const TOTAL_HEADER_HEIGHT = NAVBAR_HEIGHT + TIMELINE_HEIGHT;
 
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const galleryElement = galleryRef.current;
-    if (!target || !galleryElement) return;
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const target = e.currentTarget;
+      const galleryElement = galleryRef.current;
+      if (!target || !galleryElement) return;
 
-    const sections = galleryElement.querySelectorAll("section");
-    const step = 1 / (timelineItems.length - 1);
-
-    let activeIdx = 0;
-    let progress = 0;
-
-    // Find current active based on which section is crossing the TOTAL_HEADER_HEIGHT line
-    sections.forEach((section, index) => {
-      const rect = section.getBoundingClientRect();
-
-      // relativeTop is the distance from the top of the Year Section
-      // to the top of the scrollable area
-      const relativeTop = rect.top;
-
-      if (relativeTop <= TOTAL_HEADER_HEIGHT + 10) {
-        activeIdx = index;
+      // --- Visibility Logic for Carousel ---
+      if (carouselSectionRef.current) {
+        const carouselTop =
+          carouselSectionRef.current.getBoundingClientRect().top;
+        // Hide if the Carousel top reaches the bottom of the fixed header
+        setIsTimelineVisible(carouselTop > TOTAL_HEADER_HEIGHT + 50);
       }
-    });
 
-    // Calculate sub-progress between the current and next section
-    const currentSection = sections[activeIdx];
-    const nextSection = sections[activeIdx + 1];
+      const sections = galleryElement.querySelectorAll("section");
+      const step = 1 / (timelineItems.length - 1);
 
-    if (currentSection && nextSection) {
-      const currentRect = currentSection.getBoundingClientRect();
-      const nextRect = nextSection.getBoundingClientRect();
+      let activeIdx = 0;
+      let progress = 0;
 
-      const totalDist = nextRect.top - currentRect.top;
-      const traveled = TOTAL_HEADER_HEIGHT - currentRect.top;
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= TOTAL_HEADER_HEIGHT + 10) {
+          activeIdx = index;
+        }
+      });
 
-      const localPercent = Math.max(0, Math.min(1, traveled / totalDist));
-      progress = (activeIdx + localPercent) * step;
-    } else {
-      progress = activeIdx * step;
-    }
+      const currentSection = sections[activeIdx];
+      const nextSection = sections[activeIdx + 1];
 
-    setActiveIndex(activeIdx);
-    setScrollProgress(progress);
-  }, []);
+      if (currentSection && nextSection) {
+        const currentRect = currentSection.getBoundingClientRect();
+        const nextRect = nextSection.getBoundingClientRect();
+        const totalDist = nextRect.top - currentRect.top;
+        const traveled = TOTAL_HEADER_HEIGHT - currentRect.top;
+        const localPercent = Math.max(0, Math.min(1, traveled / totalDist));
+        progress = (activeIdx + localPercent) * step;
+      } else {
+        progress = activeIdx * step;
+      }
+
+      setActiveIndex(activeIdx);
+      setScrollProgress(progress);
+    },
+    [TOTAL_HEADER_HEIGHT],
+  );
 
   const handleTimelineClick = (index: number) => {
     const container = scrollContainerRef.current;
@@ -91,14 +89,8 @@ const Gallery: React.FC = () => {
     const targetSection = sections[index];
 
     if (targetSection) {
-      // Scroll so the top of the section (the Year Title)
-      // sits exactly at the bottom of the Timeline
       const targetScroll = targetSection.offsetTop - TOTAL_HEADER_HEIGHT;
-
-      container.scrollTo({
-        top: targetScroll,
-        behavior: "smooth",
-      });
+      container.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
   };
 
@@ -109,7 +101,17 @@ const Gallery: React.FC = () => {
         onScroll={handleScroll}
         className="relative w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide touch-pan-y"
       >
-        <header className="fixed top-[112px] left-0 z-50 w-full bg-transparent transition-all duration-300">
+        {/* MODIFIED HEADER: Added translation for smooth hiding */}
+        <header
+          className="fixed top-[112px] left-0 z-50 w-full bg-transparent transition-all duration-500 ease-in-out"
+          style={{
+            transform: isTimelineVisible
+              ? "translateY(0)"
+              : "translateY(-200px)",
+            opacity: isTimelineVisible ? 1 : 0,
+            pointerEvents: isTimelineVisible ? "auto" : "none",
+          }}
+        >
           <HorizontalTimeline
             items={timelineItems}
             activeIndex={activeIndex}
@@ -154,7 +156,11 @@ const Gallery: React.FC = () => {
           ))}
         </main>
 
-        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 border-t border-white/5">
+        {/* CAROUSEL SECTION: Added ref to track visibility */}
+        <section
+          ref={carouselSectionRef}
+          className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 border-t border-white/5"
+        >
           <div className="-mb-12 md:-mb-10 text-center px-4">
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
               Memories in Motion
