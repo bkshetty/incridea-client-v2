@@ -14,16 +14,13 @@ const Gallery: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const galleryRef = useRef<HTMLDivElement | null>(null);
 
-  // We remove the hardcoded pixel 'height' from the data generation
   const gallerySections = useMemo(
     () =>
       timelineItems.map((year) => ({
         year,
         images: Array.from({ length: 8 }, (_, i) => ({
           id: `${year}-${i}`,
-          // We use standard placeholder sizes to imply the ratio (e.g., 4:3, 3:4, 1:1)
           url: `https://picsum.photos/600/${[450, 600, 800][i % 3]}?random=${year}-${i}`,
-          // Aspect ratios to keep constant: 4/3, 1/1, 3/4
           ratio: ["aspect-[4/3]", "aspect-square", "aspect-[3/4]"][i % 3],
         })),
       })),
@@ -96,17 +93,18 @@ const Gallery: React.FC = () => {
               className="w-full max-w-7xl px-4 sm:px-6 md:px-10 mb-12 md:mb-24"
             >
               <motion.h1
-                className="font-['Michroma'] text-2xl sm:text-4xl md:text-6xl mb-6 md:mb-10 text-white/90 tracking-tight"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                className="font-['Michroma'] text-2xl sm:text-2xl md:text-3xl lg:text-5xl mb-2 sm:mb-4 font-bold bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider"
+                initial={{ opacity: 0, y: 80 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6 }}
+                transition={{
+                  duration: 1,
+                  ease: "easeOut",
+                }}
               >
                 {section.year}
               </motion.h1>
 
-              {/* Masonry automatically handles the vertical arrangement 
-                  as columns change (2 to 3 to 4) based on screen size */}
               <Masonry
                 columns={{ xs: 2, sm: 3, lg: 4 }}
                 spacing={{ xs: 1.5, sm: 2, md: 3 }}
@@ -119,8 +117,6 @@ const Gallery: React.FC = () => {
                     <ImageWithSkeleton
                       src={item.url}
                       alt={item.id}
-                      // We pass '100%' or nothing to allow the aspect-ratio
-                      // class to define the height container
                       className="w-full h-full object-cover"
                     />
                   </Box>
@@ -132,6 +128,7 @@ const Gallery: React.FC = () => {
 
         <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 md:py-24 border-t border-white/5">
           <div className="mb-6 md:mb-12 text-center px-4">
+            {/* Same logic applied to Carousel title if needed */}
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
               Memories in Motion
             </h2>
