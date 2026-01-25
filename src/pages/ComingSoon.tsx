@@ -1,12 +1,22 @@
-import LightRays from '../components/LightRays'
+import LightRays from "../components/LightRays";
 
 const ComingSoon = () => {
   return (
     <div className="relative flex h-screen w-full overflow-hidden bg-gradient-to-b from-[#1a1026] via-[#0d0716] to-black">
-
       {/* ================= INLINE FONT (NO OTHER FILES TO TOUCH) ================= */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+        @keyframes portalFlicker {
+          0%, 33.33% {
+            content: url('/comingsoon/on.png');
+            opacity: 1;
+          }
+          33.34%, 100% {
+            content: url('/comingsoon/off.png');
+            opacity: 1;
+          }
+        }
 
         .cs-root {
           font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -14,6 +24,7 @@ const ComingSoon = () => {
 
         .character-glow {
           filter: brightness(0.95);
+          animation: portalFlicker 3s infinite;
         }
 
         .character-glow:hover {
@@ -31,7 +42,7 @@ const ComingSoon = () => {
         raysColor="#a78bfa"
         raysSpeed={0.45}
         lightSpread={0.9}
-        rayLength={3.6}     // 🔥 longer rays
+        rayLength={3.6} // 🔥 longer rays
         fadeDistance={1.9}
         saturation={0.75}
         noiseAmount={0.12}
@@ -41,11 +52,9 @@ const ComingSoon = () => {
 
       {/* ================= CONTENT ================= */}
       <div className="cs-root relative z-10 flex h-full w-full">
-
         {/* LEFT SIDE */}
         <div className="flex h-full w-1/2 items-center">
           <div className="flex flex-col items-start pl-24">
-
             <div className="relative mb-4">
               <span className="absolute -left-10 -top-3 text-white/60 text-sm">
                 ⌖
@@ -66,7 +75,6 @@ const ComingSoon = () => {
             <p className="mt-6 text-xs tracking-[0.4em] text-[#b8c6ff]">
               STAY TUNED
             </p>
-
           </div>
         </div>
 
@@ -78,10 +86,9 @@ const ComingSoon = () => {
             className="character-glow h-[80%] object-contain transition-all duration-700 ease-out"
           />
         </div>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ComingSoon
+export default ComingSoon;
