@@ -5,29 +5,31 @@ import { motion, AnimatePresence } from "framer-motion";
 interface ImageProps {
   src: string;
   alt: string;
-  height: number;
+  height?: number; // Made optional with "?"
+  className?: string; // Added to allow Tailwind classes
 }
 
 /**
  * ImageWithSkeleton component handles the "Dimension Shift" loading state.
- * It displays a themed skeleton and transitions into the image with a
- * materialize (blur + scale) effect.
  */
 export const ImageWithSkeleton: React.FC<ImageProps> = ({
   src,
   alt,
   height,
+  className,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <Box
+      className={className} // Pass through classes like aspect-ratio
       sx={{
         position: "relative",
         width: "100%",
-        height: height,
+        // If height prop exists, use it. Otherwise, use 100% (to fill the aspect-ratio Box).
+        height: height ? height : "100%",
         overflow: "hidden",
-        backgroundColor: "rgba(15, 23, 42, 0.5)", // Fallback dark base
+        backgroundColor: "rgba(15, 23, 42, 0.5)",
         borderRadius: "inherit",
       }}
     >
@@ -77,7 +79,7 @@ export const ImageWithSkeleton: React.FC<ImageProps> = ({
         }}
         transition={{
           duration: 0.8,
-          ease: [0.43, 0.13, 0.23, 0.96], // Smooth "Dimension Shift" curve
+          ease: [0.43, 0.13, 0.23, 0.96],
         }}
         style={{
           width: "100%",

@@ -85,7 +85,7 @@ const Gallery: React.FC = () => {
 
         <main
           ref={galleryRef}
-          className="w-full flex flex-col items-center pt-4 md:pt-10"
+          className="w-full flex flex-col items-center pt-4 md:pt-10 overflow-x-hidden"
         >
           {gallerySections.map((section) => (
             <section
@@ -112,13 +112,10 @@ const Gallery: React.FC = () => {
                 {section.images.map((item) => (
                   <Box
                     key={item.id}
+                    /* MINIMAL FIX: Move the ratio class here. Remove className from child component to fix TS error */
                     className={`relative w-full rounded-lg md:rounded-2xl overflow-hidden border border-white/5 shadow-2xl hover:border-cyan-500/30 transition-all duration-500 ${item.ratio}`}
                   >
-                    <ImageWithSkeleton
-                      src={item.url}
-                      alt={item.id}
-                      className="w-full h-full object-cover"
-                    />
+                    <ImageWithSkeleton src={item.url} alt={item.id} />
                   </Box>
                 ))}
               </Masonry>
@@ -126,9 +123,8 @@ const Gallery: React.FC = () => {
           ))}
         </main>
 
-        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 md:py-24 border-t border-white/5">
+        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 md:py-24 border-t border-white/5 overflow-x-hidden">
           <div className="mb-6 md:mb-12 text-center px-4">
-            {/* Same logic applied to Carousel title if needed */}
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
               Memories in Motion
             </h2>
