@@ -27,53 +27,59 @@ const Gallery: React.FC = () => {
     [],
   );
 
+  /**
+   * CONSTANTS FOR ALIGNMENT
+   * Navbar Height: 112px
+   * Timeline Height: 80px
+   * Total Offset: 192px
+   */
+  const NAVBAR_HEIGHT = 112;
+  const TIMELINE_HEIGHT = 80;
+  const TOTAL_HEADER_HEIGHT = NAVBAR_HEIGHT + TIMELINE_HEIGHT;
+
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const galleryElement = galleryRef.current;
     if (!target || !galleryElement) return;
 
     const sections = galleryElement.querySelectorAll("section");
-    const headerHeight = window.innerWidth < 768 ? 64 : 80; // Match your HorizontalTimeline height
+    const step = 1 / (timelineItems.length - 1);
 
-    let currentActive = 0;
+    let activeIdx = 0;
+    let progress = 0;
 
-    // Find which section is currently at the header level
+    // Find current active based on which section is crossing the TOTAL_HEADER_HEIGHT line
     sections.forEach((section, index) => {
       const rect = section.getBoundingClientRect();
-      const containerRect = target.getBoundingClientRect();
-      const relativeTop = rect.top - containerRect.top;
 
-      // If the top of the section has reached the header
-      if (relativeTop <= headerHeight + 20) {
-        currentActive = index;
+      // relativeTop is the distance from the top of the Year Section
+      // to the top of the scrollable area
+      const relativeTop = rect.top;
+
+      if (relativeTop <= TOTAL_HEADER_HEIGHT + 10) {
+        activeIdx = index;
       }
     });
 
-    setActiveIndex(currentActive);
+    // Calculate sub-progress between the current and next section
+    const currentSection = sections[activeIdx];
+    const nextSection = sections[activeIdx + 1];
 
-    // Calculate progress based on active index for smooth mascot movement
-    // This ensures mascot is ON the portal when the section is active
-    const totalItems = timelineItems.length;
-    const progressPerItem = 1 / (totalItems - 1);
-
-    // We calculate a "smooth" progress by looking at the current section's position
-    const activeSection = sections[currentActive];
-    const nextSection = sections[currentActive + 1];
-
-    let subProgress = 0;
-    if (activeSection && nextSection) {
-      const rect = activeSection.getBoundingClientRect();
+    if (currentSection && nextSection) {
+      const currentRect = currentSection.getBoundingClientRect();
       const nextRect = nextSection.getBoundingClientRect();
-      const distance = nextRect.top - rect.top;
-      const traveled = Math.abs(
-        rect.top - target.getBoundingClientRect().top - headerHeight,
-      );
-      subProgress = Math.min(1, traveled / distance);
+
+      const totalDist = nextRect.top - currentRect.top;
+      const traveled = TOTAL_HEADER_HEIGHT - currentRect.top;
+
+      const localPercent = Math.max(0, Math.min(1, traveled / totalDist));
+      progress = (activeIdx + localPercent) * step;
+    } else {
+      progress = activeIdx * step;
     }
 
-    const calculatedProgress =
-      currentActive * progressPerItem + subProgress * progressPerItem;
-    setScrollProgress(Math.min(1, calculatedProgress));
+    setActiveIndex(activeIdx);
+    setScrollProgress(progress);
   }, []);
 
   const handleTimelineClick = (index: number) => {
@@ -85,9 +91,9 @@ const Gallery: React.FC = () => {
     const targetSection = sections[index];
 
     if (targetSection) {
-      // Offset matches the header height precisely
-      const headerOffset = window.innerWidth < 768 ? 64 : 80;
-      const targetScroll = targetSection.offsetTop - headerOffset;
+      // Scroll so the top of the section (the Year Title)
+      // sits exactly at the bottom of the Timeline
+      const targetScroll = targetSection.offsetTop - TOTAL_HEADER_HEIGHT;
 
       container.scrollTo({
         top: targetScroll,
@@ -103,7 +109,7 @@ const Gallery: React.FC = () => {
         onScroll={handleScroll}
         className="relative w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide touch-pan-y"
       >
-        <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+        <header className="fixed top-[112px] left-0 z-50 w-full bg-transparent transition-all duration-300">
           <HorizontalTimeline
             items={timelineItems}
             activeIndex={activeIndex}
@@ -114,13 +120,12 @@ const Gallery: React.FC = () => {
 
         <main
           ref={galleryRef}
-          className="w-full flex flex-col items-center pt-0 overflow-x-hidden"
+          className="w-full flex flex-col items-center pt-64 overflow-x-hidden"
         >
           {gallerySections.map((section) => (
             <section
               key={section.year}
-              // Added scroll-margin-top to help browser positioning
-              className="w-full max-w-7xl px-4 sm:px-6 md:px-10 mb-12 md:mb-24 scroll-mt-20"
+              className="w-full max-w-7xl px-4 sm:px-6 md:px-10 mb-12 md:mb-24"
             >
               <motion.h1
                 className="font-['Michroma'] text-2xl sm:text-2xl md:text-3xl lg:text-5xl mb-0 font-bold bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent tracking-wider py-4"
@@ -149,24 +154,17 @@ const Gallery: React.FC = () => {
           ))}
         </main>
 
-        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-0 md:py-4 border-t border-white/5 overflow-x-hidden">
+        <section className="relative z-10 w-full min-h-[80vh] md:min-h-screen flex flex-col justify-center items-center bg-transparent py-12 border-t border-white/5">
           <div className="-mb-12 md:-mb-10 text-center px-4">
             <h2 className="font-['Orbitron'] text-lg md:text-2xl text-cyan-400 tracking-[0.2em] md:tracking-[0.4em] uppercase">
               Memories in Motion
             </h2>
             <div className="h-[2px] w-12 md:w-24 bg-cyan-500 mx-auto mt-0 md:mt-1 rounded-full shadow-[0_0_15px_#06b6d4]" />
           </div>
-
           <Box sx={{ width: "100%", overflow: "hidden" }}>
             <Carousel />
           </Box>
         </section>
-
-        <div className="w-full py-0 -mt-20 md:-mt-12 text-center">
-            <p className="font-['Orbitron'] text-xs sm:text-sm text-white/40 hover:text-white/60 tracking-[0.5em] uppercase animate-pulse transition-colors duration-300">
-              Scroll or click timeline items to navigate
-            </p>
-        </div>
       </div>
     </div>
   );
