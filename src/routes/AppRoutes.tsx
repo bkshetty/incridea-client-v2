@@ -23,13 +23,14 @@ const AuthRedirect = () => {
   const token = params.get("token");
 
   if (token) {
-    localStorage.setItem("token", token);
+    // localStorage.setItem("token", token);
+    // Rely on cookie
     window.location.href = "/";
     return null;
   }
 
   window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${
-    window.location.href
+    window.location.origin
   }`;
   return null;
 };
