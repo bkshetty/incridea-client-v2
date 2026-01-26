@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   useMutation,
   useQuery,
   type QueryFunction,
   type MutationFunction,
 } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import {
   changePassword,
   fetchMe,
@@ -21,9 +21,8 @@ import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import InfiniteScroll from "../components/InfiniteScroll";
 
 function ProfilePage() {
-  const navigate = useNavigate();
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  // const navigate = useNavigate();
+  // Derived token check removed, rely on MeResponse or AuthContext if accessible
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editFullName, setEditFullName] = useState("");
@@ -34,11 +33,7 @@ function ProfilePage() {
 
   // Removed password reset mutation setup
 
-  useEffect(() => {
-    if (!token) {
-      // void navigate("/");
-    }
-  }, [token, navigate]);
+
 
   const profileQueryFn: QueryFunction<MeResponse> = () => {
     // if (!token) {
@@ -48,11 +43,25 @@ function ProfilePage() {
   };
 
   const profileQuery = useQuery<MeResponse>({
-    queryKey: ["me"], // queryKey changed to remove token dependency
+    queryKey: ["me"], 
     queryFn: profileQueryFn,
-    retry: false, // Don't retry if 401
-    // enabled: Boolean(token), // Run always (or rely on layout to handle auth redirect if needed, but here we just show profile)
+    retry: false, 
   });
+
+  if (profileQuery.isError) {
+      window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${window.location.href}`;
+      return null;
+  }
+  
+  if (profileQuery.isLoading) {
+      return (
+        <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-50">
+           <div className="text-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-purple-500 mx-auto mb-4"></div>
+           </div>
+        </div>
+      );
+  }
 
   const form = useForm<ChangePasswordPayload>({
     defaultValues: {
@@ -66,10 +75,7 @@ function ProfilePage() {
     ChangePasswordResponse,
     ChangePasswordPayload
   > = (payload) => {
-    if (!token) {
-      throw new Error("Unauthorized");
-    }
-    return changePassword(payload, token);
+    return changePassword(payload);
   };
 
   const changePasswordMutation = useMutation<
@@ -103,7 +109,7 @@ function ProfilePage() {
     } catch {
       // Ignore logout API errors and proceed to client-side cleanup
     } finally {
-      localStorage.removeItem("token");
+      // localStorage.removeItem("token");
       window.location.href = "/";
     }
   };

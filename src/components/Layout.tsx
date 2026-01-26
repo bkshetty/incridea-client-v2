@@ -8,12 +8,12 @@ import { useSocket } from '../hooks/useSocket'
 
 
 function Layout() {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('userName') ? 'logged-in' : null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const { socket } = useSocket()
 
 
-  // Removed direct localStorage monitoring as we rely on server session
+  // Removed direct monitoring as we rely on server session
   // But for logout, we should clear it immediately for better UX
 
   const handleLogout = async () => {
@@ -23,10 +23,7 @@ function Layout() {
       console.error('Logout failed', error)
     } finally {
       // Clear local state immediately
-      localStorage.removeItem('token')
-      localStorage.removeItem('userName')
-      localStorage.removeItem('userId')
-      setToken(null)
+      setIsAuthenticated(false)
       window.location.reload()
     }
   }
@@ -45,19 +42,11 @@ function Layout() {
 
 
       if (name) {
-        setToken('logged-in')
-        localStorage.setItem('userName', name)
-        if (!localStorage.getItem('token')) {
-          localStorage.setItem('token', 'cookie-session')
-        }
+        setIsAuthenticated(true)
       }
 
     } catch {
-      // If auth fails, just clear local state
-      localStorage.removeItem('token')
-      localStorage.removeItem('userName')
-      localStorage.removeItem('userId')
-      setToken(null)
+      setIsAuthenticated(false)
     } finally {
       setIsLoading(false)
     }
@@ -83,8 +72,8 @@ function Layout() {
     void fetchProfile()
 
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'token' && event.newValue === null) {
-        setToken(null)
+      if (event.key === 'logout-event') {
+        setIsAuthenticated(false)
         // No strict redirect for client as guest view is allowed
       }
     }
@@ -117,11 +106,11 @@ function Layout() {
   return (
     <div className={`flex min-h-screen flex-col text-slate-50`}>
       <Navbar
-        token={token}
+        isAuthenticated={isAuthenticated}
         onLogout={handleLogout}
         isLoading={isLoading}
       />
-      <Sidebar token={token} />
+      <Sidebar isAuthenticated={isAuthenticated} />
 
       <main className="w-screen flex justify-center items-center flex-1 px-4 lg:pl-24 pt-32 pb-10">
         <Outlet />

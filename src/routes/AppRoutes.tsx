@@ -23,7 +23,6 @@ const AuthRedirect = () => {
   const token = params.get("token");
 
   if (token) {
-    // localStorage.setItem("token", token);
     // Rely on cookie
     window.location.href = "/";
     return null;
