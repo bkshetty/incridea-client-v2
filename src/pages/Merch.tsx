@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import MerchBuyModal from "../components/merch/MerchBuyModal";
+import TShirt3DModel from "../components/merch/TShirt3DModel";
 import shirt from "../assets/merch/shirt.svg";
 import { Sparkles, Box, Shirt, Zap } from "lucide-react";
 
@@ -212,10 +213,25 @@ const Merch = () => {
                 </div>
               </div>
 
-            </motion.div>
-
-          </div>
-        </div>
+              {/* Right Panel - Visual (3D Model placeholder) */}
+              <div className="flex items-center justify-center order-1 lg:order-2">
+                <motion.div
+                  initial={{ scale: 0.9, rotate: -5 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="w-full aspect-square flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-indigo-900/20 rounded-xl border border-white/10 p-4 sm:p-6 md:p-8"
+                >
+                  <img
+                    src={tshirtItem.image}
+                    alt={tshirtItem.name}
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                  />
+                </motion.div>
+              </div>
+            </div>
+          </LiquidGlassCard>
+        </motion.div>
+      </div>
 
         {/* Modal */}
         <MerchBuyModal
