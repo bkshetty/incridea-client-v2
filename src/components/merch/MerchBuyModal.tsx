@@ -11,6 +11,7 @@ interface MerchBuyModalProps {
   onClose: () => void;
   productName: string;
   productPrice: number;
+  productSize?: string;
 }
 
 const MerchBuyModal = ({
@@ -18,6 +19,7 @@ const MerchBuyModal = ({
   onClose,
   productName,
   productPrice,
+  productSize,
 }: MerchBuyModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // New state for success view
@@ -29,11 +31,14 @@ const MerchBuyModal = ({
     reset,
   } = useForm<MerchPurchaseFormData>({
     resolver: zodResolver(merchPurchaseSchema),
+    defaultValues: {
+      size: productSize as MerchPurchaseFormData['size'],
+    },
   });
 
   const onSubmit = async (data: MerchPurchaseFormData) => {
     setIsSubmitting(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       console.log("Form submitted:", data);
@@ -104,8 +109,8 @@ const MerchBuyModal = ({
                     >
                       <CheckCircle className="w-12 h-12 text-white" />
                     </motion.div>
-                    
-                    <motion.h2 
+
+                    <motion.h2
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
@@ -113,7 +118,7 @@ const MerchBuyModal = ({
                     >
                       Payment Successful!
                     </motion.h2>
-                    
+
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -164,11 +169,10 @@ const MerchBuyModal = ({
                             {...register("name")}
                             type="text"
                             placeholder="Enter your name"
-                            className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none group ${
-                              errors.name
+                            className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none group ${errors.name
                                 ? "border-red-500/50 focus:bg-red-500/10 focus:border-red-500"
                                 : "border-white/20 focus:bg-white/15 focus:border-purple-400/50"
-                            }`}
+                              }`}
                           />
                           {errors.name && (
                             <p className="text-red-400 text-xs mt-2">{errors.name.message}</p>
@@ -185,11 +189,10 @@ const MerchBuyModal = ({
                             {...register("usn")}
                             type="text"
                             placeholder="e.g., NNMXXYYZZZ"
-                            className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${
-                              errors.usn
+                            className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${errors.usn
                                 ? "border-red-500/50 focus:bg-red-500/10 focus:border-red-500"
                                 : "border-white/20 focus:bg-white/15 focus:border-purple-400/50"
-                            }`}
+                              }`}
                           />
                           {errors.usn && (
                             <p className="text-red-400 text-xs mt-2">{errors.usn.message}</p>
@@ -207,11 +210,10 @@ const MerchBuyModal = ({
                           {...register("collegeName")}
                           type="text"
                           placeholder="Enter your college name"
-                          className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${
-                            errors.collegeName
+                          className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${errors.collegeName
                               ? "border-red-500/50 focus:bg-red-500/10 focus:border-red-500"
                               : "border-white/20 focus:bg-white/15 focus:border-purple-400/50"
-                          }`}
+                            }`}
                         />
                         {errors.collegeName && (
                           <p className="text-red-400 text-xs mt-2">{errors.collegeName.message}</p>
@@ -228,9 +230,8 @@ const MerchBuyModal = ({
                           </label>
                           <select
                             {...register("size")}
-                            className={`w-full bg-slate-950/50 border border-white/10 rounded-lg px-3 py-3.5 text-sm text-white focus:outline-none focus:border-sky-500/50 transition-all appearance-none cursor-pointer ${
-                              errors.size ? "border-red-500/50" : ""
-                            }`}
+                            className={`w-full bg-slate-950/50 border border-white/10 rounded-lg px-3 py-3.5 text-sm text-white focus:outline-none focus:border-sky-500/50 transition-all appearance-none cursor-pointer ${errors.size ? "border-red-500/50" : ""
+                              }`}
                           >
                             <option value="">Select a size</option>
                             <option value="XS">Extra Small (XS)</option>
@@ -253,9 +254,8 @@ const MerchBuyModal = ({
                           </label>
                           <select
                             {...register("semester")}
-                            className={`w-full bg-slate-950/50 border border-white/10 rounded-lg px-3 py-3.5 text-sm text-white focus:outline-none focus:border-sky-500/50 transition-all appearance-none cursor-pointer ${
-                              errors.semester ? "border-red-500/50" : ""
-                            }`}
+                            className={`w-full bg-slate-950/50 border border-white/10 rounded-lg px-3 py-3.5 text-sm text-white focus:outline-none focus:border-sky-500/50 transition-all appearance-none cursor-pointer ${errors.semester ? "border-red-500/50" : ""
+                              }`}
                           >
                             <option value="">Select semester</option>
                             <option value="1">1st Semester</option>
@@ -283,11 +283,10 @@ const MerchBuyModal = ({
                           {...register("branch")}
                           type="text"
                           placeholder="e.g., CSE, ECE"
-                          className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${
-                            errors.branch
+                          className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl border text-white text-xs sm:text-sm placeholder-gray-500/70 transition-all focus:outline-none ${errors.branch
                               ? "border-red-500/50 focus:bg-red-500/10 focus:border-red-500"
                               : "border-white/20 focus:bg-white/15 focus:border-purple-400/50"
-                          }`}
+                            }`}
                         />
                         {errors.branch && (
                           <p className="text-red-400 text-xs mt-2">{errors.branch.message}</p>

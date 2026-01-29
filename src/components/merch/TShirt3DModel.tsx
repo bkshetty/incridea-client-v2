@@ -67,13 +67,13 @@ function Loader() {
       <div className="relative">
         {/* Spinning loader */}
         <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-        
+
         {/* Progress percentage */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-white font-bold text-sm">{progress}%</span>
         </div>
       </div>
-      
+
       <p className="mt-4 text-gray-300 text-sm animate-pulse">Loading 3D Model...</p>
     </div>
   );
@@ -84,29 +84,41 @@ interface TShirt3DModelProps {
   className?: string;
 }
 
-export default function TShirt3DModel({ 
+export default function TShirt3DModel({
   modelPath = '/models/shirt.glb',
-  className = '' 
+  className = ''
 }: TShirt3DModelProps) {
+  // Responsive camera position: 5.0 for mobile (zoomed out), 3.5 for desktop
+  const [cameraZ, setCameraZ] = useState(5.0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCameraZ(window.innerWidth > 640 ? 3.5 : 5.0);
+    };
+    handleResize(); // Initial set
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className={`relative w-full h-full min-h-[400px] ${className}`}>
       <Canvas
         shadows
         dpr={[1, 2]}
         style={{ background: 'transparent' }}
-        gl={{ 
+        gl={{
           antialias: true,
           alpha: true,
           preserveDrawingBuffer: true,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1
         }}
-        camera={{ position: [0, 0, 3.5], fov: 45 }}
+        camera={{ position: [0, 0, cameraZ], fov: 45 }}
       >
         {/* Camera Setup */}
-        <PerspectiveCamera 
-          makeDefault 
-          position={[0, 0, 3.5]} 
+        <PerspectiveCamera
+          makeDefault
+          position={[0, 0, cameraZ]}
           fov={45}
           near={0.1}
           far={100}
@@ -114,34 +126,34 @@ export default function TShirt3DModel({
 
         {/* Lighting Setup - Studio Style */}
         {/* Key light - main illumination */}
-        <directionalLight 
-          position={[5, 5, 5]} 
-          intensity={1.5} 
+        <directionalLight
+          position={[5, 5, 5]}
+          intensity={1.5}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
-        
+
         {/* Fill light - soften shadows */}
-        <directionalLight 
-          position={[-5, 3, -5]} 
-          intensity={0.8} 
+        <directionalLight
+          position={[-5, 3, -5]}
+          intensity={0.8}
         />
-        
+
         {/* Rim light - edge definition */}
-        <directionalLight 
-          position={[0, 5, -5]} 
-          intensity={0.6} 
+        <directionalLight
+          position={[0, 5, -5]}
+          intensity={0.6}
         />
-        
+
         {/* Ambient light - overall base illumination */}
         <ambientLight intensity={0.4} />
-        
+
         {/* Hemisphere light for natural gradient lighting */}
-        <hemisphereLight 
-          intensity={0.6} 
-          color="#ffffff" 
-          groundColor="#444444" 
+        <hemisphereLight
+          intensity={0.6}
+          color="#ffffff"
+          groundColor="#444444"
         />
 
         {/* Model with Suspense */}
@@ -167,7 +179,7 @@ export default function TShirt3DModel({
         />
       </Canvas>
 
-      
+
     </div>
   );
 }
