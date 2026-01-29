@@ -6,7 +6,7 @@ import AboutPage from "../pages/AboutPage";
 import EventsPage from "../pages/EventsPage";
 import EventDetailPage from "../pages/EventDetailPage";
 import RefundPage from "../pages/RefundPage";
-import GuidelinesPage from "../pages/GuidelinesPage";
+import GuidelinesPage from "../pages/GuidelinesPage.tsx";
 import PrivacyPage from "../pages/PrivacyPage";
 import RulesPage from "../pages/RulesPage";
 import QuizPage from "../pages/QuizPage";
@@ -17,6 +17,7 @@ import TechTeamPage from "../pages/techteam.tsx";
 import CoreTeamPage from "../pages/coreteam.tsx";
 import NotFoundPage from "../pages/NotFoundPage";
 import Gallery from "../pages/Gallery.tsx";
+import ComingSoon from "../pages/ComingSoon.tsx";
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);
@@ -63,8 +64,9 @@ function AppRoutes() {
         <Route path="/techteam" element={<TechTeamPage />} />
         <Route path="/coreteam" element={<CoreTeamPage />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="/comingsoon" element={<ComingSoon />} />
     </Routes>
   );
 }
