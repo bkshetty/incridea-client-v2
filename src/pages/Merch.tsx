@@ -5,6 +5,7 @@ import MerchBuyModal from "../components/merch/MerchBuyModal";
 import TShirt3DModel from "../components/merch/TShirt3DModel";
 import { Rotate3d } from "lucide-react";
 import bgImage from "../assets/bg-op.png";
+import LightRays from "@/components/LightRays";
 
 // Inline CSS for custom animations
 const styles = `
@@ -108,10 +109,30 @@ const Merch = () => {
 
               <div className="px-5 pb-5 pt-0 sm:px-8 sm:pb-8 sm:pt-2 xl:p-10 flex flex-col h-full justify-center relative order-first">
 
+                {/* Light Rays & Line Effect - Positioned Top */}
+                <div className="absolute top-0 left-0 right-0 h-[600px] pointer-events-none z-10 overflow-hidden">
+                  {/* The Glowing Line - Thin Scanner Beam with Divider Style */}
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[90%] h-px bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_40px_rgba(255,255,255,1)] z-30" />
+
+                  {/* The Rays Component */}
+                  <div className="absolute top-4 left-0 right-0 bottom-0 mix-blend-screen brightness-[2.5] md:brightness-150 contrast-125">
+                    <LightRays
+                      raysOrigin="top-center"
+                      raysSpeed={0.8}
+                      lightSpread={0.5}
+                      rayLength={1.5}
+                      raysColor="#ffffff"
+                      followMouse={false}
+                    />
+                  </div>
+                </div>
+
                 {/* 3D Model - Directly on Glass */}
                 <div className="relative w-full h-full min-h-[500px] flex flex-col items-center justify-center overflow-hidden">
 
-                  <div className="relative w-full h-full flex items-center justify-center z-20 cursor-grab active:cursor-grabbing">
+
+
+                  <div className="relative w-full h-full flex items-center justify-center z-20 cursor-default pointer-events-none">
                     <Suspense
                       fallback={
                         <div className="flex flex-col items-center justify-center gap-4">
