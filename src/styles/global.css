@@ -5,6 +5,18 @@
 @theme {
   --font-sans: "mocoSans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-moco: "mocoSans", sans-serif;
+  --animate-parallax-fast: move-left 40s linear infinite;
+  --animate-parallax-mid: move-left 60s linear infinite;
+  --animate-parallax-slow: move-left 80s linear infinite;
+}
+
+@keyframes move-left {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: -1500px;
+  }
 }
 
 @font-face {
@@ -127,4 +139,18 @@ body.hide-target-cursor {
 
 body.hide-target-cursor .target-cursor-root {
   display: none !important;
+}
+
+@layer utilities {
+  .animate-parallax-fast {
+    animation: move-left var(--parallax-duration, 40s) linear infinite;
+  }
+
+  .animate-parallax-mid {
+    animation: move-left var(--parallax-duration, 60s) linear infinite;
+  }
+
+  .animate-parallax-slow {
+    animation: move-left var(--parallax-duration, 80s) linear infinite;
+  }
 }
