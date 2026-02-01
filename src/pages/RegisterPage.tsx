@@ -15,10 +15,9 @@ function RegisterPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    // Clean URL params if any (legacy token handling)
     const params = new URLSearchParams(window.location.search)
-    const token = params.get('token')
-    if (token) {
-      localStorage.setItem('token', token)
+    if (params.get('token')) {
       window.history.replaceState({}, '', window.location.pathname)
     }
   }, [])
@@ -29,24 +28,19 @@ function RegisterPage() {
       retry: false,
   })
 
-  useEffect(() => {
-     if (localStorage.getItem('token') && (isUserError || !userData)) {
-         void refetchUser()
-     }
-  }, [isUserError, userData, refetchUser])
+
 
 
   // Redirect if not authenticated (and not loading)
   useEffect(() => {
     // If we have no token, or if fetchMe failed
-    const token = localStorage.getItem('token')
-    if (!token) {
-        window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${window.location.href}`
+    if (!isUserLoading && !userData) {
+        window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${encodeURIComponent(window.location.href)}`
         return
     }
     
     if (!isUserLoading && isUserError) {
-         window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${window.location.href}`
+         window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${encodeURIComponent(window.location.href)}`
     }
   }, [isUserLoading, isUserError])
 
