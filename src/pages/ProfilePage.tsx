@@ -19,6 +19,7 @@ import { showToast } from "../utils/toast";
 import { Pencil, QrCode, X } from "lucide-react";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import InfiniteScroll from "../components/InfiniteScroll";
+import Footer from "../components/Footer";
 
 function ProfilePage() {
   // const navigate = useNavigate();
@@ -127,11 +128,11 @@ function ProfilePage() {
       style={{ backgroundImage: "url('/temp_event_bg.png')" }}
     >
       <div className="absolute inset-0 bg-black/40"></div>
-      <section className="relative h-screen overflow-y-auto pt-32 lg:pt-24 pb-12 flex flex-col items-center justify-start">
+      <section className="relative h-screen overflow-y-auto pt-32 lg:pt-28 lg:pl-12 pb-2 flex flex-col items-center justify-start">
         {/* Profile Card */}
         <div className="w-full max-w-[95%] sm:max-w-[90%] lg:max-w-[85%] mt-4 px-3 sm:px-4">
-          <div className="relative flex w-full gap-4 items-start flex-col lg:flex-row">
-            <LiquidGlassCard className="p-4 lg:p-6 rounded-3xl w-full lg:flex-[0_0_33%]">
+          <div className="relative flex w-full gap-4 items-start flex-col xl:flex-row">
+            <LiquidGlassCard className="p-4 lg:p-6 rounded-3xl w-full xl:flex-[0_0_33%]">
               <div className="mt-4"></div>
               {/* Edit Profile Button */}
               <button
@@ -139,7 +140,7 @@ function ProfilePage() {
                   setEditFullName(userName);
                   setShowEditProfile(true);
                 }}
-                className="absolute top-4 right-4 z-20 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 hover:scale-110 group"
+                className="cursor-target absolute top-4 right-4 z-20 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 hover:scale-110 group"
                 title="Edit profile"
               >
                 <Pencil className="w-4 h-4 lg:w-5 lg:h-5 text-slate-200 group-hover:text-white" />
@@ -167,7 +168,7 @@ function ProfilePage() {
                         setIsRotating(false);
                       }, 500);
                     }}
-                    className="absolute -bottom-2 -right-2 w-10 h-10 lg:w-11 lg:h-11 rounded-xl bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110 shadow-lg"
+                    className="cursor-target absolute -bottom-2 -right-2 w-10 h-10 lg:w-11 lg:h-11 rounded-xl bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110 shadow-lg"
                     title="Show QR Code"
                   >
                     <QrCode className="w-5 h-5 lg:w-6 lg:h-6 text-slate-200" />
@@ -185,7 +186,7 @@ function ProfilePage() {
                 {/* Buttons */}
                 <div className="flex flex-col gap-4 justify-center items-center w-full">
                   <button
-                    className="px-6 py-2 card card--dark text-white rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60 font-moco font-bold"
+                    className="cursor-target px-6 py-2 card card--dark text-white font-medium rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60"
                     type="button"
                     onClick={() => {
                       setShowChangePassword(true);
@@ -194,7 +195,7 @@ function ProfilePage() {
                     Change password
                   </button>
                   <button
-                    className="px-6 py-2 card card--dark text-white rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60 font-moco font-bold"
+                    className="cursor-target px-6 py-2 card card--dark text-white font-medium rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60"
                     type="button"
                     onClick={() => {
                       void handleLogout();
@@ -208,8 +209,8 @@ function ProfilePage() {
             </LiquidGlassCard>
 
             {/* Missions Card on the right */}
-            <LiquidGlassCard className="p-4 lg:p-5 rounded-3xl w-full lg:flex-1 overflow-hidden">
-              <div className="grid gap-4 lg:grid-rows-[auto_auto] overflow-hidden">
+            <LiquidGlassCard className="p-4 lg:p-5 rounded-3xl w-full xl:flex-1 overflow-hidden">
+              <div className="grid gap-4 xl:grid-rows-[auto_auto] overflow-hidden">
                 {/* Top Section: Enrolled Missions */}
                 <div className="flex flex-col overflow-hidden">
                   <div className="flex justify-center mb-4 mt-2 w-full">
@@ -397,7 +398,7 @@ function ProfilePage() {
                 </div>
                 <button
                   type="button"
-                  className="text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
+                  className="cursor-target text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
                   onClick={() => setShowQRCode(false)}
                   aria-label="Close"
                 >
@@ -437,7 +438,7 @@ function ProfilePage() {
                 </div>
                 <button
                   type="button"
-                  className="text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
+                  className="cursor-target text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
                   onClick={handleCloseModal}
                   aria-label="Close"
                 >
@@ -458,7 +459,7 @@ function ProfilePage() {
                 </div>
                 <div className="flex justify-center items-center gap-4 pb-3">
                   <button
-                    className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl transition-colors duration-200 min-w-34 font-moco font-bold"
+                    className="cursor-target px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-3xl transition-colors duration-200 min-w-34"
                     type="button"
                     onClick={() => {
                       if (editFullName.trim()) {
@@ -472,7 +473,7 @@ function ProfilePage() {
                     Save
                   </button>
                   <button
-                    className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl transition-colors duration-200 min-w-34 font-moco font-bold"
+                    className="cursor-target px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-3xl transition-colors duration-200 min-w-34"
                     type="button"
                     onClick={handleCloseModal}
                   >
@@ -501,7 +502,7 @@ function ProfilePage() {
                 </div>
                 <button
                   type="button"
-                  className="text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
+                  className="cursor-target text-slate-300 hover:text-sky-300 p-1 hover:bg-white/10 rounded transition-colors"
                   onClick={handleCloseModal}
                   aria-label="Close"
                 >
@@ -562,7 +563,7 @@ function ProfilePage() {
                 </div>
                 <div className="flex items-center justify-center gap-4 pt-3">
                   <button
-                    className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:brightness-95 text-white rounded-3xl transition-all duration-200 min-w-36 shadow-lg hover:shadow-amber-500/20 font-moco font-bold"
+                    className="cursor-target px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:brightness-95 text-white font-semibold rounded-3xl transition-all duration-200 min-w-36 shadow-lg hover:shadow-amber-500/20"
                     type="submit"
                     disabled={changePasswordMutation.isPending}
                   >
@@ -571,7 +572,7 @@ function ProfilePage() {
                       : "Update password"}
                   </button>
                   <button
-                    className="px-6 py-2.5 bg-slate-600/40 hover:bg-slate-600/60 text-slate-100 rounded-3xl transition-all duration-200 min-w-36 font-moco font-bold"
+                    className="cursor-target px-6 py-2.5 bg-slate-600/40 hover:bg-slate-600/60 text-slate-100 font-semibold rounded-3xl transition-all duration-200 min-w-36"
                     type="button"
                     onClick={handleCloseModal}
                     disabled={changePasswordMutation.isPending}
@@ -590,6 +591,9 @@ function ProfilePage() {
             </LiquidGlassCard>
           </div>
         )}
+        <div className="w-full mt-20">
+          <Footer />
+        </div>
       </section>
     </div>
   );
