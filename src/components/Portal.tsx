@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import portal1 from '../assets/1.png';
-import portal2 from '../assets/2.png';
-import portal3 from '../assets/3.png';
-import portal4 from '../assets/4.png';
+import portal1 from '../assets/pp.png';
+import portal2 from '../assets/pp2.png';
+import portal3 from '../assets/pp3.png';
+import portal4 from '../assets/pp4.png';
 
 const Portal = ({ className = "", isActive = false }: { className?: string; isActive?: boolean }) => {
     const [currentImage, setCurrentImage] = useState(0);

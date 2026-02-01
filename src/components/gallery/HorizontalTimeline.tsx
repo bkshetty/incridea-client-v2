@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
-import Portal from "../Portal";
-// import portalImg from "../../assets/portal.png";
-import mascotImg from "../../assets/char.png";
+import Portal from "../Portal"; 
+import mascotImg from "../../assets/char.png"; 
 
 interface HorizontalTimelineProps {
   items: string[];
@@ -27,26 +26,24 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
   scrollProgress,
 }) => {
   const currentColor = THEME_COLORS[activeIndex % THEME_COLORS.length];
-  const [offsets, setOffsets] = useState({ base: 80, portalSize: 60 });
+  const [offsets, setOffsets] = useState({ base: 60, portalSize: 60 });
 
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
       if (w < 640) setOffsets({ base: 30, portalSize: 30 });
-      else if (w < 1024) setOffsets({ base: 55, portalSize: 45 });
-      else setOffsets({ base: 80, portalSize: 60 });
+      else if (w < 1024) setOffsets({ base: 45, portalSize: 45 });
+      else setOffsets({ base: 60, portalSize: 60 });
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /* New state to track facing direction: 1 for forward (right), -1 for backward (left) */
   const [direction, setDirection] = useState(1);
   const prevProgressRef = React.useRef(scrollProgress);
 
   useEffect(() => {
-    // Determine direction
     if (scrollProgress > prevProgressRef.current) {
       setDirection(1);
     } else if (scrollProgress < prevProgressRef.current) {
@@ -69,30 +66,22 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       }
     });
 
-    // Sync threshold: how close to the portal before starting to merge
-    // Asymmetric thresholds: Enter early (far), Emerge late (close)
     const portalPos = closestIdx * step;
     const signedDist = p - portalPos;
     const isEntering = (direction === 1 && signedDist < 0) || (direction === -1 && signedDist > 0);
-
     const threshold = isEntering ? 0.06 : 0.025;
 
     let opacity = 1;
     let scale = 1;
-    let zDepth = 60; // Higher than portal by default
+    let zDepth = 60;
     let blur = 0;
 
     if (minDistance < threshold) {
-      const ratio = minDistance / threshold; // 0 (at portal) to 1 (at threshold)
-
-      // Use root curve to keep character visible/large for longer, then rapid drop near center
+      const ratio = minDistance / threshold;
       const easeRatio = Math.pow(ratio, 0.5);
-
-      scale = Math.max(0.1, easeRatio); // Go smaller
-      opacity = Math.max(0.2, easeRatio); // Fade out slightly but keep visible
-      blur = (1 - easeRatio) * 6; // Blur increases as we get closer (max 6px)
-
-      // When very close, drop Z-index to "enter" the portal
+      scale = Math.max(0.1, easeRatio);
+      opacity = Math.max(0.2, easeRatio);
+      blur = (1 - easeRatio) * 6;
       if (minDistance < threshold / 2) zDepth = 10;
     }
 
@@ -103,23 +92,23 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       rawP: p,
       style: {
         left: cssPos,
-        // Apply direction to scaleX
         transform: `translateX(-50%) translateY(-50%) scaleX(${direction}) scale(${scale})`,
         opacity,
         zIndex: zDepth,
         filter: `blur(${blur}px)`,
-        willChange: "transform, filter", // Optimize performance
+        willChange: "transform, filter",
         transition: "opacity 0.1s linear, scale 0.1s ease-out, transform 0.2s ease-out, filter 0.1s linear",
       },
     };
   }, [scrollProgress, items.length, offsets, direction]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-2 md:px-4 flex items-center relative h-14 sm:h-16 md:h-20 [perspective:1200px] 
-      bg-gradient-to-b from-slate-900/60 to-slate-900/20 
-      backdrop-blur-2xl rounded-full 
+    // TIMELINE BAR (max-w-5xl, wider than the max-w-4xl grid)
+    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20 [perspective:1200px] 
+      bg-gradient-to-b from-slate-900/80 to-slate-900/40 
+      backdrop-blur-md rounded-full 
       border border-white/10 
-      shadow-[0_8px_32px_-10px_rgba(0,0,0,0.6),0_0_30px_-10px_rgba(6,182,212,0.3)]
+      shadow-[0_8px_32px_-10px_rgba(0,0,0,0.8),0_0_30px_-10px_rgba(6,182,212,0.3)]
       before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
     >
       <style>{`
@@ -148,7 +137,6 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       />
 
       <div className="relative w-full z-10 [transform-style:preserve-3d]">
-        {/* Mascot */}
         <div
           className="absolute top-1/2 pointer-events-none w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16"
           style={mascotStyle.style}
@@ -161,7 +149,6 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
           />
         </div>
 
-        {/* Portals */}
         <div className="relative w-full flex justify-between items-center [transform-style:preserve-3d]">
           {items.map((item, index) => {
             const isActive = index === activeIndex;
@@ -170,24 +157,21 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
             const diff = mascotStyle.rawP - index * step;
             const isEntering = Math.abs(diff) < 0.02 && index !== 0;
             const rotateY = isEntering ? 0 : Math.max(-45, Math.min(45, diff * -500));
-
             const dist = Math.abs(diff);
-
-            // Also animate if reasonably close
             const shouldAnimate = dist < step * 0.5;
 
             return (
               <button
                 key={item}
                 onClick={() => onItemClick(index)}
-                className="relative flex flex-col items-center outline-none group px-1 sm:px-0 z-30"
+                className="relative flex flex-col items-center outline-none group px-1 sm:px-0 z-30 pointer-events-auto"
               >
                 <div className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center [transform-style:preserve-3d]">
                   <div
                     className={`relative z-20 transition-all duration-300 ease-out ${isActive ? "scale-110 grayscale-0" : "opacity-40 grayscale"}`}
                     style={{
                       transform: `rotateY(${rotateY}deg)`,
-                      willChange: "transform", // Optimize for animation
+                      willChange: "transform",
                     }}
                   >
                     <Portal className="w-full h-full object-contain" isActive={shouldAnimate || isActive} />
