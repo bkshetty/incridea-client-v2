@@ -1,8 +1,10 @@
 import React from "react";
+import Tilt from "react-parallax-tilt";
 
 interface MasonryGlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     ratio?: string;
+    onClick?: () => void;
 }
 
 const glassCardStyle: React.CSSProperties = {
@@ -16,23 +18,21 @@ const glassCardStyle: React.CSSProperties = {
       inset 0 0 0 1px rgba(255, 255, 255, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.22)
     `,
-    backdropFilter: "brightness(1.1) blur(1px)",
     WebkitBackdropFilter: "brightness(1.1) blur(1px)",
 };
+
+// ... (existing interfaces and styles)
 
 const MasonryGlassCard: React.FC<MasonryGlassCardProps> = ({
     children,
     className = "",
     ratio = "aspect-square",
     style,
+    onClick,
     ...props
 }) => {
-    return (
-        <div
-            className={`group relative w-full overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.4)] ${className} ${ratio}`}
-            style={{ ...glassCardStyle, ...style }}
-            {...props}
-        >
+    const CardContent = (
+        <>
             {/* SHINE EFFECT */}
             <div className="absolute inset-0 z-10 translate-x-[-100%] group-hover:animate-shine bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-1000" />
 
@@ -43,6 +43,25 @@ const MasonryGlassCard: React.FC<MasonryGlassCardProps> = ({
 
             {/* OVERLAY ON HOVER (Optional Tint) - Kept consistent with previous design but lighter */}
             <div className="absolute inset-0 z-20 pointer-events-none bg-cyan-500/0 group-hover:bg-cyan-500/05 transition-colors duration-500" />
+        </>
+    );
+
+    return (
+        <div
+            onClick={onClick}
+            className={`cursor-pointer ${className} ${ratio}`}
+            {...props}
+        >
+            <Tilt
+                tiltMaxAngleX={15}
+                tiltMaxAngleY={15}
+                scale={1.02}
+                transitionSpeed={2500}
+                className="group relative w-full h-full overflow-hidden"
+                style={{ ...glassCardStyle, ...style }}
+            >
+                {CardContent}
+            </Tilt>
         </div>
     );
 };

@@ -19,7 +19,7 @@ const Gallery: React.FC = () => {
     () =>
       timelineItems.map((year) => ({
         year,
-        images: Array.from({ length: 20 }, (_, i) => ({
+        images: Array.from({ length: 8 }, (_, i) => ({
           id: `${year}-${i}`,
           url: `https://picsum.photos/600/${[450, 600, 800][i % 3]}?random=${year}-${i}`,
           ratio: ["aspect-[4/3]", "aspect-square", "aspect-[3/4]"][i % 3],
@@ -94,20 +94,8 @@ const Gallery: React.FC = () => {
     }
   };
 
-  /* 🔥 ALTERNATING ROTATION LOGIC */
-  const totalSections = timelineItems.length;
-  const progress = scrollProgress * (totalSections - 1);
-
-  const currentIndex = Math.floor(progress);
-  const localProgress = progress - currentIndex;
-
-  const currentRotation = currentIndex % 2 === 0 ? 20 : -20;
-  const nextRotation =
-    (currentIndex + 1) % 2 === 0 ? 20 : -20;
-
-  const rotation =
-    currentRotation +
-    (nextRotation - currentRotation) * localProgress;
+  /* 🔥 LINEAR ROTATION LOGIC (25 to -25) */
+  const rotation = 25 - (scrollProgress * 50);
 
   return (
     <div
