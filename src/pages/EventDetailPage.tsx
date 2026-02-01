@@ -14,6 +14,7 @@ import EventRegistration from "../components/events/EventRegistration";
 import EventDetails from "../components/events/EventDetails";
 import { formatDate as formatDateIST } from "../utils/date";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+import SEO from "../components/SEO";
 
 function parseIdFromSlug(slug: string | undefined) {
   if (!slug) {
@@ -103,6 +104,11 @@ function EventDetailPage() {
 
   return (
     <>
+      <SEO
+        title={event.name}
+        description={event.description?.substring(0, 150) + "..."}
+        image={event.image ?? undefined}
+      />
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
         style={{

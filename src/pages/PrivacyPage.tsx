@@ -1,8 +1,10 @@
 import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard'
+import SEO from '../components/SEO'
 
 const PrivacyPage = () => {
   return (
     <div className="min-h-screen px-3 sm:px-4 pb-28 md:pb-16 pt-8 sm:pt-10  md:px-6">
+      <SEO title="Privacy Policy | Incridea'26" />
       <LiquidGlassCard className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-2xl border border-slate-800 p-6 md:p-10 shadow-xl">
         <div className="flex flex-initial flex-col gap-4 pb-10  border-b border-slate-800/50">
           <h1 className="text-4xl font-life-craft tracking-wider text-purple-200 md:text-6xl">
@@ -182,7 +184,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <p  className="text-lg font-semibold text-purple-400 ">
+          <p className="text-lg font-semibold text-purple-400 ">
             For inquiries or clarifications on our privacy policy or personal data handling, you may reach us at{' '}
             <a href="mailto:incridea@nmamit.in" className="text-sky-300 underline underline-offset-2 hover:text-sky-200">
               incridea@nmamit.in

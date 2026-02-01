@@ -1,6 +1,9 @@
+import SEO from '../components/SEO'
+
 const RulesPage = () => {
   return (
     <div className="min-h-screen px-3 sm:px-4 pb-28 md:pb-16 pt-8 sm:pt-10 text-slate-100 md:px-6">
+      <SEO title="Terms and Conditions | Incridea'26" />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-2xl bg-slate-950/50 border border-slate-800 p-6 md:p-10 shadow-xl">
         <div className="flex flex-col gap-4 text-center">
           <h1 className="text-4xl font-life-craft tracking-wider text-sky-200 md:text-6xl">Terms and Conditions</h1>

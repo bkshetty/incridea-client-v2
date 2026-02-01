@@ -7,9 +7,12 @@ const REG_AMOUNT_IN_INR = {
   EXTERNAL: 250,
 }
 
+import SEO from '../components/SEO'
+
 function GuidelinesPage() {
   return (
     <div className="min-h-screen px-3 sm:px-4 pb-28 md:pb-16 pt-8 sm:pt-10 text-slate-100 md:px-6">
+      <SEO title="Guidelines | Incridea'26" />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-2xl bg-slate-950/50 border border-slate-800 p-6 md:p-10 shadow-xl">
         <h1 className="text-center text-4xl tracking-wider md:text-6xl font-life-craft text-sky-200">
           Guidelines and Regulations for Participating in Incridea 2026
