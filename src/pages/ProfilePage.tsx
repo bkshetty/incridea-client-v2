@@ -16,9 +16,10 @@ import {
 } from "../api/auth";
 import { useForm } from "react-hook-form";
 import { showToast } from "../utils/toast";
-import { Pencil, QrCode, X } from "lucide-react";
+import { Pencil, QrCode as QrCodeIcon, X } from "lucide-react";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import InfiniteScroll from "../components/InfiniteScroll";
+import QRCode from "react-qr-code";
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -167,7 +168,7 @@ function ProfilePage() {
                     className="absolute -bottom-2 -right-2 w-10 h-10 lg:w-11 lg:h-11 rounded-xl bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110 shadow-lg"
                     title="Show QR Code"
                   >
-                    <QrCode className="w-5 h-5 lg:w-6 lg:h-6 text-slate-200" />
+                    <QrCodeIcon className="w-5 h-5 lg:w-6 lg:h-6 text-slate-200" />
                   </button>
                 </div>
 
@@ -410,9 +411,18 @@ function ProfilePage() {
 
               <div className="flex flex-col items-center space-y-6 md:space-y-7 pb-1">
                 {/* QR Code Placeholder */}
-                <div className="w-64 h-64 bg-white rounded-2xl p-5 flex items-center justify-center shadow-inner">
-                  <div className="w-full h-full bg-slate-200 rounded-xl flex items-center justify-center">
-                    <QrCode className="w-32 h-32 text-slate-400" />
+                <div className="bg-white rounded-2xl p-4 flex items-center justify-center shadow-inner overflow-hidden">
+                  <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
+                    {user?.pid ? (
+                      <QRCode
+                        value={user.pid}
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        viewBox={`0 0 256 256`}
+                      />
+                    ) : (
+                      <QrCodeIcon className="w-32 h-32 text-slate-400" />
+                    )}
                   </div>
                 </div>
                 <p className="text-sm text-slate-400 text-center pb-1">
