@@ -24,170 +24,173 @@ const REG_AMOUNT_IN_INR = {
   EXTERNAL: 350,
 }
 
+// Championship data for mobile cards
+const championshipData = [
+  { category: 'Gold', color: 'text-yellow-200', winner: 500, runnerUp: 450, secondRunnerUp: 400 },
+  { category: 'Silver', color: 'text-gray-300', winner: 350, runnerUp: 300, secondRunnerUp: 250 },
+  { category: 'Bronze', color: 'text-orange-400', winner: 200, runnerUp: 150, secondRunnerUp: 100 },
+];
+
 function GuidelinesPage() {
   return (
     <>
       <div 
-        className="fixed inset-0 bg-cover bg-center bg-fixed bg-no-repeat -z-10"
-        style={{ backgroundImage: `url(${galaxyBg})` }}
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10 sm:bg-fixed"
+        style={{ 
+          backgroundImage: `url(${galaxyBg})`,
+          transform: 'translate3d(0, 0, 0)',
+          WebkitTransform: 'translate3d(0, 0, 0)'
+        }}
       />
-      <div className="min-h-screen px-3 sm:px-4 pb-28 md:pb-16 pt-8 sm:pt-10 text-slate-100 md:px-6 font-['mocoSans']">
+      
+      <div className="min-h-screen w-full px-3 sm:px-4 lg:px-8 pb-safe pt-safe text-slate-100 font-sans antialiased">
         <div 
-          className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6 md:p-10 relative max-h-[85vh]"
+          className="mx-auto w-full max-w-6xl flex flex-col relative my-4 sm:my-6 lg:my-8 h-[calc(100svh-2rem)] sm:h-[calc(100svh-3rem)] lg:h-[calc(100svh-4rem)]"
           style={glassCardStyle}
         >
-          {/* Scrollable Content Container */}
-          <div className="overflow-y-auto pr-2 space-y-6 custom-scrollbar">
-            <h1 className="text-center text-3xl tracking-wider md:text-5xl font-normal text-sky-200">
-              Guidelines and Regulations for Participating in Incridea 2024
-            </h1>
+          <div className="overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 no-scrollbar overscroll-contain">
+            <header className="space-y-2 sm:space-y-4">
+              <h1 className="text-center text-xl sm:text-3xl lg:text-4xl xl:text-5xl tracking-wider font-normal text-sky-200 leading-tight px-2">
+                Guidelines and Regulations for Participating in Incridea 2024
+              </h1>
+              
+              <p className="text-center text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed max-w-4xl mx-auto px-2">
+                The fest is open to all students from engineering as well as Nitte sister institutions.
+              </p>
+            </header>
 
-            <p className="text-center text-slate-300 text-lg leading-relaxed">
-              The fest is open to all students from engineering as well as Nitte sister institutions. This article outlines the guidelines and regulations that participants need to follow.
-            </p>
-
-            <div className="text-slate-200 space-y-6">
+            <div className="text-slate-200 space-y-6 sm:space-y-8">
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">
                   Participant Registration, Entry, Identification and Access
                 </h2>
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed">
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 sm:space-y-3 text-slate-300 leading-relaxed text-sm sm:text-base">
                   <li>
-                    Registration for the fest can only be done through the official website of Incridea{" "}
-                    <a
-                      className="underline hover:text-sky-400 text-sky-300 transition-colors font-bold"
-                      href={BASE_URL}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      ({BASE_URL})
-                    </a>.
+                    Registration only through{" "}
+                    <a className="underline hover:text-sky-400 text-sky-300 transition-colors font-bold break-all" href={BASE_URL} target="_blank" rel="noreferrer">
+                      {BASE_URL}
+                    </a>
                   </li>
-                  <li>There are two different categories of participants, who will have access to all the events and pronites.</li>
-                  <li>Students of NMAM Institute of Technology, Nitte - ₹{REG_AMOUNT_IN_INR.INTERNAL}</li>
-                  <li>Students of external engineering colleges and Nitte sister institutions - ₹{REG_AMOUNT_IN_INR.EXTERNAL}</li>
-                  <li>Event registrations can be done either through website or on-spot, which may vary according to the event, please check the Incridea website for further information regarding the same.</li>
-                  <li>All participants must present a valid PID (Participant Identification) during registration for events and pronites entry.</li>
-                  <li>The PID provided must belong to the participant registering for the events, and the organisers reserve the right to verify its authenticity.</li>
-                  <li>Attendees must present their physical college IDs along with a valid government-issued ID proof (Aadhaar, driver's license, Voter ID, etc.) to access the events and pronites.</li>
-                  <li>Any participant found to have provided false or misleading information will be disqualified.</li>
-                  <li>Participants are responsible for ensuring the accuracy and validity of their PID and other personal information. Failure to provide a valid PID will result in the participant being ineligible to participate in the events and pronites.</li>
+                  <li>NMAMIT Students - ₹{REG_AMOUNT_IN_INR.INTERNAL}</li>
+                  <li>External Colleges - ₹{REG_AMOUNT_IN_INR.EXTERNAL}</li>
+                  <li>Valid PID + College ID + Government ID required</li>
+                  <li>On-spot registration available for select events</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">Event Rules</h2>
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed">
-                  <li>The organisers of any event hold the right to change the rules of their event prior to its commencement as they see fit, without any obligation of notice.</li>
-                  <li>NMAM Institute of Technology & Nitte University is not responsible for any loss or damage to participants' personal belongings.</li>
-                  <li>Other rules pertaining to the respective events are given in their respective web-pages.</li>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">Event Rules</h2>
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 sm:space-y-3 text-slate-300 leading-relaxed text-sm sm:text-base">
+                  <li>Organisers can modify rules without prior notice</li>
+                  <li>Institution not responsible for personal belongings</li>
+                  <li>Event-specific rules on respective pages</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">Championship Rules</h2>
-                <p className="font-bold text-slate-200 mb-4">Events will be classified into 3 categories:</p>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">Championship Points</h2>
                 
-                <div className="my-4 w-full overflow-x-auto rounded-lg border border-white/10 bg-black/20">
-                  <table className="w-full min-w-[600px] text-left">
-                    <thead className="border-b border-white/10 bg-white/5 text-xs uppercase text-slate-300 font-bold">
-                      <tr>
-                        <th className="px-4 py-3">Event Category</th>
-                        <th className="px-4 py-3 text-emerald-300">Winner</th>
-                        <th className="px-4 py-3 text-sky-300">Runner-Up</th>
-                        <th className="px-4 py-3 text-amber-300">Second Runner-Up</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10">
-                      <tr className="hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3 font-bold text-yellow-200">Gold</td>
-                        <td className="px-4 py-3">500</td>
-                        <td className="px-4 py-3">450</td>
-                        <td className="px-4 py-3">400</td>
-                      </tr>
-                      <tr className="hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3 font-bold text-gray-300">Silver</td>
-                        <td className="px-4 py-3">350</td>
-                        <td className="px-4 py-3">300</td>
-                        <td className="px-4 py-3">250</td>
-                      </tr>
-                      <tr className="hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3 font-bold text-orange-700">Bronze</td>
-                        <td className="px-4 py-3">200</td>
-                        <td className="px-4 py-3">150</td>
-                        <td className="px-4 py-3">100</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                {/* Mobile Card View */}
+                <div className="sm:hidden space-y-3 mb-4">
+                  {championshipData.map((item) => (
+                    <div key={item.category} className="rounded-lg border border-white/10 bg-white/5 p-3">
+                      <div className={`font-bold mb-2 ${item.color} text-lg`}>{item.category}</div>
+                      <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                        <div>
+                          <div className="text-emerald-300 font-bold text-xs mb-1">Winner</div>
+                          <div className="text-white">{item.winner}</div>
+                        </div>
+                        <div>
+                          <div className="text-sky-300 font-bold text-xs mb-1">Runner-Up</div>
+                          <div className="text-white">{item.runnerUp}</div>
+                        </div>
+                        <div>
+                          <div className="text-amber-300 font-bold text-xs mb-1">2nd RU</div>
+                          <div className="text-white">{item.secondRunnerUp}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed mt-4">
-                  <li>College must enter the final round of at least 3 technical events and 2 non-technical events to be eligible for championship.</li>
-                  <li>The college which has accumulated the highest points will be announced as winners and the college which is next to it as runner-up. Second runner-up will not be recognized with a prize, it is only assigned for the calculation of the championship.</li>
-                  <li>The point system does not apply to special events.</li>
+                {/* Desktop Table View */}
+                <div className="hidden sm:block my-4 w-full overflow-hidden rounded-lg border border-white/10 bg-black/20">
+                  <div className="overflow-x-auto no-scrollbar">
+                    <table className="w-full text-left text-sm lg:text-base">
+                      <thead className="border-b border-white/10 bg-white/5 text-xs uppercase text-slate-300 font-bold">
+                        <tr>
+                          <th className="px-4 py-3">Category</th>
+                          <th className="px-4 py-3 text-emerald-300">Winner</th>
+                          <th className="px-4 py-3 text-sky-300">Runner-Up</th>
+                          <th className="px-4 py-3 text-amber-300">2nd Runner-Up</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/10">
+                        {championshipData.map((item) => (
+                          <tr key={item.category} className="hover:bg-white/5 transition-colors">
+                            <td className={`px-4 py-3 font-bold ${item.color}`}>{item.category}</td>
+                            <td className="px-4 py-3">{item.winner}</td>
+                            <td className="px-4 py-3">{item.runnerUp}</td>
+                            <td className="px-4 py-3">{item.secondRunnerUp}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 text-slate-300 leading-relaxed text-sm sm:text-base mt-3">
+                  <li>Min. 3 technical + 2 non-technical finals required for championship</li>
+                  <li>Points don't apply to special events</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">Prohibited Conduct</h2>
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed">
-                  <li>The consumption of alcoholic drinks, use of tobacco products, hallucinogenic drugs or other illegal substances on the campus premises is strictly prohibited.</li>
-                  <li>Anyone trying to enter the campus under the influence of such substances will be denied access.</li>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">Prohibited Conduct</h2>
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 text-slate-300 leading-relaxed text-sm sm:text-base">
+                  <li>Alcohol, tobacco, drugs strictly prohibited</li>
+                  <li>Entry denied if under influence</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">Accommodation for external engineering students</h2>
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed">
-                  <li>The accommodation will be provided for the participants if they have opted for the same in the Incridea website or filled out the Google form provided.</li>
-                  <li>The accommodation service will be of two types, on-campus and external; the locations of the accommodation will be provided later up on booking of the service.</li>
-                  <li>Details regarding payment and other relevant information will be provided by the point of contact.</li>
-                  <li>Allotment will be on a first-come-first-serve basis, of which on-campus will be allotted first.</li>
-                  <li>
-                    <p className="font-bold text-slate-100 mb-2">The rules and regulations for the on-campus accommodation:</p>
-                    <ul className="list-disc pl-4 space-y-2 text-slate-300">
-                      <li>Separate accommodation for male and female participants.</li>
-                      <li>The gate of the building in which accommodation is provided will be closed within half an hour from the end of the program every night.</li>
-                      <li>The gate of the building will only be opened at 6 AM, so it is advised to carry necessary things well in advance.</li>
-                    </ul>
-                  </li>
-                  <li>If the accommodation provided is external, then participants will be given details of the place of stay and they may book the same directly; transportation will be provided for the participants from college to place of stay and vice versa.</li>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">Accommodation</h2>
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 text-slate-300 leading-relaxed text-sm sm:text-base">
+                  <li>Book via website/form. First-come-first-serve.</li>
+                  <li>On-campus: Separate wings, gates close 30min after events, reopen 6AM</li>
+                  <li>Off-campus: Details provided, transport available</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-sky-100 mb-4">Campus Rules and Regulations</h2>
-                <ul className="list-disc pl-4 space-y-3 text-slate-300 leading-relaxed">
-                  <li>All the participants when inside the campus, must follow the rules and regulations of the campus.</li>
-                  <li>Contact concerned organisers, core team, security officials or any other concerned authorities for any help or grievances.</li>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-sky-100 mb-3">Campus Rules</h2>
+                <ul className="list-disc pl-4 sm:pl-6 space-y-2 text-slate-300 leading-relaxed text-sm sm:text-base">
+                  <li>Follow all campus regulations</li>
+                  <li>Contact organisers/security for assistance</li>
                 </ul>
               </section>
 
               <section className="pt-4 border-t border-white/10">
-                <p className="text-slate-300 leading-relaxed mb-3">
-                  By participating in Incridea, participants agree to abide by the guidelines and regulations outlined above. Any participant found violating the rules may be immediately expelled from the campus, registration for all events may be cancelled, and they will be penalized appropriately. NMAM Institute of Technology & Nitte University reserve the right to take any appropriate legal actions in any case that requires it.
+                <p className="text-slate-300 leading-relaxed text-xs sm:text-sm mb-3">
+                  By participating, you agree to these guidelines. Violations may result in expulsion, event cancellation, and penalties. NMAMIT reserves legal rights.
                 </p>
-                <p className="text-slate-300 leading-relaxed">
-                  For further information regarding the fest and live updates, check out our website and Instagram handle.
+                <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
+                  For updates, visit our website and Instagram.
                 </p>
               </section>
             </div>
           </div>
         </div>
 
-        {/* Custom scrollbar styles */}
         <style>{`
-  .custom-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .custom-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-`}</style>
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+          .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+          .pt-safe { padding-top: max(1rem, env(safe-area-inset-top)); }
+        `}</style>
       </div>
 
-      <svg className="absolute w-0 h-0">
+      <svg className="absolute w-0 h-0" aria-hidden="true">
         <defs>
           <filter id="displacementFilter">
             <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
