@@ -79,7 +79,7 @@ function EventDetailPage() {
           <AiOutlineArrowLeft /> Back to events
         </RouterLink>
         <div className="rounded-lg border border-red-900/50 bg-red-900/20 p-6 text-red-200">
-          <h2 className="text-lg font-semibold mb-2 font-moco font-bold">Event Not Found</h2>
+          <h2 className="text-lg mb-2 font-moco font-bold">Event Not Found</h2>
           <p className="font-moco">
             We couldn't find the event you're looking for. It might have been
             removed or the link is incorrect.

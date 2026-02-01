@@ -16,7 +16,7 @@ const PrivacyPage = () => {
         </div>
 
         <section className="flex  mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Consent</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Consent</h2>
           <p className='text-gray-400 font-moco'>
             By registering and submitting your personal information, you are indicating your consent to the collection,
             utilization, and sharing of your data in accordance with the terms outlined in our privacy policy. If any
@@ -26,7 +26,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Information Collection</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Information Collection</h2>
           <p className='text-gray-400 font-moco'>
             We collect personally identifiable information from you when you voluntarily provide it to us through the
             festival registration form. The information we collect may include your name, email address, phone number,
@@ -36,7 +36,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Use of Information</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Use of Information</h2>
           <p className='text-gray-400 font-moco'>
             We will use the information collected during the registration process to communicate with you about festival
             events and services, including but not limited to sending promotional emails, newsletters, and event updates.
@@ -52,7 +52,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Sharing of Information</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Sharing of Information</h2>
           <p className='text-gray-400 font-moco'>
             We do not sell or rent your personal information to any third party. We may share your personal data with
             partners, vendors, or service providers only as necessary to provide the services you have requested or
@@ -64,7 +64,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Third-party services</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Third-party services</h2>
           <p className='text-gray-400 font-moco'>
             We only allow third-party providers to collect, use, and disclose your information to the extent necessary
             for them to provide the services they offer. However, some providers may have their own privacy policies for
@@ -83,7 +83,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Your Control Over Information</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Your Control Over Information</h2>
           <p className='text-gray-400 font-moco'>
             You have the right to access, correct, or delete your personal information at any time. You may also opt out
             of receiving future communications from us by contacting us through the email address or phone number
@@ -92,7 +92,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Cookies</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Cookies</h2>
           <p className='text-gray-400 font-moco'>
             We use cookies to maintain your session and to personalize your experience on our website. We do not use
             cookies to collect personally identifiable information or to track your activity on other websites.
@@ -100,7 +100,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Security Measures</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Security Measures</h2>
           <p className='text-gray-400 font-moco'>
             Our website is secured with SSL encryption, and we use industry-standard security measures to protect your
             personal information from unauthorized access, disclosure, or misuse. We encrypt sensitive information, such
@@ -110,7 +110,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Registrations</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Registrations</h2>
           <p className='text-gray-400 font-moco'>
             When you register for our festival competition, we collect your contact and financial information to process
             your payment and fulfil your registration. We use this information only for billing purposes and to
@@ -119,7 +119,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Eligibility Policy</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Eligibility Policy</h2>
           <p className='text-gray-400 font-moco'>
             Registrations are strictly limited to students from engineering colleges. Non-engineering college
             registrations will not be permitted. In case of any falsified or inaccurate information provided during
@@ -128,7 +128,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Payment Processing and Security</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Payment Processing and Security</h2>
           <p className='text-gray-400 font-moco'>
             We offer multiple modes of payment on our website, including debit card, UPI ID, and other digital payment
             options. All payment details provided by you are encrypted and processed securely through our payment gateway
@@ -156,7 +156,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Links to Other Sites</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Links to Other Sites</h2>
           <p className='text-gray-400 font-moco'>
             Our website may contain links to other sites that are not owned or operated by us. We are not responsible for
             the privacy practices or content of those sites, and we encourage you to review their privacy policies before
@@ -165,7 +165,7 @@ const PrivacyPage = () => {
         </section>
 
         <section className="flex mt-12 flex-col gap-3">
-          <h2 className="text-2xl font-semibold text-purple-400 font-moco font-bold">Changes to privacy policy</h2>
+          <h2 className="text-2xl text-purple-400 font-moco font-bold">Changes to privacy policy</h2>
           <p className='text-gray-400 font-moco'>
             We reserve the right to modify this privacy policy at any time, and we encourage you to review it
             frequently. Any changes or clarifications will take effect immediately upon being posted on our website.
