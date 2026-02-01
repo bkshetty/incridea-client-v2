@@ -7,8 +7,8 @@ export interface AccommodationStats {
 }
 
 export const getAccommodationStats = async () => {
-  const { data } = await apiClient.get<AccommodationStats>('/accommodation/stats')
-  return data
+    const { data } = await apiClient.get<AccommodationStats>('/accommodation/stats')
+    return data
 }
 
 export const checkAvailability = async (gender: 'MALE' | 'FEMALE') => {

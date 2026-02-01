@@ -3,7 +3,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './styles/global.css'
-import { HelmetProvider } from 'react-helmet-async'
+
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -19,10 +19,8 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <HelmetProvider>
-        <App />
-        <ToastContainer position="top-right" theme="dark" pauseOnHover newestOnTop closeOnClick />
-      </HelmetProvider>
+      <App />
+      <ToastContainer position="top-right" theme="dark" pauseOnHover newestOnTop closeOnClick />
     </QueryClientProvider>
   </StrictMode>,
 )

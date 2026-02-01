@@ -1,5 +1,3 @@
-import { Helmet } from 'react-helmet-async';
-
 interface SEOProps {
     title?: string;
     description?: string;
@@ -18,7 +16,7 @@ const SEO = ({
     const siteTitle = title.includes("Incridea'26") ? title : `${title} | Incridea'26`;
 
     return (
-        <Helmet>
+        <>
             {/* Standard Metadata */}
             <title>{siteTitle}</title>
             <meta name="description" content={description} />
@@ -46,7 +44,7 @@ const SEO = ({
                     ]
                 })}
             </script>
-        </Helmet>
+        </>
     );
 };
 

@@ -1,7 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { IndividualBookingForm } from '../components/accommodation/BookingForms'
-import { getAccommodationStats } from '../api/accommodation'
+import { getAccommodationStats, getUserByPid } from '../api/accommodation'
 import { Loader2, Moon, User, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -29,6 +29,13 @@ export default function AccommodationPage() {
     })
 
     const user = meData?.user
+
+    const { data: bookingData } = useQuery({
+        queryKey: ['accommodationUser', user?.pid],
+        queryFn: () => getUserByPid(user!.pid!),
+        enabled: !!user?.pid,
+        retry: false
+    })
 
     if (isAuthError) {
         window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${encodeURIComponent(window.location.href)}`
@@ -117,6 +124,10 @@ export default function AccommodationPage() {
                                             <Link to="/register" className="inline-block px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors">
                                                 Register for Incridea
                                             </Link>
+                                        </div>
+                                    ) : bookingData ? (
+                                        <div className="text-center py-10 text-green-400 font-medium text-lg">
+                                            You already have done the booking for your accommodation
                                         </div>
                                     ) : (
                                         <IndividualBookingForm onSuccess={() => refetch()} />
