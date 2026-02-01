@@ -7,6 +7,7 @@ export interface RegistrationFees {
   externalRegistrationFeeOnSpot: number
   internalRegistrationOnSpot: number
   alumniRegistrationFee: number
+  merchTshirtPrice: number
 }
 
 export interface RegistrationConfigResponse {
