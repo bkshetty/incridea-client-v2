@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
-import Portal from "../Portal"; 
-import mascotImg from "../../assets/char.png"; 
+import Portal from "../Portal";
+import ryokoWalk from "../../assets/Ryoko_walk.gif";
 
 interface HorizontalTimelineProps {
   items: string[];
@@ -40,36 +40,73 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [direction, setDirection] = useState(1);
-  const prevProgressRef = React.useRef(scrollProgress);
+  // Smooth progress state for "walking" effect
+  const [smoothProgress, setSmoothProgress] = useState(scrollProgress);
+  // Using single GIF for all states
+  const [mascotImage, setMascotImage] = useState(ryokoWalk);
+  const [isFlipped, setIsFlipped] = useState(false);
 
+  // Smooth interpolation for walk effect
   useEffect(() => {
-    if (scrollProgress > prevProgressRef.current) {
-      setDirection(1);
-    } else if (scrollProgress < prevProgressRef.current) {
-      setDirection(-1);
-    }
-    prevProgressRef.current = scrollProgress;
+    let animationFrameId: number;
+
+    const animate = () => {
+      setSmoothProgress((prev) => {
+        const target = scrollProgress;
+        const diff = target - prev;
+
+        // Single GIF logic:
+        // Always use ryokoWalk.
+        // Direction determined by isFlipped.
+        // Right (> 0): Flip (assuming natural left).
+        // Left (< 0): No Flip.
+
+        // Ensure image is set (redundant if constant, but keeps logic structure)
+        setMascotImage(ryokoWalk);
+
+        if (diff > 0.0001) {
+          // Moving Right
+          setIsFlipped(true);
+        } else if (diff < -0.0001) {
+          // Moving Left
+          setIsFlipped(false);
+        } else {
+          // Idle - maintain last direction or reset?
+          // Keeping last direction usually looks smoother, 
+          // but resetting to 'false' (Left) makes it always return to default pose.
+          // Let's keep last direction for now by doing nothing, 
+          // OR if we want to face viewer/default, set false.
+          // Leaving as is maintains the "stop" in the direction of travel.
+        }
+
+        // 0.0005 threshold to stop jitter
+        if (Math.abs(diff) < 0.0005) return target;
+
+        // 0.004 factor for even slower walk/glide
+        return prev + diff * 0.004;
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
   }, [scrollProgress]);
 
   const mascotStyle = useMemo(() => {
-    const p = Math.min(Math.max(scrollProgress, 0), 1);
+    // Use smoothProgress instead of scrollProgress for movement
+    const p = Math.min(Math.max(smoothProgress, 0), 1);
     const step = 1 / (items.length - 1);
     let minDistance = 1;
-    let closestIdx = 0;
 
     items.forEach((_, i) => {
       const dist = Math.abs(p - i * step);
       if (dist < minDistance) {
         minDistance = dist;
-        closestIdx = i;
       }
     });
 
-    const portalPos = closestIdx * step;
-    const signedDist = p - portalPos;
-    const isEntering = (direction === 1 && signedDist < 0) || (direction === -1 && signedDist > 0);
-    const threshold = isEntering ? 0.06 : 0.025;
+    // Check entering portal logic
+    const threshold = 0.04;
 
     let opacity = 1;
     let scale = 1;
@@ -92,34 +129,35 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       rawP: p,
       style: {
         left: cssPos,
-        transform: `translateX(-50%) translateY(-50%) scaleX(${direction}) scale(${scale})`,
+        // Apply flip based on isFlipped state
+        transform: `translateX(-50%) translateY(-50%) scaleX(${isFlipped ? -1 : 1}) scale(${scale})`,
         opacity,
         zIndex: zDepth,
         filter: `blur(${blur}px)`,
-        willChange: "transform, filter",
+        willChange: "transform, filter, left",
         transition: "opacity 0.1s linear, scale 0.1s ease-out, transform 0.2s ease-out, filter 0.1s linear",
       },
     };
-  }, [scrollProgress, items.length, offsets, direction]);
+  }, [smoothProgress, items.length, offsets, isFlipped]);
 
   return (
     // TIMELINE BAR (max-w-5xl, wider than the max-w-4xl grid)
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20 [perspective:1200px] 
-      bg-gradient-to-b from-slate-900/80 to-slate-900/40 
-      backdrop-blur-md rounded-full 
-      border border-white/10 
+    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20 [perspective:1200px]
+      bg-gradient-to-b from-slate-900/80 to-slate-900/40
+      backdrop-blur-md rounded-full
+      border border-white/10
       shadow-[0_8px_32px_-10px_rgba(0,0,0,0.8),0_0_30px_-10px_rgba(6,182,212,0.3)]
       before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
     >
       <style>{`
-        @keyframes portalPulse { 
-            0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3)); } 
-            50% { filter: drop-shadow(0 0 8px ${currentColor}aa); } 
+        @keyframes portalPulse {
+            0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 8px ${currentColor}aa); }
         }
         @keyframes mascotFloat { 0%, 100% { transform: translateY(0px) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
-        @keyframes smokeTrail { 
-            0%, 100% { opacity: 0.15; transform: translateY(-50%) scaleY(0.8); filter: blur(1px); } 
-            50% { opacity: 0.3; transform: translateY(-50%) scaleY(1.2); filter: blur(2px); } 
+        @keyframes smokeTrail {
+            0%, 100% { opacity: 0.15; transform: translateY(-50%) scaleY(0.8); filter: blur(1px); }
+            50% { opacity: 0.3; transform: translateY(-50%) scaleY(1.2); filter: blur(2px); }
         }
       `}</style>
 
@@ -142,7 +180,7 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
           style={mascotStyle.style}
         >
           <img
-            src={mascotImg}
+            src={mascotImage}
             alt="Mascot"
             className="w-full h-full object-contain"
             style={{ animation: "mascotFloat 3s ease-in-out infinite" }}
