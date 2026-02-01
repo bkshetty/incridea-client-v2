@@ -340,8 +340,8 @@ function EventDetailPage() {
 function InfoPill({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs sm:text-sm text-white/75">{label}</div>
-      <div className="mt-1 text-sm sm:text-base font-semibold text-white/95">
+      <div className="text-xs sm:text-sm text-white/75 font-moco">{label}</div>
+      <div className="mt-1 text-sm sm:text-base font-semibold text-white/95 font-moco">
         {value}
       </div>
     </div>
