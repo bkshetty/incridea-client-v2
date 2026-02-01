@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { HorizontalTimeline } from "../components/gallery/HorizontalTimeline"; // Verify this path
+import { Link } from "react-router-dom"; 
+import { HorizontalTimeline } from "../components/gallery/HorizontalTimeline"; 
 
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 import { motion } from "framer-motion";
-import { ImageWithSkeleton } from "../components/gallery/Skeleton"; // Verify this path
-import Carousel from "../components/gallery/Carousel"; // Verify this path
+import { ImageWithSkeleton } from "../components/gallery/Skeleton"; 
+import Carousel from "../components/gallery/Carousel"; 
 
 const timelineItems = ["2018", "2019", "2020", "2022", "2023", "2024", "2025"];
 
@@ -45,20 +46,17 @@ const Gallery: React.FC = () => {
       const galleryElement = galleryRef.current;
       if (!galleryElement) return;
 
-      // 1. Visibility Check for Timeline
       if (carouselSectionRef.current) {
         const carouselRect = carouselSectionRef.current.getBoundingClientRect();
         setIsTimelineVisible(carouselRect.top > SYNC_LINE + 50);
       }
 
-      // 2. Timeline Progress Sync
       const sections = galleryElement.querySelectorAll("section");
       const step = 1 / (timelineItems.length - 1);
 
       let activeIdx = 0;
       sections.forEach((section, index) => {
         const rect = section.getBoundingClientRect();
-        // Trigger slightly earlier for smoother feel
         if (rect.top <= SYNC_LINE + 150) {
           activeIdx = index;
         }
@@ -96,18 +94,16 @@ const Gallery: React.FC = () => {
     if (targetSection) {
       const currentScroll = scrollContainer.scrollTop;
       const sectionRectTop = targetSection.getBoundingClientRect().top;
-      // Scroll to exactly where the content starts fading in
       const targetScrollTop = currentScroll + (sectionRectTop - SYNC_LINE) + 40; 
-
       scrollContainer.scrollTo({ top: targetScrollTop, behavior: "smooth" });
     }
   };
 
   return (
-    // MASTER CONTAINER: Fixed Viewport
+    // FIX: Transparent background to avoid black block, depends on Layout background
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-transparent selection:bg-cyan-500/30">
       
-      {/* 1. TIMELINE HEADER (Stationary) */}
+      {/* 1. TIMELINE HEADER */}
       <header
         className="absolute left-0 z-50 w-full transition-all duration-500 ease-in-out pointer-events-none" 
         style={{
@@ -131,20 +127,17 @@ const Gallery: React.FC = () => {
         ref={scrollContainerRef}
         className="w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar relative z-0"
         style={{
-          // MASK FIX: Pure transparency.
-          // The gradient makes images "vanish" as they slide up towards the timeline.
           maskImage: `linear-gradient(to bottom, transparent 0px, transparent ${NAVBAR_HEIGHT + TIMELINE_HEIGHT}px, black ${NAVBAR_HEIGHT + TIMELINE_HEIGHT + 100}px, black 100%)`,
           WebkitMaskImage: `linear-gradient(to bottom, transparent 0px, transparent ${NAVBAR_HEIGHT + TIMELINE_HEIGHT}px, black ${NAVBAR_HEIGHT + TIMELINE_HEIGHT + 100}px, black 100%)`,
         }}
       >
         <main
           ref={galleryRef}
-          className="w-full flex flex-col items-center pt-[320px] pb-40" // pb-40 solves the footer overlap
+          className="w-full flex flex-col items-center pt-[320px]"
         >
           {gallerySections.map((section) => (
             <section
               key={section.year}
-              // GRID FIX: Changed max-w-5xl to max-w-4xl to ensure it fits INSIDE the timeline width
               className="w-full max-w-4xl px-4 sm:px-6 mx-auto mb-12 md:mb-24"
             >
               <motion.h1
@@ -159,7 +152,6 @@ const Gallery: React.FC = () => {
 
               <Masonry
                 columns={{ xs: 2, sm: 3, lg: 3 }}
-                // GRID FIX: Reduced spacing to prevent overflow and tighten the look
                 spacing={{ xs: 1, sm: 2, md: 2 }}
               >
                 {section.images.map((item) => (
@@ -189,8 +181,36 @@ const Gallery: React.FC = () => {
             </Box>
           </section>
 
-          {/* Spacer to allow scrolling past the fixed footer if it exists */}
-          <div className="h-32 w-full"></div>
+          {/* INTERNAL FOOTER: Visible at the bottom of scroll, essentially "Sticky" to the content end */}
+          <footer className="w-full mt-24 border-t border-white/10 pt-10 pb-5 backdrop-blur-sm bg-black/20">
+            <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-4 py-2 text-xs font-semibold text-slate-100 md:flex-row md:flex-wrap md:justify-center md:gap-4">
+              <Link className="transition-colors duration-200 hover:text-slate-200 cursor-pointer" to="/privacy">
+                Privacy Policy
+              </Link>
+              <span className="hidden text-white md:inline">|</span>
+              <Link className="transition-colors duration-200 hover:text-slate-200 cursor-pointer" to="/rules">
+                Terms & Conditions
+              </Link>
+              <span className="hidden text-white md:inline">|</span>
+              <Link className="transition-colors duration-200 hover:text-slate-200 cursor-pointer" to="/guidelines">
+                Guidelines
+              </Link>
+              <span className="hidden text-white md:inline">|</span>
+              <Link className="transition-colors duration-200 hover:text-slate-200 cursor-pointer" to="/refund">
+                Refund Policy
+              </Link>
+              <span className="hidden text-white md:inline">|</span>
+              <Link className="transition-colors duration-200 hover:text-slate-200 cursor-pointer" to="/contact">
+                Contact Us
+              </Link>
+            </div>
+            <div className="mx-auto flex max-w-5xl flex-col items-center gap-1 px-4 pb-5 text-[11px] font-semibold tracking-wide text-slate-200 mt-4">
+              <Link className="inline-flex items-center gap-1 transition-all hover:tracking-wider hover:text-slate-100 cursor-pointer" to="/techteam">
+                Made with <span className="text-rose-400">❤</span> by Technical Team
+              </Link>
+              <p className='cursor-default'>© Incridea {new Date().getFullYear()}</p>
+            </div>
+          </footer>
         </main>
       </div>
 
