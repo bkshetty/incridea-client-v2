@@ -29,7 +29,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
           <NavLink
             to="/events"
             className={({ isActive }) =>
-              `font-['Orbitron'] text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
+              `font-moco text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
               }`
             }
           >
@@ -38,7 +38,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
           <NavLink
             to="/pronite"
             className={({ isActive }) =>
-              `font-['Orbitron'] text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
+              `font-moco text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
               }`
             }
           >
@@ -47,7 +47,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
           <NavLink
             to="/merch"
             className={({ isActive }) =>
-              `font-['Orbitron'] text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
+              `font-moco text-xl md:text-3xl tracking-wide md:tracking-widest font-bold uppercase transition-colors duration-300 cursor-target ${isActive ? "text-purple-400" : "text-white hover:text-purple-300"
               }`
             }
           >
@@ -66,7 +66,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
                 hidden lg:block
                 px-4 py-1.5 md:px-6 md:py-2 rounded-md
                 bg-[#5b21b6] hover:bg-[#4c1d95]
-                text-white font-['Orbitron'] font-bold tracking-wider text-sm md:text-sm
+                text-white font-moco font-bold tracking-wider text-sm md:text-sm
                 uppercase
                 transition-all duration-300
                 skew-x-[-10deg]
@@ -85,7 +85,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
                 hidden lg:block
                 px-4 py-1.5 md:px-6 md:py-2 rounded-md
                 bg-[#5b21b6] hover:bg-[#4c1d95]
-                text-white font-['Orbitron'] font-bold tracking-wider text-sm md:text-sm
+                text-white font-moco font-bold tracking-wider text-sm md:text-sm
                 uppercase
                 transition-all duration-300
                 skew-x-[-10deg]
