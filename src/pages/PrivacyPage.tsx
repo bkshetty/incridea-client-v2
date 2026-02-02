@@ -1,10 +1,23 @@
-import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard'
+const glassCardStyle = {
+  borderRadius: "1.75rem",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  background: `
+    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+    rgba(21, 21, 21, 0.30)
+  `,
+  boxShadow: `
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22)
+  `,
+  backdropFilter: "brightness(1.1) blur(1px)",
+  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
+};
 
 const PrivacyPage = () => {
   return (
     <div className="min-h-screen px-3 sm:px-4 pb-28 md:pb-16 pt-8 sm:pt-10  md:px-6 max-w-6xl">
       {/* Updated className to max-w-6xl mx-auto to match GuidelinesPage width */}
-      <LiquidGlassCard className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-2xl border border-slate-800 p-6 md:p-10 shadow-xl">
+      <div style={glassCardStyle} className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-6 md:p-10">
         <div className="flex flex-initial flex-col gap-4 pb-10  border-b border-slate-800/50">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-life-craft tracking-wider text-purple-200">
             Incridea 2026 Privacy Policy
@@ -266,7 +279,7 @@ const PrivacyPage = () => {
             .
           </p>
         </section>
-      </LiquidGlassCard>
+      </div>
     </div>
   );
 }

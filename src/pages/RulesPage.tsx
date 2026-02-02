@@ -1,4 +1,17 @@
-import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+const glassCardStyle = {
+  borderRadius: "1.75rem",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  background: `
+    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+    rgba(21, 21, 21, 0.30)
+  `,
+  boxShadow: `
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22)
+  `,
+  backdropFilter: "brightness(1.1) blur(1px)",
+  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
+};
 
 const RulesPage = () => {
   return (
@@ -8,7 +21,7 @@ const RulesPage = () => {
         <div
           className="fixed inset-0 w-full h-full -z-10"
           style={{
-            backgroundImage: 'url(/temp_event_bg.png)',
+
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -16,7 +29,7 @@ const RulesPage = () => {
           }}
         />
 
-        <div className="fixed inset-0 bg-black/40 -z-10" />
+        <div className="fixed inset-0 -z-10" />
 
         <div className="fixed inset-0 -z-10 overflow-hidden">
           <div className="absolute top-20 left-10 w-64 h-64 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 opacity-20 blur-3xl"></div>
@@ -27,7 +40,7 @@ const RulesPage = () => {
 
         <div className="relative z-10">
           <div className="mx-auto flex max-w-7xl flex-col gap-8">
-            <LiquidGlassCard>
+            <div style={glassCardStyle} className="p-6 md:p-10">
               <div className="mb-8">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl tracking-wider font-life-craft text-white drop-shadow-[0_0_15px_rgba(216,180,254,0.3)] font-bold">
                   Terms and Conditions
@@ -622,7 +635,7 @@ const RulesPage = () => {
                   <p>Phone: +91 88613 37830</p>
                 </section>
               </div>
-            </LiquidGlassCard>
+            </div>
           </div>
         </div>
 

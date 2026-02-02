@@ -123,7 +123,7 @@ export default function TechTeamPage() {
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
         >
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 " />
       </div>
 
       {/* Content */}

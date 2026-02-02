@@ -31,7 +31,7 @@ function ContactPage() {
         />
 
         {/* Dark Overlay to make text readable */}
-        <div className="fixed inset-0 bg-black/40 -z-10" />
+        <div className="fixed inset-0 -z-10" />
 
         {/* Gradient Orbs - Reduced opacity */}
         <div className="fixed inset-0 -z-10 overflow-hidden">

@@ -26,7 +26,7 @@ function RefundPolicy() {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0" />
       </div>
 
       {/* Main scrollable container */}
