@@ -622,7 +622,7 @@ const RulesPage = () => {
                     Any questions about the Terms of Service should be directed
                     to the student organisers and college staff at:
                   </p>
-                  <p>
+                  <p className="font-moco">
                     Email:
                     <a
                       href="mailto:incridea@nmamit.in"
@@ -632,7 +632,7 @@ const RulesPage = () => {
                       incridea@nmamit.in
                     </a>
                   </p>
-                  <p>Phone: +91 88613 37830</p>
+                  <p className="font-moco">Phone: +91 88613 37830</p>
                 </section>
               </div>
             </div>

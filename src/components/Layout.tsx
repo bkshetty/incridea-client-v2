@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-import { logoutUser, fetchMe } from "../api/auth";
-import { useSocket } from "../hooks/useSocket";
+import { logoutUser, fetchMe } from '../api/auth'
+import { useSocket } from '../hooks/useSocket'
 
 function Layout() {
   const [isLoading, setIsLoading] = useState(true);
