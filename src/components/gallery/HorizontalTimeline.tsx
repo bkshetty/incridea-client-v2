@@ -1,6 +1,27 @@
-import React, { useMemo, useState, useEffect } from "react";
-import Portal from "../Portal"; 
-import mascotImg from "../../assets/char.png"; 
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import Tilt from "react-parallax-tilt";
+import Portal from "../Portal";
+import walk1 from "../../assets/character/walk-1.png";
+import walk2 from "../../assets/character/walk-2.png";
+import stand from "../../assets/character/stand.png";
+
+const WALK_CYCLE = [walk1, stand, walk2, stand];
+const IDLE_FRAME = stand;
+
+const glassCardStyle = {
+  borderRadius: "1.75rem",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  background: `
+    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+    rgba(21, 21, 21, 0.30)
+  `,
+  boxShadow: `
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22)
+  `,
+  backdropFilter: "brightness(1.1) blur(1px)",
+  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
+};
 
 interface HorizontalTimelineProps {
   items: string[];
@@ -10,13 +31,8 @@ interface HorizontalTimelineProps {
 }
 
 const THEME_COLORS = [
-  "#ffffff",
-  "#ffffff",
-  "#ffffff",
-  "#ffffff",
-  "#00A4E4",
-  "#CC52FF",
-  "#00ffaa",
+  "#ffffff", "#ffffff", "#ffffff", "#ffffff",
+  "#00A4E4", "#CC52FF", "#00ffaa",
 ];
 
 export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
@@ -26,51 +42,86 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
   scrollProgress,
 }) => {
   const currentColor = THEME_COLORS[activeIndex % THEME_COLORS.length];
-  const [offsets, setOffsets] = useState({ base: 60, portalSize: 60 });
+  const [baseOffset, setBaseOffset] = useState(60);
 
+  // Responsive sizing aligned with Tailwind breakpoints
+  // sm: 640px, md: 768px
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
-      if (w < 640) setOffsets({ base: 30, portalSize: 30 });
-      else if (w < 1024) setOffsets({ base: 45, portalSize: 45 });
-      else setOffsets({ base: 60, portalSize: 60 });
+      if (w < 640) setBaseOffset(30);        // Mobile (< sm)
+      else if (w < 768) setBaseOffset(45);   // Tablet (sm -> md)
+      else setBaseOffset(60);                // Desktop (>= md)
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [direction, setDirection] = useState(1);
-  const prevProgressRef = React.useRef(scrollProgress);
+  // --- Animation State ---
+  const [smoothProgress, setSmoothProgress] = useState(scrollProgress);
+  const [mascotImage, setMascotImage] = useState(IDLE_FRAME);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const distanceRef = useRef(0);
 
+  // --- Preload Images ---
   useEffect(() => {
-    if (scrollProgress > prevProgressRef.current) {
-      setDirection(1);
-    } else if (scrollProgress < prevProgressRef.current) {
-      setDirection(-1);
-    }
-    prevProgressRef.current = scrollProgress;
+    WALK_CYCLE.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  // --- The Walking Logic ---
+  useEffect(() => {
+    let animationFrameId: number;
+
+    const animate = () => {
+      setSmoothProgress((prev) => {
+        const target = scrollProgress;
+        const diff = target - prev;
+        const absDiff = Math.abs(diff);
+
+        // 1. Determine Direction
+        if (diff > 0.0001) setIsFlipped(false);
+        else if (diff < -0.0001) setIsFlipped(true);
+
+        // 2. Determine Frame (Walk or Stand)
+        const isMoving = absDiff > 0.0005;
+
+        if (isMoving) {
+          const effectiveSpeed = Math.min(absDiff, 0.003);
+          distanceRef.current += effectiveSpeed * 800;
+          const frameIndex = Math.floor(distanceRef.current / 80) % WALK_CYCLE.length;
+          setMascotImage(WALK_CYCLE[frameIndex]);
+        } else {
+          setMascotImage(IDLE_FRAME);
+        }
+
+        // 3. Smooth Movement (Lerp)
+        if (absDiff < 0.0001) return target;
+        return prev + diff * 0.05;
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [scrollProgress]);
 
+  // --- Styles & Positioning ---
   const mascotStyle = useMemo(() => {
-    const p = Math.min(Math.max(scrollProgress, 0), 1);
+    const p = Math.min(Math.max(smoothProgress, 0), 1);
     const step = 1 / (items.length - 1);
     let minDistance = 1;
-    let closestIdx = 0;
 
     items.forEach((_, i) => {
       const dist = Math.abs(p - i * step);
-      if (dist < minDistance) {
-        minDistance = dist;
-        closestIdx = i;
-      }
+      if (dist < minDistance) minDistance = dist;
     });
 
-    const portalPos = closestIdx * step;
-    const signedDist = p - portalPos;
-    const isEntering = (direction === 1 && signedDist < 0) || (direction === -1 && signedDist > 0);
-    const threshold = isEntering ? 0.06 : 0.025;
-
+    const threshold = 0.04;
     let opacity = 1;
     let scale = 1;
     let zDepth = 60;
@@ -85,49 +136,46 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
       if (minDistance < threshold / 2) zDepth = 10;
     }
 
-    const cssPos = `calc(${offsets.base}px + (${p} * (100% - ${offsets.base * 2}px)))`;
+    const cssPos = `calc(${baseOffset}px + (${p} * (100% - ${baseOffset * 2}px)))`;
 
     return {
       cssPos,
       rawP: p,
       style: {
         left: cssPos,
-        transform: `translateX(-50%) translateY(-50%) scaleX(${direction}) scale(${scale})`,
+        transform: `
+          translateX(-50%) 
+          translateY(-50%) 
+          scaleX(${isFlipped ? -1 : 1}) 
+          scale(${scale})
+        `,
         opacity,
         zIndex: zDepth,
         filter: `blur(${blur}px)`,
-        willChange: "transform, filter",
-        transition: "opacity 0.1s linear, scale 0.1s ease-out, transform 0.2s ease-out, filter 0.1s linear",
+        willChange: "transform, left",
+        transition: "opacity 0.1s linear, scale 0.1s ease-out, filter 0.1s linear",
       },
     };
-  }, [scrollProgress, items.length, offsets, direction]);
+  }, [smoothProgress, items.length, baseOffset, isFlipped]);
 
   return (
-    // TIMELINE BAR (max-w-5xl, wider than the max-w-4xl grid)
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20 [perspective:1200px] 
-      bg-gradient-to-b from-slate-900/80 to-slate-900/40 
-      backdrop-blur-md rounded-full 
-      border border-white/10 
-      shadow-[0_8px_32px_-10px_rgba(0,0,0,0.8),0_0_30px_-10px_rgba(6,182,212,0.3)]
-      before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
+    <div
+      className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20"
+      style={glassCardStyle}
     >
       <style>{`
-        @keyframes portalPulse { 
-            0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3)); } 
-            50% { filter: drop-shadow(0 0 8px ${currentColor}aa); } 
-        }
-        @keyframes mascotFloat { 0%, 100% { transform: translateY(0px) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
-        @keyframes smokeTrail { 
-            0%, 100% { opacity: 0.15; transform: translateY(-50%) scaleY(0.8); filter: blur(1px); } 
-            50% { opacity: 0.3; transform: translateY(-50%) scaleY(1.2); filter: blur(2px); } 
+        @keyframes smokeTrail {
+            0%, 100% { opacity: 0.15; transform: translateY(-50%) scaleY(0.8); filter: blur(1px); }
+            50% { opacity: 0.3; transform: translateY(-50%) scaleY(1.2); filter: blur(2px); }
         }
       `}</style>
 
+      {/* 1. TRAIL LINE */}
       <div
         className="absolute top-1/2 z-0 rounded-full transition-colors duration-500"
         style={{
-          left: `${offsets.base}px`,
-          width: `calc(${mascotStyle.cssPos} - ${offsets.base}px)`,
+          left: `${baseOffset}px`,
+          width: `calc(${mascotStyle.cssPos} - ${baseOffset}px)`,
           height: "2px",
           background: `linear-gradient(90deg, transparent, ${currentColor}88)`,
           boxShadow: `0 0 10px ${currentColor}44`,
@@ -136,49 +184,69 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
         }}
       />
 
-      <div className="relative w-full z-10 [transform-style:preserve-3d]">
+      {/* 2. THE MASCOT CONTAINER */}
+      <div className="relative w-full z-10">
         <div
-          className="absolute top-1/2 pointer-events-none w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16"
+          className="absolute top-1/2 pointer-events-none w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20"
           style={mascotStyle.style}
         >
           <img
-            src={mascotImg}
+            src={mascotImage}
             alt="Mascot"
-            className="w-full h-full object-contain"
-            style={{ animation: "mascotFloat 3s ease-in-out infinite" }}
+            className="w-full h-full object-contain drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]"
           />
         </div>
 
-        <div className="relative w-full flex justify-between items-center [transform-style:preserve-3d]">
+        {/* 3. TIMELINE BUTTONS */}
+        <div className="relative w-full flex justify-between items-center">
           {items.map((item, index) => {
             const isActive = index === activeIndex;
             const portalColor = THEME_COLORS[index % THEME_COLORS.length];
+
+            // Dynamic Proximity Scaling
             const step = 1 / (items.length - 1);
             const diff = mascotStyle.rawP - index * step;
-            const isEntering = Math.abs(diff) < 0.02 && index !== 0;
-            const rotateY = isEntering ? 0 : Math.max(-45, Math.min(45, diff * -500));
             const dist = Math.abs(diff);
-            const shouldAnimate = dist < step * 0.5;
+            // Scale up when close (dist < 0.05)
+            // 1.0 -> 1.25 max scale
+            const proximity = Math.max(0, 1 - dist * 20);
+            const dynamicScale = 1 + proximity * 0.25;
+
+            // FIXED ROTATION: Always -60deg per user request
+            const rotateY = -60;
 
             return (
               <button
                 key={item}
                 onClick={() => onItemClick(index)}
-                className="relative flex flex-col items-center outline-none group px-1 sm:px-0 z-30 pointer-events-auto"
+                // ADDED: [perspective:1000px] to creating local 3D space
+                // ADDED: [transform-style:preserve-3d] to allow children to rotate in 3D
+                // ADDED: h-full justify-center to align content within the timeline strip
+                className="relative flex flex-col h-full justify-center items-center outline-none group px-1 sm:px-0 z-30 pointer-events-auto [perspective:1000px] [transform-style:preserve-3d]"
               >
-                <div className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center [transform-style:preserve-3d]">
+                <div className="w-8 h-12 sm:w-12 sm:h-16 md:w-16 md:h-24 flex items-center justify-center">
                   <div
-                    className={`relative z-20 transition-all duration-300 ease-out ${isActive ? "scale-110 grayscale-0" : "opacity-40 grayscale"}`}
+                    className="w-full h-full"
                     style={{
-                      transform: `rotateY(${rotateY}deg)`,
-                      willChange: "transform",
+                      transform: `perspective(1000px) rotateY(${rotateY}deg) scale(${dynamicScale})`,
+                      transformStyle: "preserve-3d",
+                      transition: "transform 0.1s linear" // Faster transition for smooth scaling during scroll
                     }}
                   >
-                    <Portal className="w-full h-full object-contain" isActive={shouldAnimate || isActive} />
+                    <Tilt
+                      tiltMaxAngleX={20}
+                      tiltMaxAngleY={20}
+                      scale={1.1}
+                      transitionSpeed={2500}
+                      className={`relative w-full h-full [transform-style:preserve-3d] ${isActive ? "grayscale-0" : "opacity-40 grayscale"}`}
+                    >
+                      <Portal className="w-full h-full object-contain" isActive={isActive} />
+                    </Tilt>
                   </div>
                 </div>
                 <span
-                  className={`-mt-1 text-[8px] sm:text-[10px] md:text-xs font-bold tracking-tighter sm:tracking-widest font-['Orbitron'] transition-all duration-300 ${isActive ? "opacity-100 scale-105" : "text-white opacity-20"}`}
+                  // UPDATED: Absolute positioning to keep text inside the timeline strip
+                  className={`absolute bottom-1 text-[8px] sm:text-[10px] md:text-xs font-bold tracking-tighter sm:tracking-widest font-['Orbitron'] transition-all duration-300 z-40 ${isActive ? "opacity-100 scale-105" : "text-white opacity-20"}`}
                   style={{
                     color: isActive ? portalColor : undefined,
                     textShadow: isActive ? `0 0 5px ${portalColor}44` : "none",

@@ -1,6 +1,19 @@
-import { MdCall, MdLocationOn, MdMail } from "react-icons/md";
-import { FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa";
-import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+import { MdCall, MdLocationOn, MdMail } from 'react-icons/md'
+import { FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
+const glassCardStyle = {
+  borderRadius: "1.75rem",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  background: `
+    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+    rgba(21, 21, 21, 0.30)
+  `,
+  boxShadow: `
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22)
+  `,
+  backdropFilter: "brightness(1.1) blur(1px)",
+  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
+};
 
 function ContactPage() {
   return (
@@ -42,7 +55,7 @@ function ContactPage() {
             </header>
 
             {/* Main Contact Card */}
-            <LiquidGlassCard>
+            <div style={glassCardStyle}>
               <div className="grid gap-6 md:grid-cols-5">
                 {/* Left Side - Contact Information */}
                 <div className="md:col-span-2 space-y-8 p-4 md:p-6 relative">
@@ -203,7 +216,7 @@ function ContactPage() {
                   </div>
                 </div>
               </div>
-            </LiquidGlassCard>
+            </div>
           </div>
         </div>
 

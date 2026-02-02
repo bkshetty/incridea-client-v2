@@ -3,10 +3,12 @@ import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 const RulesPage = () => {
   return (
     <>
-      <div className="min-h-screen text-white relative max-w-6xl">
+      {/* Container matches Guidelines/Privacy width scaling */}
+      <div className="min-h-screen text-white relative max-w-6xl mx-auto px-4 pb-16 pt-10 md:px-6">
         <div
           className="fixed inset-0 w-full h-full -z-10"
           style={{
+            backgroundImage: 'url(/temp_event_bg.png)',
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -23,11 +25,10 @@ const RulesPage = () => {
           <div className="absolute bottom-32 right-10 w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-cyan-400 to-teal-400 opacity-20 blur-3xl"></div>
         </div>
 
-        <div className="px-4 pb-16 pt-10 md:px-6 relative z-10">
+        <div className="relative z-10">
           <div className="mx-auto flex max-w-7xl flex-col gap-8">
             <LiquidGlassCard>
               <div className="mb-8">
-                {/* FIXED: Scaled heading size */}
                 <h1 className="text-xl sm:text-2xl lg:text-3xl tracking-wider font-life-craft text-white drop-shadow-[0_0_15px_rgba(216,180,254,0.3)] font-bold">
                   Terms and Conditions
                 </h1>
@@ -38,7 +39,7 @@ const RulesPage = () => {
 
               <div className="mb-10 h-px w-full bg-gradient-to-r from-transparent via-purple-200/20 to-transparent" />
 
-              {/* FIXED: Applied font size to this container once to avoid extra lines */}
+              {/* Main content container with standardized typography */}
               <div className="flex flex-col gap-8 text-slate-300 text-xs sm:text-sm lg:text-base leading-relaxed">
                 <section className="flex flex-col gap-3">
                   <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-purple-300">
@@ -94,8 +95,8 @@ const RulesPage = () => {
                   </h2>
                   <p>
                     You may not use our event platform for any illegal or
-                    unauthorized purpose nor may you, in the use of the Service,
-                    violate any laws in your jurisdiction (including but not
+                    authorized purpose nor may you, in the use of the Service,
+                    graduate any laws in your jurisdiction (including but not
                     limited to copyright laws).
                   </p>
                   <p>
@@ -122,8 +123,7 @@ const RulesPage = () => {
 
                 <section className="flex flex-col gap-3">
                   <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-purple-300">
-                    Section 2 - General Conditions for Incridea 2026
-                    Participation
+                    Section 2 - General Conditions for Incridea 2026 Participation
                   </h2>
                   <p>
                     We reserve the right to refuse participation to anyone for
@@ -153,8 +153,7 @@ const RulesPage = () => {
 
                 <section className="flex flex-col gap-3">
                   <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-purple-300">
-                    Section 3 - Accuracy, Completeness and Timeliness of
-                    Information
+                    Section 3 - Accuracy, Completeness and Timeliness of Information
                   </h2>
                   <p>
                     We strive to ensure that all information provided on the
@@ -183,8 +182,7 @@ const RulesPage = () => {
 
                 <section className="flex flex-col gap-3">
                   <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-purple-300">
-                    Section 4 - Modifications to Incridea 2026 and Registration
-                    Prices
+                    Section 4 - Modifications to Incridea 2026 and Registration Prices
                   </h2>
                   <p>
                     Prices for registration and events at Incridea 2026 are
@@ -443,8 +441,7 @@ const RulesPage = () => {
 
                 <section className="flex flex-col gap-3">
                   <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-purple-300">
-                    Section 13 - Disclaimer of Warranties; Limitation of
-                    Liability
+                    Section 13 - Disclaimer of Warranties; Limitation of Liability
                   </h2>
                   <p>
                     We do not guarantee, represent, or warrant that your use of
@@ -542,7 +539,7 @@ const RulesPage = () => {
                     terminated by either party. We may terminate these Terms of
                     Service at any time by notifying you that we no longer wish
                     to provide the event. If we suspect that you have failed to
-                    comply with any term or provision of these Terms of Service,
+                    compliance with any term or provision of these Terms of Service,
                     we may terminate this agreement at any time without notice,
                     and you will remain liable for all amounts due up to and
                     including the date of termination.
