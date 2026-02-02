@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+
 import { HorizontalTimeline } from "@/components/gallery/HorizontalTimeline";
 import { Box } from "@mui/material";
 import Carousel from "../components/gallery/Carousel";

@@ -1,4 +1,4 @@
-import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+
 
 // Using the exact glass style from GuidelinesPage
 const glassCardStyle = {
