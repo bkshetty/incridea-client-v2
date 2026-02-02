@@ -1,5 +1,3 @@
-import { MdCall, MdLocationOn, MdMail } from 'react-icons/md'
-import { FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard'
 
 const RulesPage = () => {
