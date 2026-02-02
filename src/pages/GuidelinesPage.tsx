@@ -1,5 +1,3 @@
-import galaxyBg from "../assets/galaxy-bg.jpg";
-
 const glassCardStyle = {
   borderRadius: "1.75rem",
   border: "1px solid rgba(255, 255, 255, 0.18)",
@@ -54,7 +52,6 @@ function GuidelinesPage() {
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10 sm:bg-fixed"
         style={{
-          backgroundImage: `url(${galaxyBg})`,
           transform: "translate3d(0, 0, 0)",
           WebkitTransform: "translate3d(0, 0, 0)",
         }}

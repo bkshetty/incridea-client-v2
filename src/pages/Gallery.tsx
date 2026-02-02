@@ -122,7 +122,6 @@ const Gallery: React.FC = () => {
       {/* BACKGROUND */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/eventpagebg/eventbg2.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/60" />
       </div>

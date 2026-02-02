@@ -57,7 +57,6 @@ const Merch = () => {
       {/* Background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat transform scale-105"
-        style={{ backgroundImage: `url(${bgImage})` }}
       >
         <div className="absolute inset-0 bg-black/30" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-50" />
@@ -143,7 +142,7 @@ const Merch = () => {
                     </div>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none break-words mb-4">
+                  <h2 className="text-2xl sm:text-4xl md:text-3xl lg:text-3xl font-black text-white uppercase tracking-tighter leading-none break-words mb-4">
                     {tshirtItem.name}
                   </h2>
                   <p className="text-gray-300 leading-relaxed text-sm font-light border-l-2 border-emerald-500/30 pl-4">

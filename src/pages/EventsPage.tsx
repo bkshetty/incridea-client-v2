@@ -120,9 +120,6 @@ function EventsPage() {
     <>
       <div 
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url(/temp_event_bg.png)",
-        }}
       >
         <div className="absolute inset-0 bg-black/60" />
       </div>

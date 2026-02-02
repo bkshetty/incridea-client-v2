@@ -124,7 +124,6 @@ function ProfilePage() {
   return (
     <div
       className="fixed inset-0 bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ backgroundImage: "url('/temp_event_bg.png')" }}
     >
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=New+Rocker&display=swap');`}
