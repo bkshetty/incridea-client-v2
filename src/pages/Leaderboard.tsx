@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Glass from '../components/ui/Glass';
-import { X } from 'lucide-react'; // Assuming you are using lucide-react for icons, or use a simple 'X' string
+import { Clock } from 'lucide-react'; 
 
+// Mock Data
 const leaderboardData = [
   { rank: 4, name: "TEST4", username: "@test4", avatar: "TEST4", reward: 999 },
   { rank: 5, name: "TEST5", username: "@test5", avatar: "TEST5", reward: 830 },
@@ -11,17 +12,38 @@ const leaderboardData = [
 ];
 
 const mockQuizData = {
-  question: "What is the primary function of React's useState hook?",
-  options: [
-    "To handle side effects in components",
-    "To add state to functional components",
-    "To manage global application state",
-    "To optimize component rendering performance"
-  ]
+  question: "Which planet is known as the Red Planet?",
+  reward: 500,
+  options: ["Mars", "Jupiter", "Earth", "Saturn"]
 };
 
 const QuizModal = ({ isOpen, onClose }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(25);
+  const totalTime = 25;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    // Reset timer when modal opens
+    setTimeLeft(25);
+    setSelectedOption(null);
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isOpen]);
+
+  const formattedTime = `00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`;
+  const progressPercentage = (timeLeft / totalTime) * 100;
 
   if (!isOpen) return null;
 
@@ -29,72 +51,82 @@ const QuizModal = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
       {/* Modal Content */}
       <div className="relative w-full max-w-lg transform transition-all animate-[cloudAppear_0.3s_ease-out]">
-        <Glass className="border border-purple-500/30 rounded-2xl p-6 md:p-8 shadow-[0_0_50px_rgba(168,85,247,0.25)]">
-          <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-          >
-             {/* If you don't have lucide-react, replace <X /> with <span className="text-2xl">&times;</span> */}
-            <span className="text-2xl font-bold">&times;</span>
-          </button>
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute -top-12 right-0 text-gray-400 hover:text-white transition-colors"
+        >
+          <span className="text-3xl">&times;</span>
+        </button>
 
-          <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold mb-3 border border-purple-500/30">
-              Question 1 of 5
-            </span>
-            <h3 className="text-xl md:text-2xl font-bold text-white leading-tight">
-              {mockQuizData.question}
-            </h3>
+        <div className="bg-[#1a1b26] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+          {/* Top Section: Timer & Text */}
+          <div className="flex justify-between items-center mb-2 text-purple-400">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              <span className="text-xl font-bold tracking-widest">{formattedTime}</span>
+            </div>
+            <span className="text-gray-400 text-sm font-medium">Time Left</span>
           </div>
 
-          <div className="space-y-3">
+          {/* Progress Bar */}
+          <div className="w-full h-1.5 bg-gray-700/50 rounded-full mb-8 overflow-hidden">
+            <div 
+              className="h-full bg-purple-500 rounded-full transition-all duration-1000 ease-linear"
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+
+          {/* Reward Section */}
+          <div className="flex flex-col items-center justify-center mb-6">
+            <div className="flex items-center gap-3 bg-black/20 px-6 py-2 rounded-2xl border border-white/5">
+              <img 
+                src="/leaderboard/diamond-removebg-preview.png" 
+                alt="crystal" 
+                className="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]" 
+              />
+              <span className="text-4xl font-black text-amber-500 tracking-wide drop-shadow-md">
+                {mockQuizData.reward}
+              </span>
+            </div>
+          </div>
+
+          {/* Question */}
+          <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-8 leading-snug">
+            {mockQuizData.question}
+          </h3>
+
+          {/* Options List - Vertical Stack with Rounded Edges */}
+          <div className="flex flex-col gap-3">
             {mockQuizData.options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedOption(index)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 group relative overflow-hidden ${
+                // Changed from 'rounded-xl' to 'rounded-full' for more rounded edges
+                // Removed grid layout in parent, using flex-col here
+                className={`w-full py-3.5 px-6 rounded-full border font-semibold text-sm md:text-base transition-all duration-200 text-center ${
                   selectedOption === index
-                    ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                    : 'border-white/10 bg-white/5 hover:border-purple-500/50 hover:bg-white/10'
+                    ? 'bg-purple-600 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] transform scale-[1.02]'
+                    : 'bg-[#252632] border-white/5 text-gray-300 hover:bg-[#2a2b38] hover:border-white/10 hover:text-white'
                 }`}
               >
-                <div className="flex items-center gap-3 relative z-10">
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                    selectedOption === index
-                      ? 'border-purple-400 bg-purple-400'
-                      : 'border-gray-500 group-hover:border-purple-400'
-                  }`}>
-                    {selectedOption === index && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                  <span className={`text-sm md:text-base font-medium ${selectedOption === index ? 'text-white' : 'text-gray-300'}`}>
-                    {option}
-                  </span>
-                </div>
+                {option}
               </button>
             ))}
           </div>
-
-          <div className="mt-8 flex justify-end">
-            <button 
-              className="px-8 py-3 rounded-full font-bold text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:shadow-[0_0_30px_rgba(99,102,241,0.7)] transition-all transform hover:-translate-y-0.5"
-            >
-              Submit Answer
-            </button>
-          </div>
-        </Glass>
+        </div>
       </div>
     </div>
   );
 };
 
 const Leaderboard = () => {
-  // 'quiz' tab will now trigger the modal
   const [activeTab, setActiveTab] = useState('leaderboard'); 
   const [showQuiz, setShowQuiz] = useState(false);
 
@@ -107,7 +139,7 @@ const Leaderboard = () => {
 
   const closeQuiz = () => {
     setShowQuiz(false);
-    setActiveTab('leaderboard'); // Reset to leaderboard when closing quiz
+    setActiveTab('leaderboard');
   };
 
   return (
@@ -120,7 +152,7 @@ const Leaderboard = () => {
           100% { transform: translateY(0); opacity: 1; }
         }
         @keyframes cloudAppear {
-          0% { transform: scale(0.8); opacity: 0; }
+          0% { transform: scale(0.9); opacity: 0; }
           100% { transform: scale(1); opacity: 1; }
         }
         @keyframes smokeBurst {
@@ -155,7 +187,7 @@ const Leaderboard = () => {
         {/* Render Quiz Modal */}
         <QuizModal isOpen={showQuiz} onClose={closeQuiz} />
 
-        <div className={`transition-all duration-300 ${showQuiz ? 'blur-sm brightness-50 pointer-events-none' : ''}`}>
+        <div className={`transition-all duration-300 ${showQuiz ? 'blur-md brightness-[0.4] pointer-events-none' : ''}`}>
           <div className="max-w-6xl mx-auto mb-10 md:mb-25">
             <div className="text-center mb-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
