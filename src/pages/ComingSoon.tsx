@@ -106,21 +106,21 @@ const ComingSoon = () => {
   const lightAngleY = (mousePos.y - 0.5) * 100;
 
   return (
-    
+
     <div className={`relative flex h-dvh w-full touch-none select-none overflow-hidden overscroll-none ${isMobile ? 'cursor-none' : ''}`}>
-      <div 
+      <div
         style={{
           backgroundImage: `url(${bgOp})`,
           animationDuration: '240s'
         }}
-        className="fixed top-1/2 left-1/2 w-[125vmax] h-[125vmax] -translate-x-1/2 -translate-y-1/2 -z-50 pointer-events-none bg-cover bg-center bg-no-repeat bg-black animate-spin" 
+        className="fixed top-1/2 left-1/2 w-[125vmax] h-[125vmax] -translate-x-1/2 -translate-y-1/2 -z-50 pointer-events-none bg-cover bg-center bg-no-repeat bg-black animate-spin"
       />
-            <div 
+      <div
         style={{
           backgroundImage: `url(${gradient})`,
           animationDuration: '240s'
         }}
-        className="fixed  -z-50  bg-cover bg-center bg-no-repeat animate-spin" 
+        className="fixed  -z-50  bg-cover bg-center bg-no-repeat animate-spin"
       />
       {isIOS && !permissionGranted && (
         <button
@@ -132,7 +132,7 @@ const ComingSoon = () => {
       )}
       {/* ================= INLINE FONT (NO OTHER FILES TO TOUCH) ================= */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
         /* Default animation for mobile */
         @keyframes portalFlicker {
@@ -147,7 +147,7 @@ const ComingSoon = () => {
         }
 
         .cs-root {
-          font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+          font-family: 'Outfit', system-ui, sans-serif;
         }
 
         /* Mobile behavior */
@@ -214,7 +214,7 @@ const ComingSoon = () => {
                 100% { transform: translateX(100%); }
               }
             `}</style>
-            
+
             <div className="relative mb-2 group cursor-default">
               <h1 className="glitch-text text-[32px] md:text-[40px] font-bold leading-none tracking-[0.2em] text-transparent bg-clip-text bg-linear-to-br from-white via-[#e9d5ff] to-white/80 xl:text-[64px] drop-shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300 group-hover:drop-shadow-[0_0_30px_rgba(168,85,247,0.8)]">
                 PORTAL
