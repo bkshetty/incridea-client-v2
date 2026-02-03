@@ -19,6 +19,7 @@ import CoreTeamPage from "../pages/coreteam.tsx";
 import NotFoundPage from "../pages/NotFoundPage";
 import ComingSoon from "../pages/ComingSoon.tsx";
 import RefundPolicy from '../pages/refundpolicy.tsx'
+import Leaderboard from "../pages/Leaderboard";
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);
@@ -66,6 +67,7 @@ function AppRoutes() {
         <Route path="/coreteam" element={<CoreTeamPage />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/merch" element={<MerchPage />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="/comingsoon" element={<ComingSoon />} />
