@@ -12,12 +12,12 @@ import PrivacyPage from "../pages/PrivacyPage";
 import RulesPage from "../pages/RulesPage";
 import QuizPage from "../pages/QuizPage";
 import RegisterPage from "../pages/RegisterPage";
-import AccommodationPage from "../pages/AccommodationPage.tsx";
-import TechTeamPage from "../pages/techteam.tsx";
-import CoreTeamPage from "../pages/coreteam.tsx";
+import AccommodationPage from "../pages/AccommodationPage";
+import TechTeamPage from "../pages/techteam";
+import CoreTeamPage from "../pages/coreteam";
 import NotFoundPage from "../pages/NotFoundPage";
-import RefundPolicy from '../pages/refundpolicy.tsx';
-import ProfilePage from "@/pages/ProfilePage.tsx";
+import RefundPolicy from '../pages/refundpolicy';
+import ProfilePage from "@/pages/ProfilePage";
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);

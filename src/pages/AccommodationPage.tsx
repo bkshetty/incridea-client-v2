@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { IndividualBookingForm } from '../components/accommodation/BookingForms'
 import { getAccommodationStats, getUserByPid } from '../api/accommodation'
 import { Loader2, Moon, User, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard'
@@ -48,6 +48,12 @@ export default function AccommodationPage() {
                 <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
             </div>
         )
+    }
+
+    const ALLOWED_DOMAINS = ['@nmamit.in', '@nitte.edu.in', '@student.nitte.edu.in', '@nmit.ac.in']
+
+    if (user && !ALLOWED_DOMAINS.some(domain => user.email.toLowerCase().endsWith(domain))) {
+        return <Navigate to="/" replace />
     }
 
     // Simple check - in real app might want to check user gender context too if applicable
