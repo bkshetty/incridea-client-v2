@@ -182,7 +182,7 @@ const Leaderboard = () => {
         }
       `}</style>
       
-      <div className="text-white p-3 md:p-6 font-sans selection:bg-transparent overflow-x-hidden min-h-screen relative">
+      <div className="text-white p-3 md:p-6 font-sans selection:bg-transparent min-h-screen relative">
         
         {/* Render Quiz Modal */}
         <QuizModal isOpen={showQuiz} onClose={closeQuiz} />
@@ -235,7 +235,7 @@ const Leaderboard = () => {
 
           {/* Podium Section */}
           <div className="max-w-5xl mx-auto mb-9">
-            <div className="flex justify-center items-end gap-3 md:gap-9 relative scale-[0.6] sm:scale-[0.8] md:scale-100 origin-bottom -my-16 sm:-my-10 md:my-0" style={{ perspective: '1200px' }}>
+            <div className="flex justify-center items-end gap-3 md:gap-3.5 relative scale-[0.6] sm:scale-[0.8] md:scale-100 origin-bottom -my-16 sm:-my-10 md:my-0" style={{ perspective: '1200px' }}>
               
               {/* Rank 2 */}
               <div className="flex flex-col items-center animate-[drop_0.7s_ease-out_both]" style={{ transform: 'translateZ(-20px)', transformStyle: 'preserve-3d' }}>
@@ -245,8 +245,8 @@ const Leaderboard = () => {
                 </div>
                 <h3 className="font-bold text-base mb-1">TEST2</h3>
 
-                <div className="relative w-48 h-48 bg-gradient-to-b from-gray-400/50 to-gray-700/50 border-t-4 border-x-2 border-gray-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(15px) rotateX(12deg) rotateY(-3deg)', transformStyle: 'preserve-3d' }}>
+                <div className="relative w-48 h-52 bg-gradient-to-b from-gray-400/50 to-gray-700/50 border-t-4 border-x-2 border-gray-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
+                    style={{ transform: 'translateZ(15px) rotateY(-3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2 top-0 bottom-0 w-6 bg-gradient-to-b from-gray-500/90 to-gray-800/90 rounded-tr-2xl" style={{ transform: 'rotateY(12deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2 top-0 bottom-0 w-6 bg-gradient-to-b from-gray-400/80 to-gray-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-12deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-gray-400/70 rounded-full blur-2xl"></div>
@@ -288,8 +288,8 @@ const Leaderboard = () => {
                 </div>
                 <h3 className="font-black text-lg mb-1 bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">TEST1</h3>
               
-                <div className="relative w-52 h-64 bg-gradient-to-b from-yellow-400/50 to-amber-700/50 border-t-4 border-x-2 border-yellow-300/80 rounded-t-2xl shadow-[0_-18px_70px_rgba(251,191,36,0.7),0_25px_70px_rgba(0,0,0,0.8),inset_0_4px_30px_rgba(255,255,255,0.3)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(35px) rotateX(12deg)', transformStyle: 'preserve-3d' }}>
+                <div className="relative w-52 h-72 bg-gradient-to-b from-yellow-400/50 to-amber-700/50 border-t-4 border-x-2 border-yellow-300/80 rounded-t-2xl shadow-[0_-18px_70px_rgba(251,191,36,0.7),0_25px_70px_rgba(0,0,0,0.8),inset_0_4px_30px_rgba(255,255,255,0.3)] backdrop-blur-xl"
+                    style={{ transform: 'translateZ(35px) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2.5 top-0 bottom-0 w-7 bg-gradient-to-b from-amber-500/90 to-amber-900/90 rounded-tr-2xl" style={{ transform: 'rotateY(8deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2.5 top-0 bottom-0 w-7 bg-gradient-to-b from-yellow-400/80 to-amber-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-8deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-yellow-400/80 rounded-full blur-2xl"></div>
@@ -332,8 +332,8 @@ const Leaderboard = () => {
                 </div>
                 <h3 className="font-bold text-base mb-1">TEST3</h3>
                 
-                <div className="relative w-48 h-48 bg-gradient-to-b from-orange-400/50 to-amber-700/50 border-t-4 border-x-2 border-orange-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(15px) rotateX(12deg) rotateY(3deg)', transformStyle: 'preserve-3d' }}>
+                <div className="relative w-48 h-38 bg-gradient-to-b from-orange-400/50 to-amber-700/50 border-t-4 border-x-2 border-orange-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
+                    style={{ transform: 'translateZ(15px) rotateY(3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2 top-0 bottom-0 w-6 bg-gradient-to-b from-orange-600/90 to-amber-900/90 rounded-tr-2xl" style={{ transform: 'rotateY(12deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2 top-0 bottom-0 w-6 bg-gradient-to-b from-orange-400/80 to-amber-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-12deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-orange-400/70 rounded-full blur-2xl"></div>
