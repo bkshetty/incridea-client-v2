@@ -1,7 +1,7 @@
 import Glass from "./Glass";
 const TABS = ["quiz", "leaderboard", "task"] as const;
 type Tab = (typeof TABS)[number];
-
+//Slider component for switching between quiz, leaderboard and task views
 interface SliderProps {
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
