@@ -216,11 +216,11 @@ export default function QuizPage() {
     return (
         <div className="min-h-screen bg-slate-950 text-white flex flex-col">
             {/* Header */}
-            <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-10">
+            <div className="bg-slate-900 border-b border-slate-800 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sticky top-0 z-10">
                 <div>
                     <h1 className="font-bold text-lg max-w-[200px] md:max-w-md truncate">{quiz.name}</h1>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                      <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-sm font-mono text-green-400">
                         <span className="text-xs text-slate-500 uppercase">Time</span>
                         {stopwatch}
@@ -234,7 +234,6 @@ export default function QuizPage() {
 
             {/* Main Content */}
             <div className="flex-1 container mx-auto p-4 max-w-3xl flex flex-col justify-center">
-                
                 {/* Progress Bar */}
                 <div className="w-full bg-slate-800 h-2 rounded-full mb-6 relative overflow-hidden">
                     <div 
@@ -247,7 +246,7 @@ export default function QuizPage() {
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="space-y-4">
                             <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
-                            <h2 className="text-2xl md:text-3xl font-bold leading-tight">{currentQuestion.question}</h2>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight">{currentQuestion.question}</h2>
                             {currentQuestion.isCode && (
                                 <div className="p-4 bg-slate-900 rounded-lg border border-slate-800 font-mono text-sm overflow-x-auto">
                                     {currentQuestion.description}
@@ -269,7 +268,7 @@ export default function QuizPage() {
                                         : 'bg-slate-900/50 border-slate-800 hover:border-slate-600 text-slate-300'
                                     }`}
                                 >
-                                    <span className="font-medium text-lg">{opt.value}</span>
+                                    <span className="font-medium text-base sm:text-lg">{opt.value}</span>
                                     {selectedOptions[currentQuestion.id] === opt.id && <FiCheck className="text-blue-500 w-6 h-6" />}
                                 </button>
                             ))}

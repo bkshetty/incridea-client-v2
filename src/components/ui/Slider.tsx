@@ -12,7 +12,7 @@ export default function Slider({ activeTab, setActiveTab }: SliderProps) {
     <div className="flex justify-center">
       <Glass
         className="
-          relative w-[420px]
+          relative w-full max-w-[420px]
           px-2 py-2
           rounded-full
           border border-white/15

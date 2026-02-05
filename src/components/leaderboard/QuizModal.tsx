@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Glass from "../ui/Glass";
 import { Clock } from "lucide-react";
 
@@ -31,9 +31,6 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
   const totalTime = 10;
   const progress = (timeLeft / totalTime) * 100;
 
-  /* 🔥 SINGLE IMAGE REF */
-  const characterRef = useRef<HTMLImageElement | null>(null);
-
   /* ---------------- TIMER ---------------- */
 
   useEffect(() => {
@@ -56,39 +53,7 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
   }, [isOpen]);
 
   /* ---------------- HEAD FAKE ANIMATION ---------------- */
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    let rafId: number;
-    let start = performance.now();
-
-    const animate = (now: number) => {
-      if (!characterRef.current) return;
-
-      const elapsed = (now - start) / 1000;
-
-      // urgency curve (smooth)
-      const urgency = 1 - timeLeft / totalTime;
-      const eased = Math.pow(urgency, 1.3);
-
-      // subtle → stressed motion
-      const rotate =
-        Math.sin(elapsed * 1.5) * (2 + eased * 6);
-      const translate =
-        Math.sin(elapsed * 2.2) * (1 + eased * 3);
-
-      characterRef.current.style.transform = `
-        translateY(${translate}px)
-        rotate(${rotate}deg)
-      `;
-
-      rafId = requestAnimationFrame(animate);
-    };
-
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [timeLeft, isOpen]);
+  // Removed floating animation per request.
 
   if (!isOpen) return null;
 
@@ -118,9 +83,21 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
       {/* MODAL */}
       <div className="relative w-full max-w-md">
         <Glass style={glassCardStyle} className="relative rounded-2xl px-6 py-5 border border-white/10 bg-[#0e0f14] overflow-hidden">
+          {/* TOP VIDEO BADGE */}
+          <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden border border-purple-400/40 bg-gradient-to-b from-slate-900/80 to-black/80 shadow-[0_0_40px_rgba(168,85,247,0.45)] ring-2 ring-purple-500/20">
+            <video
+              src="/character.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
           {/* TOP BAR */}
-          <div className="flex items-center justify-between mt-10 mb-4">
+          <div className="flex items-center justify-between mt-14 mb-4">
             {/* TIMER */}
             <div
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full
