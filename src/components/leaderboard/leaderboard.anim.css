@@ -1,0 +1,137 @@
+/* ================================
+   PODIUM DROP ANIMATION
+================================ */
+@keyframes drop {
+  0% {
+    transform: translateY(-800px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   QUIZ MODAL APPEAR
+================================ */
+@keyframes cloudAppear {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   PODIUM SMOKE EFFECTS
+================================ */
+@keyframes smokeBurst {
+  0% {
+    transform: scale(0.1) translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(5) translate(0, -400px);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeLeft {
+  0% {
+    transform: scale(0.1) translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4) translate(-400px, -300px);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeRight {
+  0% {
+    transform: scale(0.1) translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4) translate(400px, -300px);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeBottomLeft {
+  0% {
+    transform: scale(0.1) translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3.5) translate(-350px, 100px);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeBottomRight {
+  0% {
+    transform: scale(0.1) translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3.5) translate(350px, 100px);
+    opacity: 0;
+  }
+}
+
+/* ================================
+   OPTIONAL SMOOTH FADE (UTILITY)
+   Use if needed later
+================================ */
+@keyframes softFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes floatSoft {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float-soft {
+  animation: floatSoft 3s ease-in-out infinite;
+}
