@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Glass from '../components/ui/Glass';
-import { Clock } from 'lucide-react'; 
+import Quiz from '../components/Quiz'; // Make sure Quiz.tsx is in the same folder
 
 // Mock Data
 const leaderboardData = [
@@ -11,126 +11,11 @@ const leaderboardData = [
   { rank: 8, name: "TEST8", username: "@test8", avatar: "TEST8", reward: 412 },
 ];
 
-const mockQuizData = {
-  question: "Which planet is known as the Red Planet?",
-  reward: 500,
-  options: ["Mars", "Jupiter", "Earth", "Saturn"]
-};
-
-const QuizModal = ({ isOpen, onClose }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(25);
-  const totalTime = 25;
-
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    // Reset timer when modal opens
-    setTimeLeft(25);
-    setSelectedOption(null);
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isOpen]);
-
-  const formattedTime = `00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`;
-  const progressPercentage = (timeLeft / totalTime) * 100;
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-      ></div>
-
-      {/* Modal Content */}
-      <div className="relative w-full max-w-lg transform transition-all animate-[cloudAppear_0.3s_ease-out]">
-        {/* Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute -top-12 right-0 text-gray-400 hover:text-white transition-colors"
-        >
-          <span className="text-3xl">&times;</span>
-        </button>
-
-        <div className="bg-[#1a1b26] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-          {/* Top Section: Timer & Text */}
-          <div className="flex justify-between items-center mb-2 text-purple-400">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              <span className="text-xl font-bold tracking-widest">{formattedTime}</span>
-            </div>
-            <span className="text-gray-400 text-sm font-medium">Time Left</span>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full h-1.5 bg-gray-700/50 rounded-full mb-8 overflow-hidden">
-            <div 
-              className="h-full bg-purple-500 rounded-full transition-all duration-1000 ease-linear"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-
-          {/* Reward Section */}
-          <div className="flex flex-col items-center justify-center mb-6">
-            <div className="flex items-center gap-3 bg-black/20 px-6 py-2 rounded-2xl border border-white/5">
-              <img 
-                src="/leaderboard/diamond-removebg-preview.png" 
-                alt="crystal" 
-                className="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]" 
-              />
-              <span className="text-4xl font-black text-amber-500 tracking-wide drop-shadow-md">
-                {mockQuizData.reward}
-              </span>
-            </div>
-          </div>
-
-          {/* Question */}
-          <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-8 leading-snug">
-            {mockQuizData.question}
-          </h3>
-
-          {/* Options List - Vertical Stack with Rounded Edges */}
-          <div className="flex flex-col gap-3">
-            {mockQuizData.options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedOption(index)}
-                // Changed from 'rounded-xl' to 'rounded-full' for more rounded edges
-                // Removed grid layout in parent, using flex-col here
-                className={`w-full py-3.5 px-6 rounded-full border font-semibold text-sm md:text-base transition-all duration-200 text-center ${
-                  selectedOption === index
-                    ? 'bg-purple-600 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] transform scale-[1.02]'
-                    : 'bg-[#252632] border-white/5 text-gray-300 hover:bg-[#2a2b38] hover:border-white/10 hover:text-white'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Leaderboard = () => {
-  const [activeTab, setActiveTab] = useState('leaderboard'); 
+  const [activeTab, setActiveTab] = useState('leaderboard');
   const [showQuiz, setShowQuiz] = useState(false);
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     if (tab === 'quiz') {
       setShowQuiz(true);
@@ -181,11 +66,11 @@ const Leaderboard = () => {
           100% { transform: scale(3.5) translate(350px, 100px); opacity: 0; }
         }
       `}</style>
-      
+
       <div className="text-white p-3 md:p-6 font-sans selection:bg-transparent min-h-screen relative">
-        
-        {/* Render Quiz Modal */}
-        <QuizModal isOpen={showQuiz} onClose={closeQuiz} />
+
+        {/* Render Quiz Component */}
+        <Quiz isOpen={showQuiz} onClose={closeQuiz} />
 
         <div className={`transition-all duration-300 ${showQuiz ? 'blur-md brightness-[0.4] pointer-events-none' : ''}`}>
           <div className="max-w-6xl mx-auto mb-10 md:mb-25">
@@ -197,35 +82,32 @@ const Leaderboard = () => {
 
             <div className="flex justify-center">
               <Glass className="flex border border-white/20 p-1.5 rounded-full shadow-2xl overflow-x-auto max-w-full">
-                <button 
+                <button
                   onClick={() => handleTabChange('quiz')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'quiz' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
+                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${activeTab === 'quiz'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                    }`}
                 >
                   Quiz
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => handleTabChange('leaderboard')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'leaderboard' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
+                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${activeTab === 'leaderboard'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                    }`}
                 >
                   Leaderboard
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => handleTabChange('task')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'task' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
+                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${activeTab === 'task'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                    }`}
                 >
                   Task
                 </button>
@@ -236,7 +118,7 @@ const Leaderboard = () => {
           {/* Podium Section */}
           <div className="max-w-5xl mx-auto mb-9">
             <div className="flex justify-center items-end gap-3 md:gap-3.5 relative scale-[0.6] sm:scale-[0.8] md:scale-100 origin-bottom -my-16 sm:-my-10 md:my-0" style={{ perspective: '1200px' }}>
-              
+
               {/* Rank 2 */}
               <div className="flex flex-col items-center animate-[drop_0.7s_ease-out_both]" style={{ transform: 'translateZ(-20px)', transformStyle: 'preserve-3d' }}>
                 <div className="relative mb-4 group cursor-pointer">
@@ -246,7 +128,7 @@ const Leaderboard = () => {
                 <h3 className="font-bold text-base mb-1">TEST2</h3>
 
                 <div className="relative w-48 h-52 bg-gradient-to-b from-gray-400/50 to-gray-700/50 border-t-4 border-x-2 border-gray-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(15px) rotateY(-3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
+                  style={{ transform: 'translateZ(15px) rotateY(-3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2 top-0 bottom-0 w-6 bg-gradient-to-b from-gray-500/90 to-gray-800/90 rounded-tr-2xl" style={{ transform: 'rotateY(12deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2 top-0 bottom-0 w-6 bg-gradient-to-b from-gray-400/80 to-gray-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-12deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-gray-400/70 rounded-full blur-2xl"></div>
@@ -281,15 +163,15 @@ const Leaderboard = () => {
                 <div className="absolute -top-10 text-5xl drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
                   👑
                 </div>
-                
+
                 <div className="relative mb-4 group cursor-pointer">
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full blur-2xl opacity-60 animate-pulse"></div>
                   <img src="https://api.dicebear.com/7.x/bottts/svg?seed=TEST1" alt="TEST1" className="relative w-24 h-24 rounded-full border-4 border-yellow-400/60 object-cover shadow-[0_0_40px_rgba(251,191,36,0.4)]" />
                 </div>
                 <h3 className="font-black text-lg mb-1 bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">TEST1</h3>
-              
+
                 <div className="relative w-52 h-72 bg-gradient-to-b from-yellow-400/50 to-amber-700/50 border-t-4 border-x-2 border-yellow-300/80 rounded-t-2xl shadow-[0_-18px_70px_rgba(251,191,36,0.7),0_25px_70px_rgba(0,0,0,0.8),inset_0_4px_30px_rgba(255,255,255,0.3)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(35px) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
+                  style={{ transform: 'translateZ(35px) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2.5 top-0 bottom-0 w-7 bg-gradient-to-b from-amber-500/90 to-amber-900/90 rounded-tr-2xl" style={{ transform: 'rotateY(8deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2.5 top-0 bottom-0 w-7 bg-gradient-to-b from-yellow-400/80 to-amber-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-8deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-yellow-400/80 rounded-full blur-2xl"></div>
@@ -319,7 +201,7 @@ const Leaderboard = () => {
                     </div>
                   </div>
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    
+
                   </div>
                 </div>
               </div>
@@ -331,9 +213,9 @@ const Leaderboard = () => {
                   <img src="https://api.dicebear.com/7.x/bottts/svg?seed=TEST3" alt="TEST3" className="relative w-20 h-20 rounded-full border-4 border-orange-400/50 object-cover shadow-2xl" />
                 </div>
                 <h3 className="font-bold text-base mb-1">TEST3</h3>
-                
+
                 <div className="relative w-48 h-38 bg-gradient-to-b from-orange-400/50 to-amber-700/50 border-t-4 border-x-2 border-orange-300/70 rounded-t-2xl shadow-[0_-12px_50px_rgba(0,0,0,0.5),0_20px_60px_rgba(0,0,0,0.7),inset_0_3px_25px_rgba(255,255,255,0.25)] backdrop-blur-xl"
-                    style={{ transform: 'translateZ(15px) rotateY(3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
+                  style={{ transform: 'translateZ(15px) rotateY(3deg) scaleX(0.95)', transformOrigin: 'bottom', transformStyle: 'preserve-3d' }}>
                   <div className="absolute -right-2 top-0 bottom-0 w-6 bg-gradient-to-b from-orange-600/90 to-amber-900/90 rounded-tr-2xl" style={{ transform: 'rotateY(12deg) translateX(1px)', transformOrigin: 'left', clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -left-2 top-0 bottom-0 w-6 bg-gradient-to-b from-orange-400/80 to-amber-700/80 rounded-tl-2xl" style={{ transform: 'rotateY(-12deg) translateX(-1px)', transformOrigin: 'right', clipPath: 'polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%)' }}></div>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-orange-400/70 rounded-full blur-2xl"></div>
@@ -362,7 +244,7 @@ const Leaderboard = () => {
                   </div>
                 </div>
               </div>
-              
+
             </div>
           </div>
 
