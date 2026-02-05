@@ -113,7 +113,7 @@ function Layout() {
       />
       <Sidebar isAuthenticated={isAuthenticated} />
 
-      <main className="w-screen flex justify-center items-center flex-1 px-4 lg:pl-24 pt-32 pb-10">
+      <main className="w-full flex-1 lg:pl-24 pt-32 pb-10">
         <Outlet />
       </main>
 
