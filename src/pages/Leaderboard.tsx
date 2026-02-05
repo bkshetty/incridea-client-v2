@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Slider from '../components/ui/Slider';
 import Glass from '../components/ui/Glass';
 import { Clock } from 'lucide-react';
 import QuizModal from '../components/leaderboard/QuizModal';
@@ -14,13 +15,14 @@ const leaderboardData = [
   { rank: 8, name: "TEST8", username: "@test8", avatar: "TEST8", reward: 412 },
 ];
 
-
+const TABS = ["quiz", "leaderboard", "task"] as const;
+type Tab = (typeof TABS)[number];
 
 const Leaderboard = () => {
-  const [activeTab, setActiveTab] = useState('leaderboard'); 
+  const [activeTab, setActiveTab] = useState<Tab>('leaderboard'); 
   const [showQuiz, setShowQuiz] = useState(false);
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
     if (tab === 'quiz') {
       setShowQuiz(true);
@@ -85,42 +87,10 @@ const Leaderboard = () => {
               </h1>
             </div>
 
-            <div className="flex justify-center">
-              <Glass className="flex border border-white/20 p-1.5 rounded-full shadow-2xl overflow-x-auto max-w-full">
-                <button 
-                  onClick={() => handleTabChange('quiz')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'quiz' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Quiz
-                </button>
-                
-                <button 
-                  onClick={() => handleTabChange('leaderboard')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'leaderboard' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Leaderboard
-                </button>
-                
-                <button 
-                  onClick={() => handleTabChange('task')}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
-                    activeTab === 'task' 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Task
-                </button>
-              </Glass>
-            </div>
+            <Slider 
+              activeTab={activeTab} 
+              setActiveTab={handleTabChange} 
+            />
           </div>
 
           {/* Quiz Modal */}
