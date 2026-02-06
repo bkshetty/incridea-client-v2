@@ -58,18 +58,17 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
 
   const glassCardStyle = {
     borderRadius: "1.75rem",
-    border: "2px solid rgba(51, 65, 85, 0.5)",
-    backgroundColor: "rgba(255, 255, 255, 0.10)",
-    backgroundImage:
-      "linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06) 40%, rgba(15, 23, 42, 0.35))",
+    border: "1px solid rgba(255, 255, 255, 0.18)",
+    background: `
+      linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+      rgba(21, 21, 21, 0.30)
+    `,
     boxShadow: `
-      0 0 28px rgba(168, 85, 247, 0.35),
-      0 0 80px rgba(59, 130, 246, 0.22),
       inset 0 0 0 1px rgba(255, 255, 255, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.22)
     `,
-    backdropFilter: "blur(24px)",
-    WebkitBackdropFilter: "blur(24px)",
+    backdropFilter: "brightness(1.1) blur(1px)",
+    WebkitBackdropFilter: "brightness(1.1) blur(1px)",
   };
 
   return (
@@ -117,7 +116,7 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
           <Glass
             style={glassCardStyle}
             hoverEffect={false}
-            className="relative rounded-2xl px-6 pb-5 pt-12 border-2 border-slate-700/50 bg-white/10 !backdrop-blur-xl overflow-hidden"
+            className="relative rounded-2xl px-6 pb-5 pt-12 overflow-hidden"
           >
             <div className="relative z-10 pt-2">
               {/* TOP BAR */}
@@ -161,7 +160,7 @@ export default function QuizModal({ isOpen, onClose }: QuizModalProps) {
                   <div className="flex items-center gap-3">
                     <img
                       src="/leaderboard/diamond-removebg-preview.png"
-                      className="w-8 h-8 animate-float-soft"
+                      className="w-9 h-9 animate-float-soft drop-shadow-[0_0_12px_rgba(168,85,247,0.85)]"
                       alt="reward"
                     />
                     <span className="text-3xl font-black text-amber-400">
