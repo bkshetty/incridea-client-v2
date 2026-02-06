@@ -21,6 +21,8 @@ type Tab = (typeof TABS)[number];
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState<Tab>('leaderboard');
   const [showQuiz, setShowQuiz] = useState(false);
+  const [enableSmokeAnimation] = useState(false); //This is a toggle switch to turn on and off smoke shockwave
+  //Set it to true for the visible display of the shockwave
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
@@ -127,11 +129,11 @@ const Leaderboard = () => {
                       <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-gray-400/70 rounded-full blur-2xl"></div>
                       <div className="absolute -bottom-4 left-1/4 w-32 h-12 bg-gray-300/60 rounded-full blur-xl"></div>
                       <div className="absolute -bottom-6 right-1/4 w-40 h-14 bg-gray-500/65 rounded-full blur-2xl"></div>
-                      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-white/90 rounded-[50%] blur-3xl animate-[smokeBurst_1.2s_ease-out_0.6s_both]"></div>
-                      <div className="absolute -bottom-10 left-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl animate-[smokeLeft_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-10 right-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl animate-[smokeRight_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-8 left-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]"></div>
-                      <div className="absolute -bottom-8 right-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]"></div>
+                      <div className={`absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-white/90 rounded-[50%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeBurst_1.2s_ease-out_0.6s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 left-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeLeft_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 right-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeRight_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-8 left-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-8 right-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]' : ''}`}></div>
                       <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/40 rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/10 to-transparent rounded-t-2xl"></div>
@@ -170,11 +172,11 @@ const Leaderboard = () => {
                       <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-yellow-400/80 rounded-full blur-2xl"></div>
                       <div className="absolute -bottom-6 left-1/4 w-40 h-16 bg-amber-300/70 rounded-full blur-xl"></div>
                       <div className="absolute -bottom-8 right-1/4 w-48 h-18 bg-yellow-500/75 rounded-full blur-2xl"></div>
-                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-72 h-24 bg-white/90 rounded-[50%] blur-3xl animate-[smokeBurst_1.2s_ease-out_0.6s_both]"></div>
-                      <div className="absolute -bottom-12 left-1/4 w-56 h-24 bg-white/85 rounded-[70%] blur-3xl animate-[smokeLeft_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-12 right-1/4 w-56 h-24 bg-white/85 rounded-[70%] blur-3xl animate-[smokeRight_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-10 left-1/3 w-48 h-20 bg-white/80 rounded-[60%] blur-2xl animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]"></div>
-                      <div className="absolute -bottom-10 right-1/3 w-48 h-20 bg-white/80 rounded-[60%] blur-2xl animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]"></div>
+                      <div className={`absolute -bottom-12 left-1/2 -translate-x-1/2 w-72 h-24 bg-white/90 rounded-[50%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeBurst_1.2s_ease-out_0.6s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-12 left-1/4 w-56 h-24 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeLeft_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-12 right-1/4 w-56 h-24 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeRight_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 left-1/3 w-48 h-20 bg-white/80 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 right-1/3 w-48 h-20 bg-white/80 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]' : ''}`}></div>
                       <div className="absolute inset-0 bg-gradient-to-br from-yellow-200/40 via-transparent to-amber-900/40 rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-yellow-300/15 to-transparent rounded-t-2xl"></div>
@@ -214,11 +216,11 @@ const Leaderboard = () => {
                       <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-56 h-16 bg-orange-400/70 rounded-full blur-2xl"></div>
                       <div className="absolute -bottom-4 left-1/4 w-32 h-12 bg-orange-300/60 rounded-full blur-xl"></div>
                       <div className="absolute -bottom-6 right-1/4 w-40 h-14 bg-amber-500/65 rounded-full blur-2xl"></div>
-                      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-white/90 rounded-[50%] blur-3xl animate-[smokeBurst_1.2s_ease-out_0.6s_both]"></div>
-                      <div className="absolute -bottom-10 left-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl animate-[smokeLeft_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-10 right-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl animate-[smokeRight_1.2s_ease-out_0.65s_both]"></div>
-                      <div className="absolute -bottom-8 left-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]"></div>
-                      <div className="absolute -bottom-8 right-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]"></div>
+                      <div className={`absolute -bottom-10 left-1/2 -translate-x-1/2 w-64 h-20 bg-white/90 rounded-[50%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeBurst_1.2s_ease-out_0.6s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 left-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeLeft_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-10 right-1/4 w-48 h-20 bg-white/85 rounded-[70%] blur-3xl ${enableSmokeAnimation ? 'animate-[smokeRight_1.2s_ease-out_0.65s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-8 left-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomLeft_1.2s_ease-out_0.7s_both]' : ''}`}></div>
+                      <div className={`absolute -bottom-8 right-1/3 w-40 h-16 bg-white/75 rounded-[60%] blur-2xl ${enableSmokeAnimation ? 'animate-[smokeBottomRight_1.2s_ease-out_0.7s_both]' : ''}`}></div>
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-200/30 via-transparent to-amber-900/40 rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-2xl"></div>
                       <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-orange-300/10 to-transparent rounded-t-2xl"></div>
