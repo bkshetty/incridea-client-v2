@@ -72,6 +72,12 @@ const Leaderboard = () => {
           15% { opacity: 1; }
           100% { transform: scale(3.5) translate(350px, 100px); opacity: 0; }
         }
+        /* ✅ Character float animation */
+        @keyframes floaty {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
       `}</style>
 
       <div className="w-full text-white p-2 sm:p-3 md:p-6 font-sans selection:bg-transparent min-h-screen relative overflow-x-hidden">
