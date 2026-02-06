@@ -19,6 +19,7 @@ export interface Team {
   eventId: number
   leaderId: number
   confirmed: boolean
+  roundNo: number
   TeamMembers: TeamMember[]
   Leader?: {
     User: {
@@ -27,6 +28,7 @@ export interface Team {
       email: string
     }
   }
+  eventParticipantId?: number
 }
 
 export async function registerSoloEvent(eventId: number) {
@@ -55,13 +57,13 @@ export async function confirmTeam(teamId: number) {
 }
 
 export async function leaveTeam(teamId: number) {
-    const { data } = await apiClient.post<{ count: number }>('/registration/leave-team', { teamId })
-    return data
+  const { data } = await apiClient.post<{ count: number }>('/registration/leave-team', { teamId })
+  return data
 }
 
 export async function deleteTeam(teamId: number) {
-    const { data } = await apiClient.post<Team>('/registration/delete-team', { teamId })
-    return data
+  const { data } = await apiClient.post<Team>('/registration/delete-team', { teamId })
+  return data
 }
 
 export interface PaymentInitiateResponse {
@@ -87,34 +89,34 @@ export async function verifyPaymentSignature(response: any) {
 
 export async function getPaymentStatus(type?: string) {
   try {
-     const url = type ? `/payment/my-status?type=${type}` : '/payment/my-status'
-     const { data } = await apiClient.get<any>(url)
-     if (data.status === 'success') {
-         // Accept success even without PID/Receipt if logic allows (for accommodation without PID gen)
-         return { 
-           status: 'success', 
-           message: 'Payment verified', 
-           pid: data.pid, 
-           receipt: data.receipt, 
-           processingStep: 'COMPLETED'
-         }
-     }
-     if (data.status === 'processing' || data.status === 'pending') {
-        return {
-          status: 'pending',
-          message: data.message || 'Processing...',
-          processingStep: data.processingStep,
-          receipt: data.receipt,
-          pid: data.pid
-        }
-     }
-     if (data.status === 'failed') {
-         return {
-             status: 'failed',
-             message: data.message || 'Payment Verification Failed',
-             processingStep: null
-         }
-     }
+    const url = type ? `/payment/my-status?type=${type}` : '/payment/my-status'
+    const { data } = await apiClient.get<any>(url)
+    if (data.status === 'success') {
+      // Accept success even without PID/Receipt if logic allows (for accommodation without PID gen)
+      return {
+        status: 'success',
+        message: 'Payment verified',
+        pid: data.pid,
+        receipt: data.receipt,
+        processingStep: 'COMPLETED'
+      }
+    }
+    if (data.status === 'processing' || data.status === 'pending') {
+      return {
+        status: 'pending',
+        message: data.message || 'Processing...',
+        processingStep: data.processingStep,
+        receipt: data.receipt,
+        pid: data.pid
+      }
+    }
+    if (data.status === 'failed') {
+      return {
+        status: 'failed',
+        message: data.message || 'Payment Verification Failed',
+        processingStep: null
+      }
+    }
   } catch (e) {
     // Ignore error
   }
