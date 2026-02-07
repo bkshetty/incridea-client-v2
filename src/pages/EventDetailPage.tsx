@@ -108,11 +108,8 @@ function EventDetailPage() {
       />
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url(/eventpagebg/bg3.png)",
-        }}
       >
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0" />
       </div>
       <section className="relative min-h-screen w-full overflow-x-hidden">
         <style>
@@ -181,11 +178,14 @@ function EventDetailPage() {
             <AiOutlineArrowLeft className="text-sky-300 text-lg sm:text-xl hover:text-sky-200" />
           </RouterLink>
 
-          {}
+          {/* GLASS CONTAINER: Event Header + Description + Coordinators */}
+
+          {/* Event Header Section */}
+
           <LiquidGlassCard className="w-full">
-            {}
+
             <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-3 sm:gap-4 lg:gap-6 p-0 sm:p-2 lg:p-4 border-b border-white/10">
-              {}
+
               <div className="rounded-xl sm:rounded-2xl border border-white/15 overflow-hidden shadow-xl max-w-full">
                 <div className="relative aspect-4/5 w-full bg-linear-to-b from-white/20 to-black/40">
                   {event.image ? (
@@ -205,9 +205,9 @@ function EventDetailPage() {
                 </div>
               </div>
 
-              {}
+
               <div className="flex flex-col justify-between h-full">
-                {}
+
                 <div>
                   <div className="inline-block px-4 py-2 rounded-2xl bg-slate-700/40 border border-white/20 mb-3">
                     <p className="text-sm sm:text-base lg:text-lg uppercase tracking-wider text-yellow-400 font-bold italic font-moco">
@@ -221,7 +221,7 @@ function EventDetailPage() {
                   </h1>
                 </div>
 
-                {}
+
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 sm:gap-x-6 gap-y-2 sm:gap-y-6">
                   <InfoPill
                     label="Event Type"
@@ -254,7 +254,7 @@ function EventDetailPage() {
                   />
                 </div>
 
-                {}
+
                 <div className="pt-1 sm:pt-2">
                   <EventRegistration
                     eventId={event.id}
@@ -264,9 +264,9 @@ function EventDetailPage() {
               </div>
             </div>
 
-            {}
+
             <div className="px-2 sm:px-4 lg:px-6 py-6 sm:py-10 lg:py-12 space-y-8 sm:space-y-12 lg:space-y-16">
-              {}
+
               <div className="space-y-3 sm:space-y-6">
                 <div className="flex items-center justify-center gap-4">
                   <div className="h-1 w-16 rounded-full bg-linear-to-r from-teal-500 to-cyan-500" />
@@ -286,10 +286,10 @@ function EventDetailPage() {
                 </div>
               </div>
 
-              {}
+
               <div className="h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
 
-              {}
+
               <div className="space-y-3 sm:space-y-8">
                 <div className="flex items-center justify-center gap-4">
                   <div className="h-1 w-12 sm:w-16 rounded-full bg-linear-to-r from-pink-500 to-rose-500" />
