@@ -162,7 +162,7 @@ const Merch = () => {
                   <div className="flex flex-wrap items-center gap-4 mb-4 font-mono text-xs tracking-wider">
                     {}
                     <div className="flex items-center gap-2 text-emerald-500/80">
-                      <span className="opacity-50">
+                      <span className="opacity-50"></span>
                       <span className="font-bold border-b border-emerald-500/30 pb-0.5">MK-IV</span>
                     </div>
 
