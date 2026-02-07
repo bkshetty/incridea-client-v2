@@ -222,11 +222,7 @@ interface PodiumCardProps {
 
 const PodiumCard = ({ player, tier, delay, isCenter = false }: PodiumCardProps) => {
     // Trophy icons and colors based on tier
-    const getTrophyIcon = () => {
-        if (tier === 'gold') return '🏆';
-        if (tier === 'silver') return '🥈';
-        return '🥉';
-    };
+
 
     const getTrophyColor = () => {
         if (tier === 'gold') return 'text-yellow-400';

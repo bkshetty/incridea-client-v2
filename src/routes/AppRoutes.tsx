@@ -16,15 +16,10 @@ import AccommodationPage from "../pages/AccommodationPage";
 import TechTeamPage from "../pages/techteam";
 import CoreTeamPage from "../pages/coreteam";
 import LeaderboardPage from "../pages/LeaderboardPage";
-import AccommodationPage from "../pages/AccommodationPage.tsx";
-import TechTeamPage from "../pages/techteam.tsx";
-import CoreTeamPage from "../pages/coreteam.tsx";
 import NotFoundPage from "../pages/NotFoundPage";
 import RefundPolicy from '../pages/refundpolicy';
 import ProfilePage from "@/pages/ProfilePage";
 import Gallery from "../pages/Gallery.tsx";
-import ComingSoon from "../pages/ComingSoon.tsx";
-import RefundPolicy from '../pages/refundpolicy.tsx'
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);

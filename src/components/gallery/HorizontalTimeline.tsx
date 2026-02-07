@@ -1,27 +1,13 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import Tilt from "react-parallax-tilt";
 import Portal from "../Portal";
+import LiquidGlassCard from "../liquidglass/LiquidGlassCard";
 import walk1 from "../../assets/character/walk-1.png";
 import walk2 from "../../assets/character/walk-2.png";
 import stand from "../../assets/character/stand.png";
 
 const WALK_CYCLE = [walk1, stand, walk2, stand];
 const IDLE_FRAME = stand;
-
-const glassCardStyle = {
-  borderRadius: "1.75rem",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  background: `
-    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
-    rgba(21, 21, 21, 0.30)
-  `,
-  boxShadow: `
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22)
-  `,
-  backdropFilter: "brightness(1.1) blur(1px)",
-  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
-};
 
 interface HorizontalTimelineProps {
   items: string[];
@@ -159,9 +145,8 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
   }, [smoothProgress, items.length, baseOffset, isFlipped]);
 
   return (
-    <div
+    <LiquidGlassCard
       className="w-full max-w-5xl mx-auto px-4 md:px-8 flex items-center relative h-14 sm:h-16 md:h-20"
-      style={glassCardStyle}
     >
       <style>{`
         @keyframes smokeTrail {
@@ -259,6 +244,6 @@ export const HorizontalTimeline: React.FC<HorizontalTimelineProps> = ({
           })}
         </div>
       </div>
-    </div>
+    </LiquidGlassCard>
   );
 };
