@@ -10,12 +10,12 @@ interface NavbarProps {
 const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
   return (
     <div className="fixed top-0 left-0 w-full z-50 px-4 md:px-14 pt-6 pb-2 md:pt-8 md:pb-4 flex justify-between items-center lg:grid lg:grid-cols-3 lg:items-start bg-transparent">
-      {/* Logo */}
+      {}
       <NavLink to="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:-mt-1 inline-flex items-center lg:-ml-3">
         <img src="/i.png" alt="Incridea" className="h-16 md:h-20 w-auto" />
       </NavLink>
 
-      {/* Center Links */}
+      {}
       <div className="hidden lg:flex justify-center items-center -ml-5 md:-ml-10 mt-12 lg:mt-5">
         <div className="hidden lg:flex gap-12">
           <NavLink
@@ -48,7 +48,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
         </div>
       </div>
 
-      {/* Right User Section */}
+      {}
       <div className="flex items-center gap-2 md:gap-4 ml-auto lg:ml-60 justify-end lg:mt-5">
         {isAuthenticated ? (
           <div className="flex items-center gap-2 md:gap-4">

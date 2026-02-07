@@ -36,7 +36,7 @@ export default function EventRegistration({
   });
 
   const user = userData?.user;
-  const token = !!user; // Derived auth state
+  const token = !!user; 
   const queryClient = useQueryClient();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -48,7 +48,6 @@ export default function EventRegistration({
     enabled: !!user,
   });
 
-  // Mutations
   const registerSoloMutation = useMutation({
     mutationFn: (eId: number) => registerSoloEvent(eId),
     onSuccess: () => {
@@ -123,7 +122,6 @@ export default function EventRegistration({
     );
   }
 
-  // userData fetch moved up
 
   const isFestRegistered = !!userData?.user?.pid;
 
@@ -154,12 +152,10 @@ export default function EventRegistration({
     );
   }
 
-  // Hide registration for Alumni
   if (userData?.user?.category === "ALUMNI" || userData?.user?.roles?.includes("ALUMNI")) {
     return null;
   }
 
-  // Already registered/in a team
   if (team) {
     const isLeader = String(team.Leader?.User?.id) === String(user.id);
     return (
@@ -242,7 +238,7 @@ export default function EventRegistration({
           </button>
         )}
 
-        {/* Copy Team ID for others to join */}
+        {}
         {type.includes("TEAM") && (
           <div className="flex items-center justify-between bg-slate-900/50 p-2 rounded text-xs text-slate-400 mt-2">
             <span>
@@ -264,7 +260,6 @@ export default function EventRegistration({
     );
   }
 
-  // Not registered
   const isSolo = type === "INDIVIDUAL" || type === "INDIVIDUAL_MULTIPLE_ENTRY";
 
 

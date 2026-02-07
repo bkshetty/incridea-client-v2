@@ -45,7 +45,7 @@ const Slideshow: React.FC<SlideshowProps> = ({
   return (
     <div className={`slideshow-container ${className}`}>
       <div className="slideshow-glass-frame">
-        {/* SVG filter for liquid glass effect */}
+        {}
         <svg style={{ display: "none" }}>
           <filter id="slideshowDisplacementFilter">
             <feTurbulence
@@ -64,7 +64,7 @@ const Slideshow: React.FC<SlideshowProps> = ({
           </filter>
         </svg>
 
-        {/* Embla carousel */}
+        {}
         <div className="slideshow-viewport" ref={emblaRef}>
           <div className="slideshow-track">
             {images.map((image, index) => (

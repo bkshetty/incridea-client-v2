@@ -24,7 +24,6 @@ const AuthRedirect = () => {
   const token = params.get("token");
 
   if (token) {
-    // Rely on cookie
     window.location.href = "/";
     return null;
   }

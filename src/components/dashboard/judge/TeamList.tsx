@@ -9,7 +9,6 @@ interface Props {
   eventType: string;
   selectedTeam: Team | null;
   setSelectedTeam: (team: Team | null) => void;
-  // Kept keys to allow parent to pass them without error, but made optional or just unused
   selectionMode?: boolean; 
   setSelectionMode?: (mode: boolean) => void;
   finalRound?: boolean;
@@ -21,24 +20,19 @@ export default function TeamList({
   selectedTeam,
   setSelectedTeam,
 }: Props) {
-  // Simplified: No search, sort, or filter state
 
-  // Basic Score Calculation purely for display if needed, but the request was to simplify.
-  // We can just keep simple Total calculation for display.
   const getTeamScore = (team: Team) => {
       if (!team.Score) return 0;
       return team.Score.reduce((acc, curr) => acc + Number(curr.score || 0), 0);
   };
   
-  // Just show teams as is (or basic alphabetic sort)
-  // Teams from API might be random order. Let's sort by ID or Name for stability.
   const displayTeams = useMemo(() => {
       return [...teams].sort((a,b) => a.name.localeCompare(b.name));
   }, [teams]);
 
   return (
     <div className="h-full flex flex-col">
-       {/* Removed Header Section */}
+       {}
 
        <div className="flex-1 overflow-y-auto px-1 pt-2">
             <div className="space-y-2">

@@ -90,7 +90,6 @@ export async function getPaymentStatus(type?: string) {
      const url = type ? `/payment/my-status?type=${type}` : '/payment/my-status'
      const { data } = await apiClient.get<any>(url)
      if (data.status === 'success') {
-         // Accept success even without PID/Receipt if logic allows (for accommodation without PID gen)
          return { 
            status: 'success', 
            message: 'Payment verified', 
@@ -116,7 +115,6 @@ export async function getPaymentStatus(type?: string) {
          }
      }
   } catch (e) {
-    // Ignore error
   }
   return { status: 'pending', message: 'Payment verification pending', processingStep: null }
 }

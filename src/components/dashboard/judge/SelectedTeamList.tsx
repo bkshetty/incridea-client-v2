@@ -38,7 +38,7 @@ export default function SelectedTeamList({
             return deleteWinner(id)
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["judge-teams", eventId, roundNo] }); // and winners
+            void queryClient.invalidateQueries({ queryKey: ["judge-teams", eventId, roundNo] }); 
             showToast("Winner removed", "success")
         },
         onError: () => showToast("Failed to remove winner", "error")

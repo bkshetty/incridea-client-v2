@@ -17,7 +17,6 @@ function RegisterPage() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        // Clean URL params if any (legacy token handling)
         const params = new URLSearchParams(window.location.search)
         if (params.get('token')) {
             window.history.replaceState({}, '', window.location.pathname)
@@ -33,9 +32,7 @@ function RegisterPage() {
 
 
 
-    // Redirect if not authenticated (and not loading)
     useEffect(() => {
-        // If we have no token, or if fetchMe failed
         if (!isUserLoading && !userData) {
             window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${encodeURIComponent(window.location.href)}`
             return
@@ -58,7 +55,6 @@ function RegisterPage() {
         pid: null,
     })
 
-    // Redirect if user already has PID and modal is closed
     useEffect(() => {
         if (user?.pid && !modalState.isOpen) {
             navigate('/')
@@ -98,7 +94,6 @@ function RegisterPage() {
                     },
                 ]
             } else {
-                // Filter out Merch, only keep Pass
                 options = [
                     {
                         id: 'internal-pass',
@@ -108,7 +103,6 @@ function RegisterPage() {
                 ]
             }
         } else {
-            // OTHER
             if (isSpotRegistration) {
                 options = [
                     {
@@ -133,7 +127,6 @@ function RegisterPage() {
         }
     }, [feeOptions])
 
-    // Pricing Calculation
     const selectedFee = useMemo(() => {
         return feeOptions.find(o => o.id === registrationOption)
     }, [feeOptions, registrationOption])
@@ -141,7 +134,6 @@ function RegisterPage() {
     const pricingBreakdown = useMemo(() => {
         if (!selectedFee) return null
         const base = Number(selectedFee.amount)
-        // 2.36% tax
         const taxRate = 0.0236
         const taxAmount = base * taxRate
         const total = Math.ceil(base + taxAmount)
@@ -240,23 +232,6 @@ function RegisterPage() {
                 setIsPaymentInitiating(false)
             })
             paymentObject.open()
-            // Note: We don't set isPaymentInitiating(false) here immediately because we want it to stay 'loading'
-            // until the user interacts with the modal (dismiss or success).
-            // However, `open()` is non-blocking usually? No, the modal opens.
-            // Actually, if we want to show "Opening...", maybe we should reset after open?
-            // But the user said "Show Opening payment page when clicked and razorpay page is opened".
-            // The razorpay page IS the modal/iframe.
-            // So keeping it "Opening..." might be confusing if the modal is already there?
-            // User might mean "Show 'Opening...' WHILST it is opening".
-            // Let's keep it disabled but maybe change text back? 
-            // "Disable the complete payment button and show Opening payment page when clicked and razorpay page is opened"
-            // This phrasing suggests: Click -> Button Disabled & Text "Opening..." -> Razorpay Opens.
-            // It doesn't explicitly say "Re-enable". But logically it should be disabled while payment is in progress?
-            // Or strictly "Opening..." is for the loading phase.
-            // Ill keep it simple: Start loading -> Open -> Stop loading (or keep disabled)?
-            // If I stop loading immediately after `open()`, it flashes.
-            // If I wait for dismiss/handler, it stays "Opening..." while user is paying.
-            // That might be better.
 
         } catch (err: any) {
             console.error(err)
@@ -298,7 +273,7 @@ function RegisterPage() {
 
                 <LiquidGlassCard className="p-8 md:p-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                        {/* Left Column: Details & Terms */}
+                        {}
                         <div className="space-y-6 h-fit">
                             <div>
                                 <h2 className="text-xl text-slate-100 mb-4 font-moco font-bold">Your Details</h2>
@@ -338,11 +313,11 @@ function RegisterPage() {
                             </div>
                         </div>
 
-                        {/* Right Column: Pricing */}
+                        {}
                         <div className="space-y-6 flex flex-col h-fit relative lg:pl-12 lg:border-l border-slate-800">
                             <div>
                                 <h2 className="text-xl text-slate-100 font-moco font-bold">Payment Summary</h2>
-                                {/* Status Message */}
+                                {}
                                 <div className={`py-2 rounded-lg text-xs font-moco ${!registrationConfig?.isSpotRegistration
                                     }`}>
                                     {!registrationConfig?.isSpotRegistration ? (

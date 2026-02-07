@@ -4,7 +4,7 @@ import gradient from "../assets/gradient.png";
 import bgOp from "../assets/bg-op.png";
 
 const ComingSoon = () => {
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 }); // Reset to center default
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 }); 
   const initialOrientation = useRef<{ beta: number; gamma: number } | null>(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -16,7 +16,7 @@ const ComingSoon = () => {
       setIsMobile(window.matchMedia('(max-width: 1280px)').matches);
     };
 
-    handleResize(); // Init
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -24,7 +24,6 @@ const ComingSoon = () => {
   const isTouchRef = useRef(false);
 
   useEffect(() => {
-    // Check if we need permission (iOS 13+)
     try {
       if (
         typeof DeviceOrientationEvent !== 'undefined' &&
@@ -32,10 +31,9 @@ const ComingSoon = () => {
       ) {
         setIsIOS(true);
       } else {
-        setPermissionGranted(true); // Non-iOS doesn't need explicit permission usually
+        setPermissionGranted(true); 
       }
     } catch (e) {
-      // Fallback if DeviceOrientationEvent is missing or errors
       setPermissionGranted(true);
     }
 
@@ -45,14 +43,12 @@ const ComingSoon = () => {
 
     const handleMouseMove = (e: MouseEvent) => {
       if (isTouchRef.current || isMobile) return;
-      // Track mouse even if not hovering container, or stick to window
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
       setMousePos({ x, y });
     };
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
-      // If we haven't received valid data yet, don't update
       if (e.beta === null || e.gamma === null) return;
 
       if (!initialOrientation.current) {
@@ -60,14 +56,10 @@ const ComingSoon = () => {
         return;
       }
 
-      // Calculate change from initial position
-      // X axis (Gamma - Left/Right): +/- 30 degrees range
       const maxTilt = 30;
       const deltaGamma = e.gamma - initialOrientation.current.gamma;
-      // Clamp delta to range [-30, 30], then map to [0, 1] (0.5 is center)
       const x = Math.min(Math.max((deltaGamma + maxTilt) / (maxTilt * 2), 0), 1);
 
-      // Y axis (Beta - Front/Back): +/- 30 degrees range
       const deltaBeta = e.beta - initialOrientation.current.beta;
       const y = Math.min(Math.max((deltaBeta + maxTilt) / (maxTilt * 2), 0), 1);
 
@@ -101,7 +93,6 @@ const ComingSoon = () => {
     }
   };
 
-  // Calculate light direction for shadows
   const lightAngleX = (mousePos.x - 0.5) * 100;
   const lightAngleY = (mousePos.y - 0.5) * 100;
 
@@ -130,11 +121,10 @@ const ComingSoon = () => {
           ENABLE MOTION
         </button>
       )}
-      {/* ================= INLINE FONT (NO OTHER FILES TO TOUCH) ================= */}
+      {}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
-        /* Default animation for mobile */
         @keyframes portalFlicker {
           0%, 33.33% {
             content: url('/comingsoon/on.png');
@@ -150,14 +140,12 @@ const ComingSoon = () => {
           font-family: 'Outfit', system-ui, sans-serif;
         }
 
-        /* Mobile behavior */
         @media (max-width: 1280px) {
           .character-glow {
             animation: portalFlicker 3s infinite;
           }
         }
 
-        /* Desktop behavior */
         @media (min-width: 1281px) {
           .character-glow {
             content: url('/comingsoon/off.png');
@@ -170,7 +158,7 @@ const ComingSoon = () => {
         }
       `}</style>
 
-      {/* ================= LIGHT RAYS (FULL WIDTH, GOES OVER PHOTO) ================= */}
+      {}
       <LightRays
         className="absolute inset-0"
         raysColor={isMobile ? "#a78bfa" : "#a78bfa"}
@@ -186,9 +174,9 @@ const ComingSoon = () => {
         originOffset={[0, 0]}
       />
 
-      {/* ================= CONTENT ================= */}
+      {}
       <div className="cs-root relative z-10 flex h-full w-full flex-col justify-between pt-20 xl:flex-row xl:justify-normal xl:pt-0">
-        {/* LEFT SIDE */}
+        {}
         <div className="flex h-auto w-full items-center md:pl-20 justify-center xl:h-full xl:w-1/2 xl:justify-start">
           <div className="flex flex-col items-center text-center pt-0 xl:items-start xl:text-left xl:pl-32 xl:pt-0">
             <img
@@ -196,7 +184,7 @@ const ComingSoon = () => {
               alt="Incridea Logo"
               className="w-32 mb-8 xl:w-40 xl:mb-10 object-contain"
             />
-            {/* ================= STYLES FOR GLITCH EFFECT ================= */}
+            {}
             <style>{`
               @keyframes glitch {
                 0% { transform: translate(0); text-shadow: none; }
@@ -235,7 +223,7 @@ const ComingSoon = () => {
               </h1>
             </div>
 
-            {/* Decorative Progress Bar */}
+            {}
             <div className="w-full max-w-[200px] xl:max-w-[280px] space-y-3">
               <div className="flex justify-between text-[9px] uppercase tracking-[0.3em] text-[#d8b4fe] font-mono opacity-80">
                 <span className="animate-pulse">Initializing...</span>
@@ -247,13 +235,13 @@ const ComingSoon = () => {
                 </div>
               </div>
               <p className="pt-2 text-[8px] tracking-[0.4em] text-[#a78bfa] xl:text-[9px] font-mono opacity-60 text-center xl:text-left">
-                STAY TUNED // 2026
+                STAY TUNED 
               </p>
             </div>
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {}
         <div className="relative flex h-auto w-full items-center justify-center xl:h-full xl:w-1/2">
           <img
             src="/comingsoon/path.png"
@@ -279,7 +267,7 @@ const ComingSoon = () => {
                   drop-shadow(${-lightAngleX * 0.6}px ${-lightAngleY * 1}px 100px rgba(157, 78, 221, ${0.35 - mousePos.y * 0.18}))
                   drop-shadow(${-lightAngleX * 0.8}px ${-lightAngleY * 1.2}px 150px rgba(140, 69, 255, ${0.2 - mousePos.y * 0.1}))
                 `,
-                transition: 'filter 0.1s ease-out', // Only transition filter, let transform be handled by class or separate
+                transition: 'filter 0.1s ease-out', 
               }}
             />
           </div>

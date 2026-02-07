@@ -15,13 +15,7 @@ export default function JoinTeamModal({
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
-  // Helper to parse ID if format is like T-123 or just 123
   const parseTeamId = (input: string) => {
-    // Assuming input could be "T-123" or "123". Backend expects number.
-    // If the user inputs "123", we use 123. If "T-123", we strip "T-".
-    // But wait, existing format might be different. Let's assume raw ID for now number.
-    // Original had teamIdToId utils.
-    // Let's assume user enters just the number for now or clean non-numeric if simpler.
     return input.replace(/\D/g, "");
   };
 

@@ -26,7 +26,6 @@ export default function QuizPage() {
 
     const quiz = data?.quiz
 
-    // Initialize state from fetched quiz
     useEffect(() => {
         if (quiz?.attemptStartTime) {
             setHasStarted(true)
@@ -67,14 +66,12 @@ export default function QuizPage() {
         }
     }, [quiz?.teamId, quizId, socket])
 
-    // Timer & Stopwatch logic
     useEffect(() => {
         if (!quiz) return
 
         const interval = setInterval(() => {
             const now = new Date().getTime()
 
-            // Countdown to End
             const end = new Date(quiz.endTime).getTime()
             const distance = end - now
 
@@ -82,7 +79,6 @@ export default function QuizPage() {
                 clearInterval(interval)
                 setTimeLeft('Expired')
                 if (!isFinished) showToast('Quiz time is over! Submitting...', 'error')
-                // disable or auto submit? Left as user requested previously.
             } else {
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
@@ -90,7 +86,6 @@ export default function QuizPage() {
                 setTimeLeft(`${hours}h ${minutes}m ${seconds}s`)
             }
 
-            // Stopwatch (if started)
             if (hasStarted && attemptStartTime) {
                 const diff = now - attemptStartTime.getTime()
                 if (diff >= 0) {
@@ -176,7 +171,6 @@ export default function QuizPage() {
         )
     }
 
-    // Start Screen
     if (!hasStarted) {
         return (
             <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-4 text-center space-y-6 animate-in fade-in">
@@ -215,7 +209,7 @@ export default function QuizPage() {
 
     return (
         <div className="min-h-screen bg-slate-950 text-white flex flex-col">
-            {/* Header */}
+            {}
             <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-10">
                 <div>
                     <h1 className="font-bold text-lg max-w-[200px] md:max-w-md truncate">{quiz.name}</h1>
@@ -232,10 +226,10 @@ export default function QuizPage() {
                 </div>
             </div>
 
-            {/* Main Content */}
+            {}
             <div className="flex-1 container mx-auto p-4 max-w-3xl flex flex-col justify-center">
 
-                {/* Progress Bar */}
+                {}
                 <div className="w-full bg-slate-800 h-2 rounded-full mb-6 relative overflow-hidden">
                     <div
                         className="absolute top-0 left-0 h-full bg-blue-600 transition-all duration-300"
@@ -275,11 +269,11 @@ export default function QuizPage() {
                         </div>
                     </div>
                 ) : (
-                    null // Handled by isFinished
+                    null 
                 )}
             </div>
 
-            {/* Footer Navigation */}
+            {}
             <div className="bg-slate-900 border-t border-slate-800 p-4">
                 <div className="container mx-auto max-w-3xl flex justify-between">
                     <button

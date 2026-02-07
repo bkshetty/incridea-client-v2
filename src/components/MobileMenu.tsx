@@ -23,7 +23,6 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
         { icon: Phone, path: "/contact", label: "Contact" },
     ].filter(link => isAuthenticated || link.label !== "Profile");
 
-    // Animation Variants
     const drawerVariants: Variants = {
         initial: { x: "100%" },
         animate: {
@@ -58,7 +57,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
             opacity: 1,
             transition: {
                 staggerChildren: 0.02,
-                staggerDirection: -1 // Reverse order (bottom to top)
+                staggerDirection: -1 
             }
         }
     };
@@ -86,18 +85,18 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
 
     return (
         <div className="lg:hidden mr-3">
-            {/* Toggle Button */}
-            {/* Toggle Button */}
-            {/* Dimensional Rift Button */}
-            {/* Shattered Dimension Button */}
-            {/* Dimensional Flux Button */}
+            {}
+            {}
+            {}
+            {}
+            {}
             <button
                 onClick={toggleMenu}
                 className="group relative z-50 p-2 md:p-3 rounded-xl text-white hover:opacity-80 transition-all overflow-hidden"
                 aria-label="Toggle Menu"
             >
                 <div className="relative w-8 h-6 flex flex-col justify-between items-center transform group-hover:scale-110 transition-transform duration-300">
-                    {/* Top Bar */}
+                    {}
                     <motion.span
                         animate={isOpen ? { rotate: 45, y: 11, backgroundPosition: ["0% 50%", "100% 50%"] } : { rotate: 0, y: 0, backgroundPosition: ["0% 50%", "100% 50%"] }}
                         transition={{
@@ -108,7 +107,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                         className="w-full h-0.5 rounded-full bg-gradient-to-r from-cyan-300 via-purple-500 to-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
                     />
 
-                    {/* Middle Bar */}
+                    {}
                     <motion.span
                         animate={isOpen ? { opacity: 0, x: 20 } : { opacity: 1, x: 0, backgroundPosition: ["100% 50%", "0% 50%"] }}
                         transition={{
@@ -119,7 +118,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                         className="w-2/3 h-0.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 shadow-[0_0_8px_rgba(192,132,252,0.8)] group-hover:w-full transition-all duration-300"
                     />
 
-                    {/* Bottom Bar */}
+                    {}
                     <motion.span
                         animate={isOpen ? { rotate: -45, y: -11, backgroundPosition: ["0% 50%", "100% 50%"] } : { rotate: 0, y: 0, backgroundPosition: ["0% 50%", "100% 50%"] }}
                         transition={{
@@ -130,7 +129,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                         className="w-full h-0.5 rounded-full bg-gradient-to-r from-cyan-300 via-purple-500 to-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
                     />
 
-                    {/* Chromatic Aberration Ghosts (Hover Effect) */}
+                    {}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none mix-blend-screen">
                         <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-400/0 via-cyan-400/30 to-cyan-400/0 blur-sm transform -translate-x-1 skew-x-12" />
                         <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-500/0 via-purple-500/30 to-purple-500/0 blur-sm transform translate-x-1 -skew-x-12" />
@@ -141,7 +140,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Backdrop */}
+                        {}
                         <motion.div
                             key="backdrop"
                             initial={{ opacity: 0 }}
@@ -151,7 +150,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                             onClick={toggleMenu}
                         />
 
-                        {/* Drawer content wrapped in GlassSurface */}
+                        {}
                         <motion.div
                             key="drawer"
                             variants={drawerVariants}
@@ -165,13 +164,13 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                     variants={contentVariants}
                                     className="flex flex-col w-full h-full pt-4 pb-24 px-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]"
                                 >
-                                    {/* Header: Back Arrow */}
+                                    {}
                                     <motion.div className="flex justify-start mb-4 relative">
                                         <svg width="0" height="0" className="absolute">
                                             <linearGradient id="back-arrow-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stopColor="#67e8f9" /> {/* cyan-300 */}
-                                                <stop offset="50%" stopColor="#a855f7" /> {/* purple-500 */}
-                                                <stop offset="100%" stopColor="#67e8f9" /> {/* cyan-300 */}
+                                                <stop offset="0%" stopColor="#67e8f9" /> {}
+                                                <stop offset="50%" stopColor="#a855f7" /> {}
+                                                <stop offset="100%" stopColor="#67e8f9" /> {}
                                             </linearGradient>
                                         </svg>
                                         <button
@@ -182,10 +181,10 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                         </button>
                                     </motion.div>
 
-                                    {/* Title */}
+                                    {}
                                     <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-extrabold text-white mb-6 md:mb-10 pb-4 tracking-tight text-center w-full">Menu</motion.h1>
 
-                                    {/* Main Navigation */}
+                                    {}
                                     <div className="flex flex-col gap-4 md:gap-10 w-full flex-grow items-center">
                                         {links.map(({ path, label }) => (
                                             <motion.div
@@ -207,7 +206,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                         ))}
                                     </div>
 
-                                    {/* Auth Buttons (Moved above footer line) */}
+                                    {}
                                     <div className="flex flex-col items-center w-full mt-16 mb-4 pt-4">
                                         {isAuthenticated ? (
                                             <motion.button
@@ -233,7 +232,7 @@ const MobileMenu = ({ onLogout, isAuthenticated }: MobileMenuProps) => {
                                         )}
                                     </div>
 
-                                    {/* Footer Links (Privacy, etc) */}
+                                    {}
                                     <div className="flex flex-col gap-3 md:gap-6 pt-4 items-center w-full">
                                         {[
                                             { path: "/privacy", label: "Privacy Policy" },

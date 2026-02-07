@@ -24,24 +24,16 @@ import Footer from "../components/Footer";
 
 function ProfilePage() {
   const navigate = useNavigate();
-  // Derived token check removed, rely on MeResponse or AuthContext if accessible
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editFullName, setEditFullName] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
 
-  // Removed unused toErrorMessage helper
-
-  // Removed password reset mutation setup
 
 
 
-  /* 
-   * ProfilePage Logic Refactor
-   * - Strict handling of Loading/Error/Success states
-   * - No auto-redirects prevents infinite loops
-   */
+
   const profileQueryFn: QueryFunction<MeResponse> = () => {
     return fetchMe();
   };
@@ -50,7 +42,7 @@ function ProfilePage() {
     queryKey: ["me"],
     queryFn: profileQueryFn,
     retry: false,
-    staleTime: 1000 * 60 * 5, // Cache for 5 mins
+    staleTime: 1000 * 60 * 5, 
   });
 
   useEffect(() => {
@@ -88,7 +80,6 @@ function ProfilePage() {
     },
   });
 
-  // Removed unused password reset mutation
 
   const onSubmit = form.handleSubmit((values) =>
     changePasswordMutation.mutate(values),
@@ -96,17 +87,13 @@ function ProfilePage() {
 
   const user = profileQuery.data?.user;
   const userName = profileQuery.isLoading ? "Loading..." : (user?.name ?? user?.email ?? "User");
-  // Removed unused userEmail
 
-  // Removed unused handleResetRequest to avoid noUnusedLocals errors
 
   const handleLogout = async () => {
     try {
       await logoutUser();
     } catch {
-      // Ignore logout API errors and proceed to client-side cleanup
     } finally {
-      // localStorage.removeItem("token");
       window.location.href = "/";
     }
   };
@@ -125,12 +112,12 @@ function ProfilePage() {
     >
       <div className="absolute inset-0 bg-black/40"></div>
       <section className="relative h-screen overflow-y-auto pt-32 lg:pt-28 lg:pl-12 pb-2 flex flex-col items-center justify-start">
-        {/* Profile Card */}
+        {}
         <div className="w-full max-w-[95%] sm:max-w-[90%] lg:max-w-[85%] mt-4 px-3 sm:px-4">
           <div className="relative flex w-full gap-4 items-start flex-col xl:flex-row">
             <LiquidGlassCard className="p-4 lg:p-6 rounded-3xl w-full xl:flex-[0_0_33%]">
               <div className="mt-4"></div>
-              {/* Edit Profile Button */}
+              {}
               <button
                 onClick={() => {
                   setEditFullName(userName);
@@ -145,7 +132,7 @@ function ProfilePage() {
                 </span>
               </button>
               <div className="flex flex-col items-center gap-5">
-                {/* Avatar with badge QR */}
+                {}
                 <div className="relative flex items-center justify-center mt-3">
                   <div
                     className={`w-32 h-32 lg:w-44 lg:h-44 rounded-full bg-linear-to-br from-slate-400 to-slate-500 flex items-center justify-center shadow-xl transition-transform duration-500 ${isRotating ? "rotate-180" : "rotate-0"
@@ -170,7 +157,7 @@ function ProfilePage() {
                   </button>
                 </div>
 
-                {/* Text */}
+                {}
                 <div className="text-center space-y-2">
                   <p className="text-2xl lg:text-3xl text-slate-50 font-moco font-bold">
                     {userName}
@@ -178,7 +165,7 @@ function ProfilePage() {
                   <p className="text-sm text-slate-300">{user?.college || "No College Info"}</p>
                 </div>
 
-                {/* Buttons */}
+                {}
                 <div className="flex flex-col gap-4 justify-center items-center w-full">
                   <button
                     className="cursor-target px-6 py-2 card card--dark text-white font-medium rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60"
@@ -203,10 +190,10 @@ function ProfilePage() {
               <div className="mt-2"></div>
             </LiquidGlassCard>
 
-            {/* Missions Card on the right */}
+            {}
             <LiquidGlassCard className="p-4 lg:p-5 rounded-3xl w-full xl:flex-1 overflow-hidden">
               <div className="grid gap-4 xl:grid-rows-[auto_auto] overflow-hidden">
-                {/* Top Section: Enrolled Missions */}
+                {}
                 <div className="flex flex-col overflow-hidden">
                   <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white text-center w-full font-moco font-bold">
@@ -292,10 +279,10 @@ function ProfilePage() {
                   />
                 </div>
 
-                {/* Divider */}
+                {}
                 <div className="border-t border-white/10 my-3"></div>
 
-                {/* Bottom Section: Recommended Missions */}
+                {}
                 <div className="flex flex-col overflow-hidden">
                   <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white text-center w-full font-moco font-bold">
@@ -402,7 +389,7 @@ function ProfilePage() {
               </div>
 
               <div className="flex flex-col items-center space-y-6 md:space-y-7 pb-1">
-                {/* QR Code Placeholder */}
+                {}
                 <div className="bg-white rounded-2xl p-4 flex items-center justify-center shadow-inner overflow-hidden">
                   <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
                     {user?.pid ? (

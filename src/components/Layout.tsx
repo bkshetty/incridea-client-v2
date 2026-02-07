@@ -20,7 +20,6 @@ function Layout() {
       console.error('Logout failed', error)
     } finally {
       setIsAuthenticated(false)
-      // Force reload to clear all states
       window.location.reload()
     }
   }
@@ -28,7 +27,6 @@ function Layout() {
   const fetchProfile = async () => {
     try {
       const { user } = await fetchMe()
-      // Basic validation that we got a valid user object
       if (user && user.id) {
         setIsAuthenticated(true)
       } else {
@@ -42,10 +40,8 @@ function Layout() {
   }
 
   useEffect(() => {
-    // Initial fetch
     void fetchProfile()
 
-    // SAFETY TIMEOUT: If API hangs, stop loading after 5s so user sees SOMETHING
     const timer = setTimeout(() => {
       setIsLoading((prev) => {
         if (prev) {

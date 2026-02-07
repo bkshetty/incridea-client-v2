@@ -32,7 +32,7 @@ export interface TeamMember {
 export interface Team {
     id: number
     name: string
-    teamId: string // This might need to be derived or is existing field? V2 schema has `id` (int). Team ID usually is constructed like `INC-<ID>`.
+    teamId: string 
     leaderId: number | null
     roundNo: number
     TeamMembers: TeamMember[]
@@ -97,9 +97,6 @@ export const getWinnersByEvent = async (eventId: number) => {
     return data
 }
 
-// Reusing Winner Interface but backend returns additional relations (Event, Team Members). 
-// Since TS interface is used for strict typing, we might need a looser type or extended type for CSV.
-// But for now, returning `any[]` or extending type is fine to unblock.
 export const getAllWinners = async () => {
     const { data } = await apiClient.get<{ winners: any[] }>(`/judge/winners/all`)
     return data

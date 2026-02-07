@@ -37,7 +37,7 @@ export const EventSearchBar: React.FC<EventSearchBarProps> = ({
   return (
     <div className="border border-white/25 bg-white/11 backdrop-blur-[30px] rounded-xl p-3 sm:p-4">
       <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        {/* Search Bar */}
+        {}
         <div className="relative flex-1 w-full">
           <label htmlFor="event-search" className="sr-only">
             Search events
@@ -64,7 +64,7 @@ export const EventSearchBar: React.FC<EventSearchBarProps> = ({
             >
               {selectedDay}
             </MenuButton>
-            {/* Days Menu List */}
+            {}
             <MenuItems
               transition
               anchor="bottom end"
@@ -93,7 +93,7 @@ export const EventSearchBar: React.FC<EventSearchBarProps> = ({
               {categories.find((c) => c.value === selectedCategory)?.label ||
                 "Category"}
             </MenuButton>
-            {/* Category Menu List */}
+            {}
             <MenuItems
               transition
               anchor="bottom end"

@@ -5,7 +5,6 @@ const rawBaseUrl =
     ? import.meta.env.VITE_API_URL
     : '/api'
 
-// Ensure the base URL always points at the server's /api prefix, even if the env var omits it.
 const apiBaseUrl = rawBaseUrl.replace(/\/+$/, '').endsWith('/api')
   ? rawBaseUrl.replace(/\/+$/, '')
   : `${rawBaseUrl.replace(/\/+$/, '')}/api`

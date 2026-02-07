@@ -70,7 +70,7 @@ const EventCard = ({ event, index }: EventCardProps) => {
             maskSize: "100% 100%",
           }}
         >
-          {/* Inner Content Area (Glass Effect) */}
+          {}
           <Glass
             className="flex h-full w-full flex-col gap-[8px] p-[20px_16px_10px]"
           >
@@ -85,14 +85,14 @@ const EventCard = ({ event, index }: EventCardProps) => {
               />
             </div>
 
-            {/* Event Name - Reduced slightly for better fit */}
+            {}
             <div className="ml-1 mt-3 mb-1 text-[12px] font-bold uppercase tracking-[1.5px] text-white/90 truncate cursor-target">
               {event.name}
             </div>
 
-            {/* Details */}
+            {}
             <div className="mt-auto space-y-2 pb-5 pl-1 pr-1">
-              {/* Date */}
+              {}
               <div className="flex h-[32px] w-full items-center gap-[8px] rounded-md border border-white/5 bg-white/5 px-4 backdrop-blur-xs text-white/80">
                 <Calendar size={12} className="opacity-70 shrink-0" />
                 <span className="text-[10.5px] font-medium tracking-wide truncate">
@@ -102,7 +102,7 @@ const EventCard = ({ event, index }: EventCardProps) => {
                 </span>
               </div>
 
-              {/* Team */}
+              {}
               <div className="flex h-[32px] w-full items-center gap-[8px] rounded-md border border-white/5 bg-white/5 px-4 backdrop-blur-xs text-white/80">
                 <Users size={12} className="opacity-70 shrink-0" />
                 <span className="text-[10.5px] font-medium tracking-wide truncate">
@@ -110,7 +110,7 @@ const EventCard = ({ event, index }: EventCardProps) => {
                 </span>
               </div>
 
-              {/* Location */}
+              {}
               <div className="flex h-[32px] w-fit min-w-[100px] items-center gap-[8px] rounded-md border border-white/5 bg-white/5 px-4 backdrop-blur-xs text-white/80">
                 <MapPin size={12} className="opacity-70 shrink-0" />
                 <span className="text-[10.5px] font-medium tracking-wide truncate">
@@ -121,7 +121,7 @@ const EventCard = ({ event, index }: EventCardProps) => {
           </Glass>
         </div>
 
-        {/* Dynamic Category Tag - 1/4th size reduction + Theme Colors */}
+        {}
         <div
           className="absolute bottom-[2.5%] right-[8%] text-[10px] tracking-[0.4em] font-black select-none pointer-events-none z-20 transition-all duration-700 uppercase"
           style={{

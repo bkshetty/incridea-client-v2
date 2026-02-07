@@ -7,7 +7,6 @@ import { toast } from 'react-toastify'
 import { bookIndividual } from '../../api/accommodation'
 import { Loader2, X, FileText } from 'lucide-react'
 
-// Schemas
 const individualSchema = z.object({
 
   checkIn: z.enum(['2026-03-05', '2026-03-06', '2026-03-07'], { message: 'Please select a valid Check-in date' }),
@@ -33,7 +32,6 @@ export const IndividualBookingForm = ({ onSuccess }: { onSuccess: () => void }) 
     }
   })
 
-  // Watch ID Card to show preview or status
   const idCard = watch('idCard')
 
   const onSubmit = async (data: IndividualForm) => {
@@ -74,11 +72,9 @@ export const IndividualBookingForm = ({ onSuccess }: { onSuccess: () => void }) 
         handler: async function (response: any) {
           setPaymentModalOpen(true)
           try {
-            // Verify payment matching Fest logic
             await import('../../api/registration').then(m => m.verifyPaymentSignature(response))
           } catch (e) {
             console.error('Verification failed', e)
-            // Modal will rely on socket or show error eventually
             toast.error('Payment verification failed, please check status')
           }
         },
@@ -112,7 +108,7 @@ export const IndividualBookingForm = ({ onSuccess }: { onSuccess: () => void }) 
 
 
           <div>
-            {/* Date pickers - Select for restricted dates */}
+            {}
             <label className="block text-sm font-medium mb-1">Check In</label>
             <select {...register('checkIn')} className="w-full bg-white/10 border border-white/20 rounded p-2 focus:outline-none focus:border-purple-500 text-white">
               <option value="" className="bg-slate-900 text-gray-400">Select Date</option>
@@ -199,7 +195,7 @@ export const IndividualBookingForm = ({ onSuccess }: { onSuccess: () => void }) 
         isOpen={isPaymentModalOpen}
         onClose={() => {
           setPaymentModalOpen(false)
-          onSuccess() // Refresh or cleanup on close
+          onSuccess() 
         }}
         userId={user?.id}
         paymentType='ACCOMMODATION'

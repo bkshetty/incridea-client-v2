@@ -1,6 +1,5 @@
 import apiClient from './client'
 
-// Add stats and booking types
 export interface AccommodationStats {
     boys: { total: number; booked: number; available: number }
     girls: { total: number; booked: number; available: number }

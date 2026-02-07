@@ -10,7 +10,7 @@ function ContactPage() {
 
 
       <div className="min-h-screen text-white relative overflow-x-hidden">
-        {/* Full Screen Background Image */}
+        {}
         <div
           className="fixed inset-0 w-full h-full -z-10"
           style={{
@@ -22,10 +22,10 @@ function ContactPage() {
           }}
         />
 
-        {/* Dark Overlay to make text readable */}
+        {}
         <div className="fixed inset-0 bg-black/40 -z-10" />
 
-        {/* Gradient Orbs - Reduced opacity */}
+        {}
         <div className="fixed inset-0 -z-10 overflow-hidden">
           <div className="absolute top-20 left-10 w-64 h-64 md:w-96 md:h-96 rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-20 blur-3xl"></div>
           <div className="absolute top-40 right-20 w-72 h-72 md:w-112.5 md:h-112.5 rounded-full bg-linear-to-brrom-blue-500 to-cyan-400 opacity-20 blur-3xl"></div>
@@ -35,7 +35,7 @@ function ContactPage() {
 
         <div className="px-4 pb-16 pt-10 md:px-6 relative z-10">
           <div className="mx-auto flex max-w-7xl flex-col gap-8">
-            {/* Header */}
+            {}
             <header className="space-y-3 text-center">
               <h1 className="text-5xl font-bold text-white md:text-7xl tracking-tight drop-shadow-lg">
                 Contact Us
@@ -45,10 +45,10 @@ function ContactPage() {
               </p>
             </header>
 
-            {/* Main Contact Card */}
+            {}
             <LiquidGlassCard>
               <div className="grid gap-6 md:grid-cols-5">
-                {/* Left Side - Contact Information */}
+                {}
                 <div className="md:col-span-2 space-y-8 p-4 md:p-6 relative">
                   <div>
                     <h2 className="text-2xl md:text-3xl font-semibold mb-2">
@@ -59,7 +59,7 @@ function ContactPage() {
                     </p>
                   </div>
 
-                  {/* Email */}
+                  {}
                   <div className="flex items-start gap-3">
                     <MdMail className="text-2xl text-white mt-1 shrink-0" />
                     <div>
@@ -73,7 +73,7 @@ function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Phone Numbers */}
+                  {}
                   <div className="flex items-start gap-3">
                     <MdCall className="text-2xl text-white mt-1 shrink-0" />
                     <div className="space-y-2">
@@ -95,7 +95,7 @@ function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Address */}
+                  {}
                   <div className="flex items-start gap-3">
                     <MdLocationOn className="text-2xl text-white mt-1 shrink-0" />
                     <div>
@@ -108,9 +108,9 @@ function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Social Media - Glassy Icons */}
+                  {}
                   <div className="flex gap-4 pt-4">
-                    {/* YouTube Glass Icon */}
+                    {}
                     <a
                       href="https://youtube.com/@incrideanmamit"
                       target="_blank"
@@ -121,7 +121,7 @@ function ContactPage() {
                       <div className="absolute inset-0 bg-linear-to-br from-red-500/20 to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </a>
 
-                    {/* Instagram Glass Icon */}
+                    {}
                     <a
                       href="https://instagram.com"
                       target="_blank"
@@ -132,7 +132,7 @@ function ContactPage() {
                       <div className="absolute inset-0 bg-linear-to-br from-pink-400/20 via-purple-500/20 to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </a>
 
-                    {/* LinkedIn Glass Icon */}
+                    {}
                     <a
                       href="https://linkedin.com"
                       target="_blank"
@@ -145,9 +145,9 @@ function ContactPage() {
                   </div>
                 </div>
 
-                {/* Right Side - Additional Info & Map */}
+                {}
                 <div className="md:col-span-3 space-y-6 p-4 md:p-6">
-                  {/* University Info */}
+                  {}
                   <div className="rounded-2xl border border-slate-700/50 bg-slate-900/30 p-4 md:p-6 backdrop-blur-sm">
                     <h3 className="text-lg font-semibold mb-3 text-white">University Information</h3>
                     <div className="text-slate-200 text-sm space-y-1">
@@ -160,7 +160,7 @@ function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Map */}
+                  {}
                   <div className="rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl">
                     <div className="aspect-video w-full">
                       <iframe
@@ -182,7 +182,7 @@ function ContactPage() {
           </div>
         </div>
 
-        {/* SVG Filter for Displacement Effect */}
+        {}
         <svg className="absolute w-0 h-0">
           <defs>
             <filter id="displacementFilter">

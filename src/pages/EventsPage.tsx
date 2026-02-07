@@ -81,12 +81,10 @@ function EventsPage() {
             const selectedDayLabel = DAY_FILTERS.find((d) => d.label === dayFilter);
             let matchesDay = true;
             if (dayFilter !== "All" && selectedDayLabel) {
-                // Map day1 to Day1, day2 to Day2 etc.
                 const dayEnum = selectedDayLabel.key.replace("day", "Day");
                 if (event.day && Array.isArray(event.day)) {
                     matchesDay = event.day.includes(dayEnum as any);
                 } else {
-                    // Fallback or legacy check if day is somehow missing (though it shouldn't be with proper types)
                     const selectedDayIso = activeDayKey ? dayConfig?.[activeDayKey] ?? null : null;
                     matchesDay = !selectedDayIso
                         ? true

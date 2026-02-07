@@ -20,7 +20,6 @@ export interface OrganiserEventDetails {
   name: string
   category: string
   isStarted: boolean
-  // Add other fields as per response
   Teams: Team[]
   Rounds: Round[]
 }
@@ -163,7 +162,6 @@ export const searchUsers = async (query: string, token: string) => {
     return data
 }
 
-// Round Management
 export const createRound = async (eventId: number, token: string) => {
     const { data } = await apiClient.post<{ round: Round }>(`/organiser/events/${eventId}/rounds`, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -178,7 +176,6 @@ export const deleteRound = async (eventId: number, roundNo: number, token: strin
     return data
 }
 
-// Judge Management
 export const addJudge = async (eventId: number, roundNo: number, userId: number, token: string) => {
     const { data } = await apiClient.post(`/organiser/events/${eventId}/rounds/${roundNo}/judges`, { userId }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -193,7 +190,6 @@ export const removeJudge = async (eventId: number, roundNo: number, judgeUserId:
     return data
 }
 
-// Criteria Management
 export const addCriteria = async (eventId: number, roundNo: number, payload: { name: string; scoreOutOf?: number }, token: string) => {
     const { data } = await apiClient.post<{ criteria: Criteria }>(`/organiser/events/${eventId}/rounds/${roundNo}/criteria`, payload, {
         headers: { Authorization: `Bearer ${token}` }
@@ -257,9 +253,7 @@ export interface UpdateQuizPayload {
   questions: Question[]
 }
 
-// ... existing code ...
 
-// Quiz Management
 export const createQuiz = async (eventId: number, roundId: number, payload: CreateQuizPayload, token: string) => {
     const { data } = await apiClient.post<{ quiz: Quiz }>(`/organiser/events/${eventId}/rounds/${roundId}/quiz`, payload, {
         headers: { Authorization: `Bearer ${token}` }

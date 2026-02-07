@@ -28,7 +28,7 @@ const MerchBuyModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showProcessingModal, setShowProcessingModal] = useState(false);
 
-  const { user } = useAuth(); // Get user details
+  const { user } = useAuth(); 
 
   const {
     register,
@@ -43,12 +43,10 @@ const MerchBuyModal = ({
     },
   });
 
-  // Update form values when user loads or size changes
   useEffect(() => {
     if (user) {
       setValue("name", user.name || "");
       setValue("collegeName", user.college || "");
-      // Only set if size is provided (passed prop)
       if (productSize) setValue("size", productSize as MerchPurchaseFormData['size']);
     }
   }, [user, isOpen, productSize, setValue]);
@@ -74,7 +72,6 @@ const MerchBuyModal = ({
         return;
       }
 
-      // 1. Initiate Payment
       const orderData = await initiatePayment({
         registrationId: 'merch-tshirt',
         size: data.size,
@@ -88,7 +85,7 @@ const MerchBuyModal = ({
         amount: orderData.amount,
         currency: orderData.currency,
         name: orderData.name,
-        description: `T-Shirt (${data.size})`, // Show size in description at least
+        description: `T-Shirt (${data.size})`, 
         order_id: orderData.orderId,
         prefill: {
           name: data.name,
@@ -105,7 +102,6 @@ const MerchBuyModal = ({
         handler: async function (response: any) {
           setShowProcessingModal(true);
           try {
-            // Trigger verification backend side so DB updates
             verifyPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -134,7 +130,6 @@ const MerchBuyModal = ({
     }
   };
 
-  // Reset state when modal closes manually
   const handleClose = () => {
     reset();
     onClose();
@@ -160,7 +155,7 @@ const MerchBuyModal = ({
               onClick={(e) => e.stopPropagation()}
             >
               <LiquidGlassCard className="relative p-4 sm:p-6 max-h-[95vh] overflow-y-auto w-full">
-                {/* Close Button */}
+                {}
                 <button
                   onClick={handleClose}
                   className="absolute top-3 right-3 p-1.5 hover:bg-white/10 rounded-lg transition-colors z-10 cursor-pointer cursor-target"
@@ -170,7 +165,7 @@ const MerchBuyModal = ({
                 </button>
 
                 <div className="flex flex-col h-full">
-                  {/* Header */}
+                  {}
                   <div className="mb-4">
                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">
                       {productName}
@@ -180,7 +175,7 @@ const MerchBuyModal = ({
                     </p>
                   </div>
 
-                  {/* Price Display */}
+                  {}
                   <div className="mb-4 p-3 bg-gradient-to-r from-[#5924ae]/10 to-[#4a1d91]/10 border border-[#5924ae]/30 rounded-lg flex justify-between items-center">
                     <span className="text-lg font-bold text-white">Order Total</span>
                     <span className="text-xl font-bold text-[#bca4ff]">
@@ -188,10 +183,10 @@ const MerchBuyModal = ({
                     </span>
                   </div>
 
-                  {/* Form */}
+                  {}
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 flex-1 overflow-y-auto px-1 pb-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Name */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <User className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -209,7 +204,7 @@ const MerchBuyModal = ({
                         )}
                       </div>
 
-                      {/* USN */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <Zap className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -230,9 +225,9 @@ const MerchBuyModal = ({
                       </div>
                     </div>
 
-                    {/* College Name & Branch - Combined Row */}
+                    {}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* College Name */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <Building2 className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -250,7 +245,7 @@ const MerchBuyModal = ({
                         )}
                       </div>
 
-                      {/* Branch */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <Building2 className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -285,9 +280,9 @@ const MerchBuyModal = ({
                       </div>
                     </div>
 
-                    {/* T-Shirt Size & Semester */}
+                    {}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Size */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <Package className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -295,10 +290,7 @@ const MerchBuyModal = ({
                         </label>
                         <select
                           {...register("size")}
-                          // If passed via props, should be disabled/readonly or just pre-filled?
-                          // User requirement: "Make the sizes option selectable, and when clicked on buy now button it must pass the value."
-                          // It's passed.
-                          disabled // Disable size selection here since it's passed from main page
+                          disabled 
                           className={`w-full bg-slate-950/50 border border-white/10 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#bca4ff]/50 transition-all appearance-none cursor-not-allowed opacity-70 ${errors.size ? "border-red-500/50" : ""
                             }`}
                         >
@@ -315,7 +307,7 @@ const MerchBuyModal = ({
                         )}
                       </div>
 
-                      {/* Semester */}
+                      {}
                       <div>
                         <label className="flex items-center text-xs font-bold text-white tracking-tight mb-1.5">
                           <Zap className="w-3.5 h-3.5 mr-2 text-[#bca4ff]" />
@@ -342,7 +334,7 @@ const MerchBuyModal = ({
                       </div>
                     </div>
 
-                    {/* Buttons */}
+                    {}
                     <div className="flex gap-3 pt-4">
                       <motion.button
                         type="button"

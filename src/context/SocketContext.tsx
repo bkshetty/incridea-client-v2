@@ -16,7 +16,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    // Connect to the server. Adjust the URL if needed.
     let socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     if (socketUrl.endsWith('/api')) {
         socketUrl = socketUrl.replace(/\/api$/, '')
@@ -28,13 +27,11 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     })
 
     socketInstance.on('connect', () => {
-      // eslint-disable-next-line no-console
       console.log('Socket connected')
       setIsConnected(true)
     })
 
     socketInstance.on('disconnect', () => {
-      // eslint-disable-next-line no-console
       console.log('Socket disconnected')
       setIsConnected(false)
     })

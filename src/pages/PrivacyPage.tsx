@@ -151,7 +151,7 @@ const PrivacyPage = () => {
               rel="noreferrer"
               className="text-sky-300 underline underline-offset-2 hover:text-sky-200"
             >
-              https://razorpay.com
+              https:
             </a>
             .
           </p>

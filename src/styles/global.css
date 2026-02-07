@@ -65,7 +65,6 @@
   font-style: italic;
 }
 
-/* Outfit Fonts */
 @font-face {
   font-family: 'Outfit';
   src: url('../assets/Outfit-Thin.ttf') format('truetype');

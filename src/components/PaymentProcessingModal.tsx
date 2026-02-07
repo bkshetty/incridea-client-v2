@@ -39,21 +39,17 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
         pid: (failed ? 'error' : 'pending') as StepStatus,
     })
 
-    // PID Reveal State
     const [finalPid, setFinalPid] = useState<string | null>(null)
     const [showSlotMachine, setShowSlotMachine] = useState(false)
 
-    // Confetti trigger
     const hasTriggeredConfetti = useRef(false)
 
-    // Watch for failed prop
     useEffect(() => {
         if (failed) {
             setSteps(prev => ({ ...prev, payment: 'error', pid: 'error' }))
         }
     }, [failed])
 
-    // Watch for external PID (fallback or fast API response)
     useEffect(() => {
         if (completedPid && steps.pid !== 'success' && !finalPid) {
             setSteps({
@@ -87,10 +83,9 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
             setSteps(prev => ({ ...prev, payment: 'error', pid: 'error' }))
         }
 
-        // Accommodation specific events
         const handleBookingConfirmed = () => {
             if (paymentType === 'ACCOMMODATION') {
-                setSteps(prev => ({ ...prev, payment: 'success', pid: 'success' })) // Treat 'pid' step as 'booking' step internally
+                setSteps(prev => ({ ...prev, payment: 'success', pid: 'success' })) 
                 setTimeout(() => {
                     setShowSlotMachine(true)
                 }, 500)
@@ -98,11 +93,8 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
         }
 
         const handlePaymentSuccess = () => {
-            // Generic success, waiting for next step
             setSteps(prev => ({ ...prev, payment: 'success' }))
             if (paymentType === 'ACCOMMODATION') {
-                // For accommodation, success payment usually means confirmed unless manual confirm step exists
-                // But we wait for 'booking_confirmed' or just show success
             }
             if (paymentType === 'MERCH') {
                 setSteps(prev => ({ ...prev, payment: 'success', pid: 'success' }))
@@ -116,11 +108,9 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
         socket.on('payment_success', handlePaymentSuccess)
         socket.on('booking_confirmed', handleBookingConfirmed)
 
-        // Initial Status Check
         const checkStatus = async () => {
             try {
                 const apiType = paymentType === 'ACCOMMODATION' ? 'ACCOMMODATION' : (paymentType === 'MERCH' ? 'MERCH' : 'FEST_REGISTRATION')
-                // @ts-ignore
                 const statusData = await getPaymentStatus(apiType)
 
                 if (statusData.status === 'success') {
@@ -150,7 +140,6 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
         }
     }, [socket, userId, isOpen, paymentType])
 
-    // Confetti Effect
     const triggerConfetti = () => {
         if (hasTriggeredConfetti.current) return
         hasTriggeredConfetti.current = true
@@ -192,15 +181,13 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
                 style={glassCardStyle}
                 className="w-full max-w-2xl p-8 relative overflow-hidden"
             >
-                {/* Background Decor */}
+                {}
                 <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-sky-500 via-fuchsia-500 to-sky-500 animate-gradient-x" />
 
                 <button
                     onClick={() => {
-                        // If done, redirect to home
                         if (steps.payment === 'success' && steps.pid === 'success') {
                             if (paymentType === 'FEST') navigate('/')
-                            // For Merch/Acc, maybe stay or close?
                         }
                         onClose()
                     }}
@@ -216,14 +203,14 @@ export default function PaymentProcessingModal({ isOpen, onClose, userId, comple
                         </h2>
 
                         <div className="space-y-4">
-                            {/* Step 1: Payment Verification */}
+                            {}
                             <StepItem
                                 icon={<IoCheckmarkCircle />}
                                 label="Payment Verified"
                                 status={steps.payment}
                             />
 
-                            {/* Step 2 & 3 Only if payment is not failed */}
+                            {}
                             {steps.payment !== 'error' && (
                                 <>
                                     <StepItem
@@ -320,19 +307,15 @@ function BookingConfirmation({ onComplete, type = 'ACCOMMODATION' }: { onComplet
 }
 
 function PIDReveal({ pid, onComplete }: { pid: string, onComplete: () => void }) {
-    // PID Format usually INC-xxxx or similar. We want to slot machine the numbers.
-    // Assuming PID is like "INC-1234"
     const [prefix, ...rest] = pid.split('-')
-    const numberPart = rest.join('-') // Handle cases if multiple dashes, though unlikely
+    const numberPart = rest.join('-') 
 
-    // Split number into digits
     const digits = numberPart.split('')
 
     useEffect(() => {
-        // Trigger complete after animation duration
         const timer = setTimeout(() => {
             onComplete()
-        }, 1500 + (digits.length * 200)) // Approximate duration
+        }, 1500 + (digits.length * 200)) 
         return () => clearTimeout(timer)
     }, [])
 
@@ -395,16 +378,14 @@ function SlotDigit({ digit, delay }: { digit: string, delay: number }) {
 
     useEffect(() => {
         const duration = 1500
-        const interval = 50 // ms per flip
+        const interval = 50 
         const steps = duration / interval
 
         let step = 0
 
-        // Start after delay
         const startTimeout = setTimeout(() => {
             const timer = setInterval(() => {
                 step++
-                // Random digit during spin
                 setCurrent(Math.floor(Math.random() * 10).toString())
 
                 if (step >= steps) {

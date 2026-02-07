@@ -15,7 +15,6 @@ export default function AccommodationPage() {
         queryFn: getAccommodationStats,
     })
 
-    // Auth Guard
     const { data: meData, isError: isAuthError, isLoading: isAuthLoading } = useQuery({
         queryKey: ['me'],
         queryFn: async () => {
@@ -56,7 +55,6 @@ export default function AccommodationPage() {
         return <Navigate to="/" replace />
     }
 
-    // Simple check - in real app might want to check user gender context too if applicable
     const accommodationsFull = stats && stats.boys.available <= 0 && stats.girls.available <= 0
 
     return (
@@ -82,7 +80,7 @@ export default function AccommodationPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Stats / Info Sidebar */}
+                    {}
                     <div className="lg:col-span-1 space-y-6">
                         <LiquidGlassCard className="p-6">
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center">
@@ -112,7 +110,7 @@ export default function AccommodationPage() {
                         </LiquidGlassCard>
                     </div>
 
-                    {/* Booking Forms */}
+                    {}
                     <div className="lg:col-span-2">
                         <LiquidGlassCard>
                             <div className="p-6">
