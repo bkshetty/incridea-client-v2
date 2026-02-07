@@ -125,7 +125,6 @@ function ProfilePage() {
   return (
     <div
       className="fixed inset-0 bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ backgroundImage: "url('/temp_event_bg.png')" }}
     >
       <div className="absolute inset-0 bg-black/40"></div>
       <section className="relative h-screen overflow-y-auto pt-32 lg:pt-28 lg:pl-12 pb-2 flex flex-col items-center justify-start">
