@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../styles/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
 import { useZScroll } from '../hooks/useZScroll';
+import gsap from 'gsap';
 
 // Glitch Text Component
 const GlitchText: React.FC<{ text: string }> = ({ text }) => {
@@ -129,8 +130,27 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLDivElement>(null);
 
-    // Initialize Z-Scroll
-    useZScroll(containerRef);
+    // Layer configuration 
+    const layersConfig = [
+  { id: "hero", z: 0 },
+  { id: "about", z: -800 },
+  { id: "modus", z: -1600 },
+  { id: "trinity", z: -2400 },
+  { id: "zenith", z: -3200 },
+  { id: "sage", z: -4000 },
+  { id: "recur", z: -4800 },
+];
+    // Refs to layer elements for revealing 
+    const layerRefs = useRef<Record<string, HTMLElement | null>>({});
+    const revealedLayers = useRef<Set<string>>(new Set());
+    const cameraZ = useZScroll(containerRef);
+    const fadeOutDistance = 800;
+
+    const canRevealLayer = (index: number, z: number) => {
+        if (index === 0) return cameraZ <= z;
+        const previousZ = layersConfig[index - 1]?.z ?? 0;
+        return cameraZ <= z && cameraZ <= previousZ - fadeOutDistance;
+    };
 
     // Simple cursor - NO GSAP
     useEffect(() => {
@@ -170,6 +190,38 @@ const PronitePage: React.FC = () => {
         };
     }, []);
 
+    // Layer reveal only on scroll
+    useEffect(() => {
+        layersConfig.forEach(({ id, z }, index) => {
+            const el = layerRefs.current[id];
+            if (!el) return;
+
+            const shouldBeRevealed = canRevealLayer(index, z);
+
+            if (shouldBeRevealed && !revealedLayers.current.has(id)) {
+                // Reveal the layer
+                revealedLayers.current.add(id);
+                el.dataset.revealed = "true";
+
+                gsap.to(el, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power3.out",
+                    onComplete: () => {
+                        el.style.pointerEvents = "auto";
+                    },
+                });
+            } else if (!shouldBeRevealed && revealedLayers.current.has(id)) {
+                // Hide the layer when scrolling back
+                revealedLayers.current.delete(id);
+                el.dataset.revealed = "false";
+                el.style.pointerEvents = "none";
+            }
+        });
+    }, [cameraZ]);
+
+
     return (
         <div className="pronite-page">
             {/* Custom Cursor */}
@@ -205,7 +257,7 @@ const PronitePage: React.FC = () => {
                 <div className="z-content">
                     
                     {/* LAYER 0: HERO */}
-                    <section className="z-layer hero-layer" data-z="0">
+                    <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0">
                         <div>
                             <p className="hero-subtitle">{'{ Branding, Web & Motion Studio ® }'}</p>
                             <h1 className="hero-title">
@@ -216,7 +268,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 1: ABOUT */}
-                    <section className="z-layer about-layer" data-z="-800">
+                    <section  ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-800">
                         <div>
                             <p className="about-label">{'{ About Us }'}</p>
                             <h2 className="about-text">
@@ -226,7 +278,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 2: MODUS */}
-                    <section className="z-layer project-layer" data-z="-1600">
+                    <section ref={(el) => { layerRefs.current["modus"] = el; }} className="z-layer project-layer" data-z="-1600">
                         <div className="project-card">
                             <div className="project-visual">
                                 <PhoneMockup variant="modus" />
@@ -240,7 +292,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 3: TRINITY */}
-                    <section className="z-layer project-layer" data-z="-2400">
+                    <section ref={(el) => { layerRefs.current["trinity"] = el; }} className="z-layer project-layer" data-z="-2400">
                         <div className="project-card reverse">
                             <div className="project-visual">
                                 <PhoneMockup variant="trinity" />
@@ -254,7 +306,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 4: ZENITH */}
-                    <section className="z-layer project-layer" data-z="-3200">
+                    <section ref={(el) => { layerRefs.current["zenith"] = el; }} className="z-layer project-layer" data-z="-3200">
                         <div className="project-card">
                             <div className="project-visual">
                                 <PhoneMockup variant="zenith" />
@@ -268,7 +320,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 5: SAGE */}
-                    <section className="z-layer project-layer" data-z="-4000">
+                    <section ref={(el) => { layerRefs.current["sage"] = el; }} className="z-layer project-layer" data-z="-4000">
                         <div className="project-card reverse">
                             <div className="project-visual">
                                 <PhoneMockup variant="sage" />
@@ -282,7 +334,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 6: RECUR */}
-                    <section className="z-layer project-layer" data-z="-4800">
+                    <section ref={(el) => { layerRefs.current["recur"] = el; }} className="z-layer project-layer" data-z="-4800">
                         <div className="project-card">
                             <div className="project-visual">
                                 <PhoneMockup variant="recur" />
@@ -296,7 +348,7 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* LAYER 7: CONTACT */}
-                    <section className="z-layer contact-layer" id="contact" data-z="-5600">
+                    <section ref={(el) => { layerRefs.current["contact"] = el; }} className="z-layer contact-layer" id="contact" data-z="-5600">
                         <div>
                             <p className="contact-label">{'{ Say Hi }'}</p>
                             <h2 className="contact-title">
@@ -309,7 +361,6 @@ const PronitePage: React.FC = () => {
                             </a>
                         </div>
                     </section>
-
                 </div>
             </div>
         </div>

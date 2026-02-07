@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import Lenis from 'lenis';
 import { lerp, clamp } from '@/utils/pronite';
 
@@ -7,6 +7,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
     const reqIdRef = useRef<number | null>(null);
     const currentZRef = useRef(0);
     const targetZRef = useRef(0);
+    const [cameraZ, setCameraZ] = useState(0); // For triggering re-renders on Z change on scrolling
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -66,9 +67,18 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
             currentZRef.current = lerp(currentZRef.current, targetZRef.current, 0.08);
 
             const currentZ = currentZRef.current;
+            setCameraZ(currentZ);
 
-            // Update each layer
+            // Update each layer for reveal
             layerData.forEach(({ element, depth }) => {
+                const isRevealed = element.dataset.revealed === 'true' || depth === 0;
+                if (!isRevealed) {
+                    element.style.opacity = '0';
+                    element.style.visibility = 'hidden';
+                    element.style.pointerEvents = 'none';
+                    return;
+                }
+
                 const relativeZ = depth - currentZ;
                 const distance = Math.abs(relativeZ);
                 
@@ -106,5 +116,5 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
         };
     }, [containerRef]);
 
-    return lenisRef;
+    return cameraZ;
 };

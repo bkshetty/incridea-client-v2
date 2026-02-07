@@ -205,6 +205,15 @@ html, body {
     margin-bottom: 2rem;
 }
 
+/* Initial hidden state for layers that will be revealed on scroll */
+.about-layer,
+.project-layer,
+.contact-layer {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+}
+
 /* ========================================
    GLITCH EFFECT
    ======================================== */
