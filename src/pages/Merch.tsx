@@ -1,5 +1,5 @@
 import { useState, Suspense } from "react";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import MerchBuyModal from "../components/merch/MerchBuyModal";
 import TShirt3DModel from "../components/merch/TShirt3DModel";
@@ -43,7 +43,7 @@ const Merch = () => {
   const { data: paymentStatus } = useQuery({
     queryKey: ['my-merch-payment-status'],
     queryFn: () => getMyPaymentStatus('MERCH'),
-    enabled: !!user, 
+    enabled: !!user,
     retry: false
   });
 
@@ -69,7 +69,7 @@ const Merch = () => {
 
   const handleBuyClick = () => {
     if (!user) {
-      window.location.href = '/login'; 
+      window.location.href = '/login';
       return;
     }
     if (!selectedSize) {
@@ -85,7 +85,7 @@ const Merch = () => {
     <div className="relative min-h-screen font-sans selection:bg-purple-500/30 overflow-x-hidden">
       <style>{styles}</style>
 
-      {}
+      { }
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat transform scale-105"
         style={{ backgroundImage: `url(${bgImage})` }}
@@ -94,10 +94,10 @@ const Merch = () => {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-50" />
       </div>
 
-      {}
+      { }
       <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto min-h-screen flex flex-col justify-center items-center">
 
-        {}
+        { }
         <motion.div
           className="relative z-10 w-full"
           initial={{ opacity: 0, scale: 0.95 }}
@@ -106,20 +106,20 @@ const Merch = () => {
         >
           <LiquidGlassCard className="p-0 !rounded-2xl sm:!rounded-[2.5rem] overflow-hidden border border-white/10 relative w-full">
 
-            {}
+            { }
             <div className="grid grid-cols-1 xl:grid-cols-2 relative z-10 w-full">
-              {}
+              { }
               <div className="hidden xl:block absolute left-1/2 top-0 bottom-0 w-px -ml-px bg-gradient-to-b from-transparent via-emerald-500/30 to-transparent z-20" />
               <div className="xl:hidden absolute left-0 right-0 top-[50%] h-px -mt-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent z-20" />
 
               <div className="px-5 pb-5 pt-0 sm:px-8 sm:pb-8 sm:pt-2 xl:p-10 flex flex-col h-full justify-center relative order-first">
 
-                {}
+                { }
                 <div className="absolute top-0 left-0 right-0 h-[600px] pointer-events-none z-10 overflow-hidden">
-                  {}
+                  { }
                   <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[90%] h-px bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_40px_rgba(255,255,255,1)] z-30" />
 
-                  {}
+                  { }
                   <div className="absolute top-4 left-0 right-0 bottom-0 mix-blend-screen brightness-[2.5] md:brightness-150 contrast-125">
                     <LightRays
                       raysOrigin="top-center"
@@ -132,7 +132,7 @@ const Merch = () => {
                   </div>
                 </div>
 
-                {}
+                { }
                 <div className="relative w-full h-full min-h-[500px] flex flex-col items-center justify-center overflow-hidden">
                   <div className="relative w-full h-full flex items-center justify-center z-20 cursor-default pointer-events-none">
                     <Suspense
@@ -154,15 +154,15 @@ const Merch = () => {
                 </div>
               </div>
 
-              {}
+              { }
               <div className="p-5 sm:p-8 lg:p-10 flex flex-col h-full gap-6 order-last">
 
-                {}
+                { }
                 <div>
                   <div className="flex flex-wrap items-center gap-4 mb-4 font-mono text-xs tracking-wider">
-                    {}
+                    { }
                     <div className="flex items-center gap-2 text-emerald-500/80">
-                      <span className="opacity-50">
+                      <span className="opacity-50">EDITION</span>
                       <span className="font-bold border-b border-emerald-500/30 pb-0.5">MK-IV</span>
                     </div>
 
@@ -182,7 +182,7 @@ const Merch = () => {
                   </p>
                 </div>
 
-                {}
+                { }
                 <div className="flex flex-col">
                   <div className="flex flex-col py-2">
                     {tshirtItem.details.map((detail, idx) => (
@@ -193,7 +193,7 @@ const Merch = () => {
                             {detail.text}
                           </p>
                         </div>
-                        {}
+                        { }
                         {idx !== tshirtItem.details.length - 1 && (
                           <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
                         )}
@@ -209,7 +209,7 @@ const Merch = () => {
                   </div>
                 ) : (
                   <>
-                    {}
+                    { }
                     <div>
                       <h3 className="text-[10px] sm:text-xs font-bold text-emerald-400 mb-3 sm:mb-5 uppercase tracking-[0.2em] font-mono flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-emerald-400 rotate-45" />
@@ -231,14 +231,14 @@ const Merch = () => {
                       </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="mt-auto space-y-4 pt-4 border-t border-white/5">
                       <div className="flex justify-between items-center px-1">
                         <span className="text-gray-400 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Total Price</span>
                         <span className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">₹{tshirtItem.price}</span>
                       </div>
 
-                      {}
+                      { }
                       <button
                         onClick={handleBuyClick}
                         disabled={!selectedSize}
@@ -248,11 +248,11 @@ const Merch = () => {
                           : "bg-[#5924ae] hover:bg-[#4a1d91] text-white border-white/20 shadow-[0_0_30px_rgba(89,36,174,0.4)] hover:shadow-[0_0_50px_rgba(89,36,174,0.6)] cursor-pointer"
                           }`}
                       >
-                        {}
+                        { }
                         <span className="relative z-10 flex items-center justify-center gap-2 skew-x-[20deg] pointer-events-none">
                           {!selectedSize ? "Select Size" : "Buy Now"}
                         </span>
-                        {}
+                        { }
                         {selectedSize && (
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full h-full -translate-x-full animate-shimmer skew-x-[20deg] pointer-events-none" />
                         )}

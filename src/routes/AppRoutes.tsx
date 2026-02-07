@@ -19,6 +19,9 @@ import NotFoundPage from "../pages/NotFoundPage";
 import RefundPolicy from '../pages/refundpolicy';
 import ProfilePage from "@/pages/ProfilePage";
 
+// 1. Import the Pronite Page
+import PronitePage from "../pages/PronitePage";
+
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
@@ -43,7 +46,11 @@ const ResetRedirect = () => {
 function AppRoutes() {
   return (
     <Routes>
-    <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<HomePage />} />
+
+      {/* 2. Add Pronite Route HERE (Outside Layout) */}
+      <Route path="/pronite" element={<PronitePage />} />
+
       <Route element={<Layout />}>
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/about" element={<AboutPage />} />

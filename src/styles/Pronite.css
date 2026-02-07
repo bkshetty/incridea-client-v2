@@ -1,0 +1,446 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --color-bg: #050505;
+    --color-text: #ffffff;
+    --font-primary: 'Inter', sans-serif;
+    --font-display: 'Space Grotesk', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-text);
+    overflow: hidden; /* Hide native scrollbar */
+}
+
+/* ========================================
+   MAIN CONTAINER - CRITICAL FOR 3D
+   ======================================== */
+.pronite-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: none;
+}
+
+/* ========================================
+   3D SPACE CONTAINER - PERSPECTIVE HERE
+   ======================================== */
+#z-space-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px; /* The camera lens */
+    perspective-origin: 50% 50%;
+    overflow: hidden;
+}
+
+/* ========================================
+   3D CONTENT WRAPPER - PRESERVE 3D
+   ======================================== */
+.z-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d; /* CRITICAL: maintains 3D for children */
+}
+
+/* ========================================
+   Z-LAYERS - INDIVIDUAL 3D ELEMENTS
+   ======================================== */
+.z-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    /* Initial state - will be overridden by JS */
+    transform: translate3d(0, 0, 0);
+}
+
+/* ========================================
+   CUSTOM CURSOR
+   ======================================== */
+.cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+}
+
+.cursor-circle {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    transition: width 0.3s, height 0.3s, background 0.3s;
+}
+
+.cursor.hover .cursor-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 3rem;
+    z-index: 1000;
+    mix-blend-mode: difference;
+    pointer-events: none;
+}
+
+.nav > * {
+    pointer-events: auto;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    cursor: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.menu-btn span {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: white;
+}
+
+/* ========================================
+   SCROLL PROGRESS
+   ======================================== */
+.scroll-progress {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 200px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.progress-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    transform-origin: top;
+    transform: scaleY(0);
+}
+
+.progress-rocket {
+    position: absolute;
+    right: -10px;
+    font-size: 16px;
+    transform: translateY(-50%);
+}
+
+/* ========================================
+   HERO LAYER
+   ======================================== */
+.hero-layer {
+    flex-direction: column;
+    text-align: center;
+}
+
+.hero-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 15vw, 10rem);
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+/* ========================================
+   GLITCH EFFECT
+   ======================================== */
+[data-glitch] {
+    position: relative;
+    display: inline-block;
+}
+
+[data-glitch]::before,
+[data-glitch]::after {
+    content: attr(data-glitch);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+[data-glitch].glitching::before {
+    animation: glitch-1 0.3s infinite linear alternate-reverse;
+    color: #0ff;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+[data-glitch].glitching::after {
+    animation: glitch-2 0.3s infinite linear alternate-reverse;
+    color: #f0f;
+    opacity: 0.8;
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+    40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+    60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+    80% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 2px); }
+    100% { clip-path: inset(30% 0 20% 0); transform: translate(1px, -1px); }
+}
+
+@keyframes glitch-2 {
+    0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
+    20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
+    40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
+    60% { clip-path: inset(10% 0 80% 0); transform: translate(-1px, -2px); }
+    80% { clip-path: inset(50% 0 30% 0); transform: translate(1px, 2px); }
+    100% { clip-path: inset(20% 0 60% 0); transform: translate(-2px, 1px); }
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.cta-btn, .view-project-btn {
+    padding: 1rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+    background: transparent;
+    color: white;
+    font-family: var(--font-primary);
+    font-size: 0.875rem;
+    cursor: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.cta-btn:hover, .view-project-btn:hover {
+    background: white;
+    color: black;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   ABOUT LAYER
+   ======================================== */
+.about-layer {
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.about-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    margin-bottom: 2rem;
+}
+
+.about-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.4;
+    max-width: 800px;
+}
+
+/* ========================================
+   PROJECT LAYERS
+   ======================================== */
+.project-layer {
+    padding: 0 2rem;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    max-width: 1000px;
+}
+
+@media (min-width: 768px) {
+    .project-card {
+        flex-direction: row;
+        gap: 5rem;
+    }
+    .project-card.reverse {
+        flex-direction: row-reverse;
+    }
+}
+
+.project-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-info {
+    flex: 1;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .project-info {
+        text-align: left;
+    }
+    .project-card.reverse .project-info {
+        text-align: right;
+    }
+}
+
+.project-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.project-tags {
+    font-size: 0.875rem;
+    opacity: 0.5;
+    margin-bottom: 2rem;
+}
+
+/* ========================================
+   PHONE MOCKUP
+   ======================================== */
+.phone-mockup {
+    width: 260px;
+    height: 520px;
+    background: linear-gradient(145deg, #1a1a2e, #0a0a0a);
+    border-radius: 40px;
+    border: 3px solid #333;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255,255,255,0.1);
+    transform: rotateY(-15deg) rotateX(5deg);
+    transition: transform 0.5s ease-out;
+    overflow: hidden;
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 37px;
+    overflow: hidden;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover .phone-mockup {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+}
+
+/* ========================================
+   CONTACT LAYER
+   ======================================== */
+.contact-layer {
+    text-align: center;
+    flex-direction: column;
+}
+
+.contact-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    margin-bottom: 2rem;
+}
+
+.contact-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 3rem;
+}
+
+.contact-title .highlight {
+    color: #00d4ff;
+    text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+}
+
+.block {
+    display: block;
+}
+
+.text-cyan-400 {
+    color: #00d4ff;
+}
+
+.mt-8 {
+    margin-top: 2rem;
+}
+
+/* ========================================
+   STARFIELD CANVAS
+   ======================================== */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
