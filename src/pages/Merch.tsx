@@ -1,24 +1,11 @@
 import { useState, Suspense } from "react";
 import { motion } from "framer-motion"; // Removed unused useScroll, useTransform
+import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import MerchBuyModal from "../components/merch/MerchBuyModal";
 import TShirt3DModel from "../components/merch/TShirt3DModel";
 import { Rotate3d } from "lucide-react";
+import bgImage from "../assets/bg-op.png";
 import LightRays from "@/components/LightRays";
-
-const glassCardStyle = {
-  borderRadius: "1.75rem",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  background: `
-    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
-    rgba(21, 21, 21, 0.30)
-  `,
-  boxShadow: `
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22)
-  `,
-  backdropFilter: "brightness(1.1) blur(1px)",
-  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
-};
 
 // Inline CSS for custom animations
 const styles = `
@@ -70,14 +57,15 @@ const Merch = () => {
       {/* Background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat transform scale-105"
+        style={{ backgroundImage: `url(${bgImage})` }}
       >
-        <div className="absolute inset-0 " />
+        <div className="absolute inset-0 bg-black/30" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-50" />
       </div>
 
       {/* Container with responsive padding - Centered Vertically & Horizontally */}
       <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto min-h-screen flex flex-col justify-center items-center">
-
+        
         {/* UNIFIED CARD */}
         <motion.div
           className="relative z-10 w-full"
@@ -85,7 +73,7 @@ const Merch = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div style={glassCardStyle} className="p-0 overflow-hidden relative w-full">
+          <LiquidGlassCard className="p-0 !rounded-2xl sm:!rounded-[2.5rem] overflow-hidden border border-white/10 relative w-full">
 
             {/* Responsive Grid - With Creative Separator */}
             <div className="grid grid-cols-1 xl:grid-cols-2 relative z-10 w-full">
@@ -155,7 +143,7 @@ const Merch = () => {
                     </div>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-3xl lg:text-3xl font-black text-white uppercase tracking-tighter leading-none break-words mb-4">
+                  <h2 className="text-2xl sm:text-4xl md:text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none break-words mb-4">
                     {tshirtItem.name}
                   </h2>
                   <p className="text-gray-300 leading-relaxed text-sm font-light border-l-2 border-emerald-500/30 pl-4">
@@ -225,7 +213,7 @@ const Merch = () => {
               </div>
 
             </div>
-          </div>
+          </LiquidGlassCard>
         </motion.div>
 
         <MerchBuyModal

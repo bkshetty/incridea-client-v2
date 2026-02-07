@@ -216,25 +216,26 @@ export default function QuizPage() {
     return (
         <div className="min-h-screen bg-slate-950 text-white flex flex-col">
             {/* Header */}
-            <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-10">
+            <div className="bg-slate-900 border-b border-slate-800 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sticky top-0 z-10">
                 <div>
                     <h1 className="font-bold text-lg max-w-[200px] md:max-w-md truncate">{quiz.name}</h1>
                 </div>
-                <div className="flex items-center gap-4">
-                     <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-sm font-mono text-green-400">
-                        <span className="text-xs text-slate-500 uppercase">Time</span>
-                        {stopwatch}
+                {currentQuestion && (
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                         <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-sm font-mono text-green-400">
+                            <span className="text-xs text-slate-500 uppercase">Time</span>
+                            {stopwatch}
+                        </div>
+                        <div className="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-sm font-mono text-blue-400">
+                            <span className="text-xs text-slate-500 uppercase">Ends In</span>
+                             {timeLeft}
+                        </div>
                     </div>
-                    <div className="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-sm font-mono text-blue-400">
-                        <span className="text-xs text-slate-500 uppercase">Ends In</span>
-                         {timeLeft}
-                    </div>
-                </div>
+                )}
             </div>
 
             {/* Main Content */}
             <div className="flex-1 container mx-auto p-4 max-w-3xl flex flex-col justify-center">
-                
                 {/* Progress Bar */}
                 <div className="w-full bg-slate-800 h-2 rounded-full mb-6 relative overflow-hidden">
                     <div 
@@ -244,35 +245,59 @@ export default function QuizPage() {
                 </div>
 
                 {currentQuestion ? (
-                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div className="space-y-4">
-                            <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
-                            <h2 className="text-2xl md:text-3xl font-bold leading-tight">{currentQuestion.question}</h2>
-                            {currentQuestion.isCode && (
-                                <div className="p-4 bg-slate-900 rounded-lg border border-slate-800 font-mono text-sm overflow-x-auto">
-                                    {currentQuestion.description}
+                    <div className="relative pt-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {/* NOTCH */}
+                        <div className="absolute left-1/2 -translate-x-1/2 -top-16 z-30">
+                            <div className="w-40 h-36 bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600/50 border-b-0 rounded-t-3xl rounded-b-[3rem] overflow-hidden flex flex-col">
+                                <div className="relative h-20 w-full overflow-hidden rounded-t-2xl ring-1 ring-white/10 shadow-[inset_0_0_20px_rgba(0,0,0,0.35)]">
+                                    <video
+                                        src="/character.webm"
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        preload="metadata"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-slate-900/50" />
                                 </div>
-                            )}
-                             {currentQuestion.image && (
-                                <img src={currentQuestion.image} alt="Question" className="max-h-64 rounded-xl border border-slate-800 object-contain mx-auto" />
-                            )}
+                                <div className="flex-1" />
+                            </div>
                         </div>
 
-                        <div className="grid gap-3">
-                            {currentQuestion.options.map(opt => (
-                                <button
-                                    key={opt.id}
-                                    onClick={() => handleOptionSelect(currentQuestion.id, opt.id)}
-                                    className={`w-full p-4 rounded-xl border-2 text-left transition-all relative flex items-center justify-between group ${
-                                        selectedOptions[currentQuestion.id] === opt.id
-                                        ? 'bg-blue-600/10 border-blue-600 text-white'
-                                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-600 text-slate-300'
-                                    }`}
-                                >
-                                    <span className="font-medium text-lg">{opt.value}</span>
-                                    {selectedOptions[currentQuestion.id] === opt.id && <FiCheck className="text-blue-500 w-6 h-6" />}
-                                </button>
-                            ))}
+                        {/* CARD */}
+                        <div className="relative z-10 bg-slate-800/60 backdrop-blur-xl border-2 border-slate-600/50 rounded-3xl pt-20 p-6">
+                            <div className="space-y-8">
+                                <div className="space-y-4">
+                                    <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
+                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight">{currentQuestion.question}</h2>
+                                    {currentQuestion.isCode && (
+                                        <div className="p-4 bg-slate-900 rounded-lg border border-slate-800 font-mono text-sm overflow-x-auto">
+                                            {currentQuestion.description}
+                                        </div>
+                                    )}
+                                     {currentQuestion.image && (
+                                        <img src={currentQuestion.image} alt="Question" className="max-h-64 rounded-xl border border-slate-800 object-contain mx-auto" />
+                                    )}
+                                </div>
+
+                                <div className="grid gap-3">
+                                    {currentQuestion.options.map(opt => (
+                                        <button
+                                            key={opt.id}
+                                            onClick={() => handleOptionSelect(currentQuestion.id, opt.id)}
+                                            className={`w-full p-4 rounded-xl border-2 text-left transition-all relative flex items-center justify-between group ${
+                                                selectedOptions[currentQuestion.id] === opt.id
+                                                ? 'bg-blue-600/10 border-blue-600 text-white'
+                                                : 'bg-slate-900/50 border-slate-800 hover:border-slate-600 text-slate-300'
+                                            }`}
+                                        >
+                                            <span className="font-medium text-base sm:text-lg">{opt.value}</span>
+                                            {selectedOptions[currentQuestion.id] === opt.id && <FiCheck className="text-blue-500 w-6 h-6" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ) : (
