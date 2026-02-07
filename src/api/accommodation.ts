@@ -1,14 +1,13 @@
 import apiClient from './client'
 
-// Add stats and booking types
 export interface AccommodationStats {
     boys: { total: number; booked: number; available: number }
     girls: { total: number; booked: number; available: number }
 }
 
 export const getAccommodationStats = async () => {
-  const { data } = await apiClient.get<AccommodationStats>('/accommodation/stats')
-  return data
+    const { data } = await apiClient.get<AccommodationStats>('/accommodation/stats')
+    return data
 }
 
 export const checkAvailability = async (gender: 'MALE' | 'FEMALE') => {

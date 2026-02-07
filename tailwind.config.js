@@ -3,6 +3,11 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Outfit', 'sans-serif'],
+        heading: ['mocoSans', 'sans-serif'],
+        body: ['Outfit', 'sans-serif'],
+      },
       animation: {
         liquid: 'liquid 1s ease-in-out infinite',
         'spin-slow': 'spin 20s linear infinite',
@@ -34,5 +39,5 @@ export default {
   },
   plugins: [ require('tailwind-scrollbar'),],
   plugins: [],
-} 
+}
 

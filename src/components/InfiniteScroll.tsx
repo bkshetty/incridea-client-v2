@@ -27,7 +27,6 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Duplicate items multiple times for seamless looping
   const duplicatedItems = [...items, ...items, ...items];
 
   const speedClass =
@@ -111,12 +110,10 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
           animation-play-state: paused;
         }
 
-        /* Hide scrollbar for Chrome, Safari, Edge */
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
 
-        /* Hide scrollbar for Firefox */
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
@@ -145,7 +142,7 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
         </div>
       ) : (
         <div className="relative flex items-center overflow-visible w-full px-6 sm:px-8">
-          {/* Left Arrow */}
+          {}
           <button
             onClick={() => scrollManual("left")}
             disabled={!canScrollLeft}
@@ -155,9 +152,9 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-200 group-hover:text-white" />
           </button>
 
-          {/* Clipped Viewport Container - Responsive flex-based */}
+          {}
           <div className="relative w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[900px] overflow-hidden">
-            {/* Scrollable Track */}
+            {}
             <div
               ref={scrollRef}
               className="overflow-x-auto scrollbar-hide w-full"
@@ -180,7 +177,7 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
             </div>
           </div>
 
-          {/* Right Arrow */}
+          {}
           <button
             onClick={() => scrollManual("right")}
             disabled={!canScrollRight}

@@ -39,7 +39,6 @@ function NotFoundPage() {
             }
           }
 
-          /* Glitch Effect */
           .glitch { position: relative; }
           .glitch::before, .glitch::after {
             content: attr(data-text);
@@ -90,9 +89,6 @@ function NotFoundPage() {
         <div className="relative z-10 flex flex-col xl:flex-row items-center justify-center gap-8 xl:gap-12 px-6">
           <div className="shrink-0 floating-image flex justify-center items-center w-full md:w-auto">
             <img
-              /* I have updated this back to your JPEG name. 
-                 If this still fails, please rename your file to simply 'img.jpg' 
-                 and update this line to '/notfound/img.jpg' */
               src="/notfound/image1.png"
               alt="404 Access Denied"
               className="w-full max-w-[280px] sm:max-w-sm md:max-w-md h-auto object-contain drop-shadow-2xl"

@@ -1,17 +1,7 @@
-const glassCardStyle = {
-  borderRadius: "1.75rem",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  background: `
-    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
-    rgba(21, 21, 21, 0.30)
-  `,
-  boxShadow: `
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22)
-  `,
-  backdropFilter: "brightness(1.1) blur(1px)",
-  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
-};
+import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard';
+import SEO from '../components/SEO';
+
+
 
 const BASE_URL: string =
   (import.meta.env.VITE_BASE_URL as string | undefined) ??
@@ -59,10 +49,10 @@ function GuidelinesPage() {
 
       {/* Main Container: Removed pb-safe/pt-safe to let page scroll naturally */}
       <div className="min-h-screen w-full px-3 sm:px-4 lg:px-8 py-8 text-slate-100 font-sans antialiased">
-        <div
+        <SEO title="Guidelines | Incridea'26" />
+        <LiquidGlassCard
           /* Removed fixed height 'h-[calc...]' to allow card to grow with content */
           className="mx-auto w-full max-w-6xl flex flex-col relative"
-          style={glassCardStyle}
         >
           {/* Removed internal 'overflow-y-auto' so it uses the page scroll */}
           <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
@@ -243,10 +233,10 @@ function GuidelinesPage() {
               </section>
             </div>
           </div>
-        </div>
+        </LiquidGlassCard>
       </div>
 
-      <svg className="absolute w-0 h-0" aria-hidden="true">
+      <svg className="absolute w-0 h-0">
         <defs>
           <filter id="displacementFilter">
             <feTurbulence

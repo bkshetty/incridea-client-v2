@@ -11,8 +11,6 @@ export default function QrScanner({ onScan, onClose }: QrScannerProps) {
     const scannerRef = useRef<Html5QrcodeScanner | null>(null)
 
     useEffect(() => {
-        // Initialize scanner
-        // Use a slight timeout to ensure DOM is ready
         const timer = setTimeout(() => {
             if (!scannerRef.current) {
                 const scanner = new Html5QrcodeScanner(
@@ -35,7 +33,6 @@ export default function QrScanner({ onScan, onClose }: QrScannerProps) {
                     }
                     onScan(decodedText)
                 }, (_error) => {
-                    // console.warn(error)
                 })
 
                 scannerRef.current = scanner

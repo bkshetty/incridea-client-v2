@@ -171,7 +171,7 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
     }, []);
 
     useEffect(() => {
-        if (!containerRef.current) return; // Redundant but keeping to match structure if user wants exact check
+        if (!containerRef.current) return; 
         const resizeObserver = new ResizeObserver(() => {
             setTimeout(updateDisplacementMap, 0);
         });
@@ -179,8 +179,7 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
         return () => {
             resizeObserver.disconnect();
         };
-    }, []); // Note: Doubled in user snippet, keeping for now to be "exact" code, or cleaning? Let's clean the double use.
-    // Actually, I will remove the duplicate useEffect block as it's clearly a copy-paste error in the user's prompt or source.
+    }, []); 
 
     useEffect(() => {
         setTimeout(updateDisplacementMap, 0);

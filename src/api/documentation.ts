@@ -150,7 +150,7 @@ export interface BranchWithReps {
     id: number
     name: string
     reps: {
-        id: number // branchRepId
+        id: number 
         userId: number
         name: string
         email: string

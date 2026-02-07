@@ -11,23 +11,21 @@ import MerchPage from "../pages/Merch";
 import PrivacyPage from "../pages/PrivacyPage";
 import RulesPage from "../pages/RulesPage";
 import QuizPage from "../pages/QuizPage";
-import ProfilePage from "../pages/ProfilePage";
 import RegisterPage from "../pages/RegisterPage";
+import AccommodationPage from "../pages/AccommodationPage";
+import TechTeamPage from "../pages/techteam";
+import CoreTeamPage from "../pages/coreteam";
 import LeaderboardPage from "../pages/LeaderboardPage";
-import AccommodationPage from "../pages/AccommodationPage.tsx";
-import TechTeamPage from "../pages/techteam.tsx";
-import CoreTeamPage from "../pages/coreteam.tsx";
 import NotFoundPage from "../pages/NotFoundPage";
+import RefundPolicy from '../pages/refundpolicy';
+import ProfilePage from "@/pages/ProfilePage";
 import Gallery from "../pages/Gallery.tsx";
-import ComingSoon from "../pages/ComingSoon.tsx";
-import RefundPolicy from '../pages/refundpolicy.tsx'
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
 
   if (token) {
-    // Rely on cookie
     window.location.href = "/";
     return null;
   }
@@ -71,7 +69,6 @@ function AppRoutes() {
         <Route path="/merch" element={<MerchPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
-      <Route path="/comingsoon" element={<ComingSoon />} />
     </Routes>
   );
 }

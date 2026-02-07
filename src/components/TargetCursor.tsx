@@ -89,17 +89,14 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
         return;
       }
 
-      // Check if active target is still in DOM
       if (activeTarget && !activeTarget.isConnected) {
         currentLeaveHandler?.();
         return;
       }
 
       const strength = activeStrengthRef.current.current;
-      if (strength === 0 && !targetCornerPositionsRef.current) return; // Optimization: skip if idle
+      if (strength === 0 && !targetCornerPositionsRef.current) return; 
 
-      // If we have target positions but strength is 0, we might need cleanup, but leaveHandler handles that.
-      // Just check existence of positions ref
       if (!targetCornerPositionsRef.current) return;
 
       const cursorX = gsap.getProperty(cursorRef.current, 'x') as number;

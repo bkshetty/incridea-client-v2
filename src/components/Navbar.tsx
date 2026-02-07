@@ -23,7 +23,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
         <img src="/i.png" alt="Incridea" className="h-16 md:h-20 w-auto" />
       </NavLink>
 
-      {/* Center Links */}
+      {}
       <div className="hidden lg:flex justify-center items-center -ml-5 md:-ml-10 mt-12 lg:mt-5">
         <div className="hidden lg:flex gap-12">
           <NavLink
@@ -56,7 +56,7 @@ const Navbar = ({ isAuthenticated, onLogout, isLoading }: NavbarProps) => {
         </div>
       </div>
 
-      {/* Right User Section */}
+      {}
       <div className="flex items-center gap-2 md:gap-4 ml-auto lg:ml-60 justify-end lg:mt-5">
         {isAuthenticated ? (
           <div className="flex items-center gap-2 md:gap-4">

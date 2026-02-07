@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useMutation,
   useQuery,
   type QueryFunction,
   type MutationFunction,
 } from "@tanstack/react-query";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   changePassword,
   fetchMe,
@@ -16,53 +16,41 @@ import {
 } from "../api/auth";
 import { useForm } from "react-hook-form";
 import { showToast } from "../utils/toast";
-import { Pencil, QrCode, X } from "lucide-react";
+import { Pencil, QrCode as QrCodeIcon, X } from "lucide-react";
 import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
 import InfiniteScroll from "../components/InfiniteScroll";
+import QRCode from "react-qr-code";
 import Footer from "../components/Footer";
 
 function ProfilePage() {
-  // const navigate = useNavigate();
-  // Derived token check removed, rely on MeResponse or AuthContext if accessible
+  const navigate = useNavigate();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editFullName, setEditFullName] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
 
-  // Removed unused toErrorMessage helper
 
-  // Removed password reset mutation setup
 
 
 
   const profileQueryFn: QueryFunction<MeResponse> = () => {
-    // if (!token) {
-    //   throw new Error("Unauthorized");
-    // }
     return fetchMe();
   };
 
   const profileQuery = useQuery<MeResponse>({
-    queryKey: ["me"], 
+    queryKey: ["me"],
     queryFn: profileQueryFn,
-    retry: false, 
+    retry: false,
+    staleTime: 1000 * 60 * 5, 
   });
 
-  if (profileQuery.isError) {
-      window.location.href = `${import.meta.env.VITE_AUTH_URL}/?redirect=${encodeURIComponent(window.location.href)}`;
-      return null;
-  }
-  
-  if (profileQuery.isLoading) {
-      return (
-        <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-50">
-           <div className="text-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-purple-500 mx-auto mb-4"></div>
-           </div>
-        </div>
-      );
-  }
+  useEffect(() => {
+    if (profileQuery.isError) {
+      navigate("/login");
+    }
+  }, [profileQuery.isError, navigate]);
+
 
   const form = useForm<ChangePasswordPayload>({
     defaultValues: {
@@ -92,25 +80,20 @@ function ProfilePage() {
     },
   });
 
-  // Removed unused password reset mutation
 
   const onSubmit = form.handleSubmit((values) =>
     changePasswordMutation.mutate(values),
   );
 
   const user = profileQuery.data?.user;
-  const userName = user?.name ?? user?.email ?? "User";
-  // Removed unused userEmail
+  const userName = profileQuery.isLoading ? "Loading..." : (user?.name ?? user?.email ?? "User");
 
-  // Removed unused handleResetRequest to avoid noUnusedLocals errors
 
   const handleLogout = async () => {
     try {
       await logoutUser();
     } catch {
-      // Ignore logout API errors and proceed to client-side cleanup
     } finally {
-      // localStorage.removeItem("token");
       window.location.href = "/";
     }
   };
@@ -128,12 +111,12 @@ function ProfilePage() {
     >
       <div className="absolute inset-0 bg-black/40"></div>
       <section className="relative h-screen overflow-y-auto pt-32 lg:pt-28 lg:pl-12 pb-2 flex flex-col items-center justify-start">
-        {/* Profile Card */}
+        {}
         <div className="w-full max-w-[95%] sm:max-w-[90%] lg:max-w-[85%] mt-4 px-3 sm:px-4">
           <div className="relative flex w-full gap-4 items-start flex-col xl:flex-row">
             <LiquidGlassCard className="p-4 lg:p-6 rounded-3xl w-full xl:flex-[0_0_33%]">
               <div className="mt-4"></div>
-              {/* Edit Profile Button */}
+              {}
               <button
                 onClick={() => {
                   setEditFullName(userName);
@@ -148,12 +131,11 @@ function ProfilePage() {
                 </span>
               </button>
               <div className="flex flex-col items-center gap-5">
-                {/* Avatar with badge QR */}
+                {}
                 <div className="relative flex items-center justify-center mt-3">
                   <div
-                    className={`w-32 h-32 lg:w-44 lg:h-44 rounded-full bg-linear-to-br from-slate-400 to-slate-500 flex items-center justify-center shadow-xl transition-transform duration-500 ${
-                      isRotating ? "rotate-180" : "rotate-0"
-                    }`}
+                    className={`w-32 h-32 lg:w-44 lg:h-44 rounded-full bg-linear-to-br from-slate-400 to-slate-500 flex items-center justify-center shadow-xl transition-transform duration-500 ${isRotating ? "rotate-180" : "rotate-0"
+                      }`}
                   >
                     <span className="text-4xl lg:text-6xl text-slate-800 font-moco font-bold">
                       {userName.charAt(0).toUpperCase()}
@@ -170,19 +152,19 @@ function ProfilePage() {
                     className="cursor-target absolute -bottom-2 -right-2 w-10 h-10 lg:w-11 lg:h-11 rounded-xl bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110 shadow-lg"
                     title="Show QR Code"
                   >
-                    <QrCode className="w-5 h-5 lg:w-6 lg:h-6 text-slate-200" />
+                    <QrCodeIcon className="w-5 h-5 lg:w-6 lg:h-6 text-slate-200" />
                   </button>
                 </div>
 
-                {/* Text */}
+                {}
                 <div className="text-center space-y-2">
                   <p className="text-2xl lg:text-3xl text-slate-50 font-moco font-bold">
                     {userName}
                   </p>
-                  <p className="text-sm text-slate-300 font-moco">{"No College Info"}</p>
+                  <p className="text-sm text-slate-300">{user?.college || "No College Info"}</p>
                 </div>
 
-                {/* Buttons */}
+                {}
                 <div className="flex flex-col gap-4 justify-center items-center w-full">
                   <button
                     className="cursor-target px-6 py-2 card card--dark text-white font-medium rounded-3xl transition-all duration-200 w-full max-w-xs hover:opacity-80 active:opacity-60"
@@ -207,10 +189,10 @@ function ProfilePage() {
               <div className="mt-2"></div>
             </LiquidGlassCard>
 
-            {/* Missions Card on the right */}
+            {}
             <LiquidGlassCard className="p-4 lg:p-5 rounded-3xl w-full xl:flex-1 overflow-hidden">
               <div className="grid gap-4 xl:grid-rows-[auto_auto] overflow-hidden">
-                {/* Top Section: Enrolled Missions */}
+                {}
                 <div className="flex flex-col overflow-hidden">
                   <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white text-center w-full font-moco font-bold">
@@ -296,10 +278,10 @@ function ProfilePage() {
                   />
                 </div>
 
-                {/* Divider */}
+                {}
                 <div className="border-t border-white/10 my-3"></div>
 
-                {/* Bottom Section: Recommended Missions */}
+                {}
                 <div className="flex flex-col overflow-hidden">
                   <div className="flex justify-center mb-4 mt-2 w-full">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white text-center w-full font-moco font-bold">
@@ -406,10 +388,19 @@ function ProfilePage() {
               </div>
 
               <div className="flex flex-col items-center space-y-6 md:space-y-7 pb-1">
-                {/* QR Code Placeholder */}
-                <div className="w-64 h-64 bg-white rounded-2xl p-5 flex items-center justify-center shadow-inner">
-                  <div className="w-full h-full bg-slate-200 rounded-xl flex items-center justify-center">
-                    <QrCode className="w-32 h-32 text-slate-400" />
+                {}
+                <div className="bg-white rounded-2xl p-4 flex items-center justify-center shadow-inner overflow-hidden">
+                  <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
+                    {user?.pid ? (
+                      <QRCode
+                        value={user.pid}
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        viewBox={`0 0 256 256`}
+                      />
+                    ) : (
+                      <QrCodeIcon className="w-32 h-32 text-slate-400" />
+                    )}
                   </div>
                 </div>
                 <p className="text-sm text-slate-400 text-center pb-1 font-moco">
@@ -523,10 +514,17 @@ function ProfilePage() {
                   <input
                     id="currentPassword"
                     type="password"
-                    className="w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 font-moco"
-                    {...form.register("currentPassword", { required: true })}
+                    className={`w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 ${form.formState.errors.currentPassword ? "ring-2 ring-rose-500/50" : ""}`}
+                    {...form.register("currentPassword", {
+                      required: "Current password is required"
+                    })}
                     placeholder="Enter your current password"
                   />
+                  {form.formState.errors.currentPassword && (
+                    <p className="text-xs text-rose-300 px-6">
+                      {form.formState.errors.currentPassword.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <label
@@ -538,10 +536,18 @@ function ProfilePage() {
                   <input
                     id="newPassword"
                     type="password"
-                    className="w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 font-moco"
-                    {...form.register("newPassword", { required: true })}
+                    className={`w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 ${form.formState.errors.newPassword ? "ring-2 ring-rose-500/50" : ""}`}
+                    {...form.register("newPassword", {
+                      required: "New password is required",
+                      minLength: { value: 8, message: "Password must be at least 8 characters" }
+                    })}
                     placeholder="Create a new password"
                   />
+                  {form.formState.errors.newPassword && (
+                    <p className="text-xs text-rose-300 px-6">
+                      {form.formState.errors.newPassword.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <label
@@ -553,12 +559,22 @@ function ProfilePage() {
                   <input
                     id="confirmNewPassword"
                     type="password"
-                    className="w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 font-moco"
+                    className={`w-full px-5 md:px-6 py-2.5 md:py-3 leading-tight bg-linear-to-b from-slate-600/30 to-slate-700/30 shadow-inner rounded-full text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:from-slate-600/50 focus:to-slate-700/50 transition-all duration-200 ${form.formState.errors.confirmNewPassword ? "ring-2 ring-rose-500/50" : ""}`}
                     {...form.register("confirmNewPassword", {
-                      required: true,
+                      required: "Please confirm your password",
+                      validate: (val) => {
+                        if (form.watch("newPassword") != val) {
+                          return "Your passwords do no match";
+                        }
+                      },
                     })}
                     placeholder="Confirm your new password"
                   />
+                  {form.formState.errors.confirmNewPassword && (
+                    <p className="text-xs text-rose-300 px-6">
+                      {form.formState.errors.confirmNewPassword.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center justify-center gap-4 pt-3">
                   <button

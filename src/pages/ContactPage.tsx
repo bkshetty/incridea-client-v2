@@ -1,24 +1,16 @@
 import { MdCall, MdLocationOn, MdMail } from 'react-icons/md'
 import { FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
-const glassCardStyle = {
-  borderRadius: "1.75rem",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  background: `
-    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
-    rgba(21, 21, 21, 0.30)
-  `,
-  boxShadow: `
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22)
-  `,
-  backdropFilter: "brightness(1.1) blur(1px)",
-  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
-};
+import LiquidGlassCard from '../components/liquidglass/LiquidGlassCard'
+import SEO from '../components/SEO'
+
 
 function ContactPage() {
   return (
     <>
-      <div className="min-h-screen text-white max-w-6xl relative">
+      <SEO title="Contact Us | Incridea'26" />
+
+
+      <div className="min-h-screen text-white relative overflow-x-hidden">
         {/* Full Screen Background Image */}
         <div
           className="fixed inset-0 w-full h-full -z-10"
@@ -31,9 +23,9 @@ function ContactPage() {
         />
 
         {/* Dark Overlay to make text readable */}
-        <div className="fixed inset-0 -z-10" />
+        <div className="fixed inset-0 bg-black/40 -z-10" />
 
-        {/* Gradient Orbs - Reduced opacity */}
+        {/* Background Blur Shapes */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
           <div className="absolute top-20 left-10 w-64 h-64 md:w-96 md:h-96 rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-20 blur-3xl"></div>
           <div className="absolute top-40 right-20 w-72 h-72 md:w-112.5 md:h-112.5 rounded-full bg-linear-to-brrom-blue-500 to-cyan-400 opacity-20 blur-3xl"></div>
@@ -55,7 +47,7 @@ function ContactPage() {
             </header>
 
             {/* Main Contact Card */}
-            <div style={glassCardStyle}>
+            <LiquidGlassCard>
               <div className="grid gap-6 md:grid-cols-5">
                 {/* Left Side - Contact Information */}
                 <div className="md:col-span-2 space-y-8 p-4 md:p-6 relative">
@@ -216,11 +208,11 @@ function ContactPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </LiquidGlassCard>
           </div>
         </div>
 
-        {/* SVG Filter for Displacement Effect */}
+        {/* SVG for displacement filter (if used elsewhere) */}
         <svg className="absolute w-0 h-0">
           <defs>
             <filter id="displacementFilter">

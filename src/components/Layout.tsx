@@ -7,12 +7,9 @@ import { logoutUser, fetchMe } from '../api/auth'
 import { useSocket } from '../hooks/useSocket'
 
 function Layout() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { socket } = useSocket();
-
-  // Removed direct monitoring as we rely on server session
-  // But for logout, we should clear it immediately for better UX
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { socket } = useSocket()
 
   const handleLogout = async () => {
     try {
@@ -20,81 +17,70 @@ function Layout() {
     } catch (error) {
       console.error("Logout failed", error);
     } finally {
-      // Clear local state immediately
-      setIsAuthenticated(false);
-      window.location.reload();
+      setIsAuthenticated(false)
+      window.location.reload()
     }
   };
 
   const fetchProfile = async () => {
-    // setIsLoading(true) // Don't flicker loading on focus check
     try {
-      const { user } = await fetchMe();
-      const name =
-        user && typeof user === "object"
-          ? typeof user.name === "string"
-            ? user.name
-            : typeof user.email === "string"
-              ? user.email
-              : null
-          : null;
-
-      if (name) {
-        setIsAuthenticated(true);
+      const { user } = await fetchMe()
+      if (user && user.id) {
+        setIsAuthenticated(true)
+      } else {
+        setIsAuthenticated(false)
       }
     } catch {
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    if (!socket) return;
+    void fetchProfile()
 
-    const handleAuthEvent = () => {
-      void fetchProfile();
-    };
+    const timer = setTimeout(() => {
+      setIsLoading((prev) => {
+        if (prev) {
+          console.warn("Layout loading timed out. Forcing render.")
+          return false
+        }
+        return prev
+      })
+    }, 5000)
 
-    socket.on("auth:login", handleAuthEvent);
-    socket.on("auth:logout", handleAuthEvent);
-
-    return () => {
-      socket.off("auth:login", handleAuthEvent);
-      socket.off("auth:logout", handleAuthEvent);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    void fetchProfile();
-
+    const handleAuthEvent = () => void fetchProfile()
+    const handleFocus = () => void fetchProfile()
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "logout-event") {
-        setIsAuthenticated(false);
-        // No strict redirect for client as guest view is allowed
-      }
-    };
+      if (event.key === 'logout-event') setIsAuthenticated(false)
+    }
 
-    const handleFocus = () => {
-      // Re-verify session when returning to the tab
-      void fetchProfile();
-    };
+    if (socket) {
+      socket.on('auth:login', handleAuthEvent)
+      socket.on('auth:logout', handleAuthEvent)
+    }
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("focus", handleFocus);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, []);
+      clearTimeout(timer)
+      if (socket) {
+        socket.off('auth:login', handleAuthEvent)
+        socket.off('auth:logout', handleAuthEvent)
+      }
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [socket])
 
   if (isLoading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-50">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-purple-500 mx-auto mb-4"></div>
-          <p>Loading...</p>
+          <p className="text-slate-400">Loading App...</p>
         </div>
       </div>
     );

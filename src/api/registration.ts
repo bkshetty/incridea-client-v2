@@ -89,36 +89,34 @@ export async function verifyPaymentSignature(response: any) {
 
 export async function getPaymentStatus(type?: string) {
   try {
-    const url = type ? `/payment/my-status?type=${type}` : '/payment/my-status'
-    const { data } = await apiClient.get<any>(url)
-    if (data.status === 'success') {
-      // Accept success even without PID/Receipt if logic allows (for accommodation without PID gen)
-      return {
-        status: 'success',
-        message: 'Payment verified',
-        pid: data.pid,
-        receipt: data.receipt,
-        processingStep: 'COMPLETED'
-      }
-    }
-    if (data.status === 'processing' || data.status === 'pending') {
-      return {
-        status: 'pending',
-        message: data.message || 'Processing...',
-        processingStep: data.processingStep,
-        receipt: data.receipt,
-        pid: data.pid
-      }
-    }
-    if (data.status === 'failed') {
-      return {
-        status: 'failed',
-        message: data.message || 'Payment Verification Failed',
-        processingStep: null
-      }
-    }
+     const url = type ? `/payment/my-status?type=${type}` : '/payment/my-status'
+     const { data } = await apiClient.get<any>(url)
+     if (data.status === 'success') {
+         return { 
+           status: 'success', 
+           message: 'Payment verified', 
+           pid: data.pid, 
+           receipt: data.receipt, 
+           processingStep: 'COMPLETED'
+         }
+     }
+     if (data.status === 'processing' || data.status === 'pending') {
+        return {
+          status: 'pending',
+          message: data.message || 'Processing...',
+          processingStep: data.processingStep,
+          receipt: data.receipt,
+          pid: data.pid
+        }
+     }
+     if (data.status === 'failed') {
+         return {
+             status: 'failed',
+             message: data.message || 'Payment Verification Failed',
+             processingStep: null
+         }
+     }
   } catch (e) {
-    // Ignore error
   }
   return { status: 'pending', message: 'Payment verification pending', processingStep: null }
 }

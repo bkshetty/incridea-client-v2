@@ -19,7 +19,6 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<number>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Calculate score for a team based on current filters
   const getTeamScore = (team: Team) => {
     if (!team.Score || team.Score.length === 0) return 0;
 
@@ -28,7 +27,6 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
       return score ? Number(score.score) || 0 : 0;
     }
     
-    // Sum up all criteria scores
     return team.Score.reduce((total, s) => {
       const val = Number(s.score);
       return total + (isNaN(val) ? 0 : val);
@@ -40,7 +38,6 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
     ID.toTeamId(team.id).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Sort teams by score descending
   const sortedTeams = [...filteredTeams].sort((a, b) => {
     const scoreA = getTeamScore(a);
     const scoreB = getTeamScore(b);
@@ -49,7 +46,6 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
 
   const toggleTeamSelection = (teamId: number) => {
     if (isFinalRound) {
-      // Single selection for final round
       const newSelected = new Set<number>();
       if (!selectedTeamIds.has(teamId)) {
         newSelected.add(teamId);
@@ -69,7 +65,6 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
 
   const promoteMutation = useMutation({
     mutationFn: async (teamIds: number[]) => {
-      // Promote teams one by one as the API is single-item
       await Promise.all(
         teamIds.map(id => promoteTeam(round.eventId, round.roundNo, id, true))
       );
@@ -110,7 +105,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
   return (
     <div className="h-full flex flex-col">
       <div className="sticky top-0 z-10 rounded-t-lg bg-slate-800 p-4 shadow-sm border-b border-slate-700 space-y-4">
-        {/* Search Bar */}
+        {}
         <div className="relative w-full">
           <input
             type="text"
@@ -130,7 +125,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
                 {selectedCriteriaId !== 'ALL' && <p className="text-xs text-indigo-400">Filtered by: {round.Criteria.find(c => c.id === selectedCriteriaId)?.name}</p>}
             </div>
             
-            {/* Criteria Filter */}
+            {}
             <div className="relative">
                 <select
                     value={selectedCriteriaId}
@@ -146,13 +141,13 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
             </div>
         </div>
         
-        {/* Bulk Actions */}
+        {}
         <div className="flex justify-between items-center flex-wrap gap-2">
             <p className="text-sm text-slate-400">{selectedTeamIds.size} selected</p>
              
             {isFinalRound ? (
                 <div className="flex gap-2">
-                     {/* Winner */}
+                     {}
                      {(() => {
                          const winnerTeam = teams.find(t => t.Winners?.some(w => w.type === 'WINNER'));
                          const winnerObj = winnerTeam?.Winners?.find(w => w.type === 'WINNER');
@@ -186,7 +181,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
                          );
                      })()}
 
-                     {/* 1st Runner Up */}
+                     {}
                      {(() => {
                          const runnerUpTeam = teams.find(t => t.Winners?.some(w => w.type === 'RUNNER_UP'));
                          const runnerUpObj = runnerUpTeam?.Winners?.find(w => w.type === 'RUNNER_UP');
@@ -220,7 +215,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
                          );
                      })()}
 
-                     {/* 2nd Runner Up */}
+                     {}
                      {(() => {
                          const secondRunnerUpTeam = teams.find(t => t.Winners?.some(w => w.type === 'SECOND_RUNNER_UP'));
                          const secondRunnerUpObj = secondRunnerUpTeam?.Winners?.find(w => w.type === 'SECOND_RUNNER_UP');
@@ -288,7 +283,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
                 }`}
               >
                 <div className="flex items-center gap-3">
-                    {/* Checkbox/Radio UI */}
+                    {}
                     <div className={`w-5 h-5 border flex items-center justify-center transition-colors ${
                         isFinalRound ? 'rounded-full' : 'rounded'
                     } ${
@@ -313,7 +308,7 @@ export default function JudgeLeaderboard({ teams, round, isFinalRound }: Props) 
                 
                 <div className="text-right flex flex-col gap-0.5">
                     <p className="text-lg font-bold text-white mb-1">{getTeamScore(team)}</p>
-                    {/* Hide breakdown if filtered, or show only relevant? Design choice: Hide detail if filtered to avoid confusion, or show all. Let's show relevant logic. */}
+                    {}
                     {selectedCriteriaId === 'ALL' && round.Criteria.map((criterion) => {
                       const scoreVal = team.Score?.find((s) => s.criteriaId === criterion.id)?.score;
                       return (

@@ -34,7 +34,6 @@ export default function CriteriaInputRow({
   const handleSubmit = async () => {
     if (!value) return;
     
-    // Client-side validation
     if (criteria.scoreOutOf && Number(value) > criteria.scoreOutOf) {
         showToast(`Score cannot exceed ${criteria.scoreOutOf}`, "error");
         return;
@@ -74,7 +73,6 @@ export default function CriteriaInputRow({
           value={value}
           onChange={(e) => {
             const val = e.target.value;
-            // Prevent entering more than scoreOutOf (User Experience Enhancement)
             if (criteria.scoreOutOf && Number(val) > criteria.scoreOutOf) return;
             
             setValue(val);
