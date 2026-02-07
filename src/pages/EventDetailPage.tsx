@@ -13,7 +13,20 @@ import { showToast } from "../utils/toast";
 import EventRegistration from "../components/events/EventRegistration";
 import EventDetails from "../components/events/EventDetails";
 import { formatDate as formatDateIST } from "../utils/date";
-import LiquidGlassCard from "../components/liquidglass/LiquidGlassCard";
+const glassCardStyle = {
+  borderRadius: "1.75rem",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  background: `
+    linear-gradient(to top, rgba(0, 0, 0, 0.20), transparent 60%),
+    rgba(21, 21, 21, 0.30)
+  `,
+  boxShadow: `
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22)
+  `,
+  backdropFilter: "brightness(1.1) blur(1px)",
+  WebkitBackdropFilter: "brightness(1.1) blur(1px)",
+};
 
 function parseIdFromSlug(slug: string | undefined) {
   if (!slug) {
@@ -105,11 +118,8 @@ function EventDetailPage() {
     <>
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url(/eventpagebg/bg3.png)",
-        }}
       >
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0" />
       </div>
       <section className="relative min-h-screen w-full overflow-x-hidden">
         <style>
@@ -179,7 +189,7 @@ function EventDetailPage() {
           </RouterLink>
 
           {/* GLASS CONTAINER: Event Header + Description + Coordinators */}
-          <LiquidGlassCard className="w-full">
+          <div style={glassCardStyle} className="w-full">
             {/* Event Header Section */}
             <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-3 sm:gap-4 lg:gap-6 p-0 sm:p-2 lg:p-4 border-b border-white/10">
               {/* LEFT: Poster Card */}
@@ -331,7 +341,7 @@ function EventDetailPage() {
                 </div>
               </div>
             </div>
-          </LiquidGlassCard>
+          </div>
         </div>
       </section>
     </>
