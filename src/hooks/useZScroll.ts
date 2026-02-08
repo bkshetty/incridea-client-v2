@@ -11,7 +11,8 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, onUpd
     const targetZRef = useRef(0);
 
     // Configuration for the feel of the scroll
-    const FADE_DISTANCE = 800;
+    // Configuration for the feel of the scroll
+    const FADE_DISTANCE = 4000; // Increased significantly to ensure images are visible earlier
 
     useEffect(() => {
         if (!containerRef.current) return;
