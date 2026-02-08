@@ -5,25 +5,7 @@ import Starfield from '../components/pronite/Starfield';
 import { useZScroll } from '../hooks/useZScroll';
 
 // --- Layer Configuration ---
-const layersConfig = [
-    { id: "hero", z: 0 },
-    { id: "about", z: -900 },
-    { id: "about2", z: -1900 },
 
-    // ARTIST 1 CONFIGURATION
-    // z: -3500 -> The point where the camera arrives at the text.
-    { id: "artist1", z: -3500 },
-
-    // Images placed deep enough so they don't overlap the text animation immediately
-    { id: "artist1_right", z: -5000 },
-    { id: "artist1_left", z: -6500 },
-
-    // Next Artists
-    { id: "artist2", z: -10000 },
-    { id: "artist3", z: -12500 },
-    { id: "artist4", z: -15000 },
-    { id: "artist5", z: -17500 },
-];
 
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -32,107 +14,45 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
-    const revealedLayers = useRef<Set<string>>(new Set());
 
-    // --- Main Scroll Logic ---
-    const handleScrollUpdate = React.useCallback((cameraZ: number) => {
-        const RENDER_DISTANCE = 4000;
 
-        layersConfig.forEach(({ id, z }) => {
-            const el = layerRefs.current[id];
-            if (!el) return;
-
-            // 1. Calculate Visibility
-            // "Revel from the fixed place": We trigger exactly when we arrive (cameraZ <= z)
-            // We keep it active for the duration of the pin + buffering
-            const persist = parseFloat(el.dataset.persist || "1500");
-            const isWithinRange = cameraZ <= z && cameraZ >= (z - persist - RENDER_DISTANCE);
-
-            if (isWithinRange) {
-                // --- REVEAL PHASE ---
-                // Trigger when we actually hit the pin point (z)
-                if (!revealedLayers.current.has(id)) {
-                    // Only start if we are effectively "at" the layer (accounting for scroll speed)
-                    if (cameraZ <= z) {
-                        revealedLayers.current.add(id);
-                        el.dataset.revealed = "true";
-                        el.dataset.exited = "false";
-
-                        // ** ANIMATION: TEXT REVEAL **
-                        // Reveal from bottom (100%) to center (0%) upon arrival
-                        const texts = el.querySelectorAll('.text-mask > *');
-                        if (texts.length) {
-                            gsap.fromTo(texts,
-                                { y: "110%" }, // Start from bottom
-                                {
-                                    y: "0%",
-                                    duration: 1.5,
-                                    ease: "power4.out",
-                                    stagger: 0.15,
-                                    overwrite: true
-                                }
-                            );
-                        }
-                    }
+    // --- Event Handlers (Passed to useZScroll) ---
+    // ANIMATION: TEXT REVEAL
+    const onLayerEnter = (el: HTMLElement) => {
+        const texts = el.querySelectorAll('.text-mask > *');
+        if (texts.length) {
+            gsap.fromTo(texts,
+                { y: "110%" }, // Start from bottom
+                {
+                    y: "0%",
+                    duration: 1.5,
+                    ease: "power4.out",
+                    stagger: 0.15,
+                    overwrite: true
                 }
-                // --- EXIT PHASE ---
-                else {
-                    // Trigger exit slightly before the pin releases
-                    const exitPoint = z - persist + 800;
-                    const isExiting = cameraZ < exitPoint;
+            );
+        }
+    };
 
-                    // If exiting and not yet animated out
-                    if (isExiting && el.dataset.exited !== "true" && el.dataset.pin === "true") {
-                        el.dataset.exited = "true";
-                        const texts = el.querySelectorAll('.text-mask > *');
-                        if (texts.length) {
-                            // ** ANIMATION: TEXT EXIT **
-                            // Move upwards (-100%) as requested
-                            gsap.fromTo(texts,
-                                { y: "0%" }, // Ensure we start from center
-                                {
-                                    y: "-110%", // Move up and out
-                                    duration: 1.2,
-                                    ease: "power3.in",
-                                    stagger: 0.1,
-                                    overwrite: true
-                                }
-                            );
-                        }
-                    }
-                    // Reset if user scrolls back UP into the section (Reverse exit)
-                    else if (!isExiting && el.dataset.exited === "true") {
-                        el.dataset.exited = "false";
-                        const texts = el.querySelectorAll('.text-mask > *');
-                        if (texts.length) {
-                            gsap.to(texts, {
-                                y: "0%",
-                                duration: 1,
-                                ease: "power4.out",
-                                overwrite: true
-                            });
-                        }
-                    }
-                }
-            } else {
-                // --- CLEANUP (Out of View) ---
-                const isFarGone = cameraZ < (z - persist - RENDER_DISTANCE) || cameraZ > (z + 2000);
-                if (isFarGone && revealedLayers.current.has(id)) {
-                    revealedLayers.current.delete(id);
-                    el.dataset.revealed = "false";
-                    el.dataset.exited = "false";
+    // ANIMATION: TEXT EXIT
+    const onLayerExit = (el: HTMLElement) => {
+        const texts = el.querySelectorAll('.text-mask > *');
+        if (texts.length) {
+            gsap.to(texts, {
+                y: "-110%", // Move up and out
+                duration: 1.2,
+                ease: "power3.in",
+                stagger: 0.1,
+                overwrite: true
+            });
+        }
+    };
 
-                    // Reset text to hidden position (bottom) for next reveal
-                    const texts = el.querySelectorAll('.text-mask > *');
-                    if (texts.length) {
-                        gsap.set(texts, { y: "110%" });
-                    }
-                }
-            }
-        });
-    }, []);
-
-    useZScroll(containerRef, handleScrollUpdate);
+    // Hook handles the visual loop and events
+    useZScroll(containerRef, {
+        onLayerEnter,
+        onLayerExit
+    });
 
     // --- Initial Setup & Cursor ---
     useEffect(() => {
@@ -199,7 +119,7 @@ const PronitePage: React.FC = () => {
                 <div className="z-content">
 
                     {/* HERO */}
-                    <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0">
+                    <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0" data-persist="15000">
                         <div className="hero-subtitle mb-4">
                             <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
                         </div>
@@ -209,12 +129,12 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* ABOUT */}
-                    <section ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-900">
+                    <section ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-900" data-persist="15000" data-fade-exp="25">
                         <div><h2 className="about-text">PRESENTING TO YOU</h2></div>
                     </section>
 
                     {/* ABOUT 2 */}
-                    <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900">
+                    <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900" data-persist="15000" data-fade-exp="25">
                         <div><h2 className="about-text">PRONITE ARTIST</h2></div>
                     </section>
 
@@ -230,6 +150,7 @@ const PronitePage: React.FC = () => {
                         data-z="-3500"
                         data-pin="true"
                         data-persist="4000"
+                        data-fade-exp="25"
                     >
                         <div className="artist-content">
                             {/* Masking Wrappers */}
