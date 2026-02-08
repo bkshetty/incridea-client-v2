@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import Lenis from 'lenis';
 import { lerp, clamp } from '@/utils/pronite';
 
-export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
+type ScrollCallback = (cameraZ: number) => void;
+
+export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, onUpdate?: ScrollCallback) => {
     const lenisRef = useRef<Lenis | null>(null);
     const reqIdRef = useRef<number | null>(null);
     const currentZRef = useRef(0);
     const targetZRef = useRef(0);
-    const [cameraZ, setCameraZ] = useState(0);
 
     // Configuration for the feel of the scroll
     const FADE_DISTANCE = 800; // "Reduce more" -> Sharper transition
@@ -71,7 +72,11 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
             // Smooth interpolation
             currentZRef.current = lerp(currentZRef.current, targetZRef.current, 0.08);
             const currentZ = currentZRef.current;
-            setCameraZ(currentZ);
+
+            // Invoke callback if provided
+            if (onUpdate) {
+                onUpdate(currentZ);
+            }
 
             // Update each layer
             layerData.forEach(({ element, depth }) => {
@@ -88,6 +93,9 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
                 const relativeZ = depth - currentZ;
 
                 const PIN_RANGE = 1500; // How long it stays pinned (in px)
+                // Allow custom persist distance via data attribute, default to PIN_RANGE if not set
+                // This controls when the opacity starts fading out after passing the camera
+                const persistDist = element.dataset.persist ? parseFloat(element.dataset.persist) : PIN_RANGE;
                 const isPinnable = element.dataset.pin === "true";
 
                 // --- 1. Opacity Calculation (Fade In Only) ---
@@ -107,9 +115,10 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
                         // PINNED PHASE: Keep fully visible
                         opacity = 1;
                     } else {
-                        // EXIT PHASE: Fade out quickly after pin
-                        // Map PIN_RANGE...(PIN_RANGE+500) to 1...0
-                        const exitProgress = (relativeZ - PIN_RANGE) / 500;
+                        // EXIT PHASE: Fade out quickly after persist distance
+                        // Use persistDist instead of hardcoded PIN_RANGE for the start of fade out
+                        // Map persistDist...(persistDist+500) to 1...0
+                        const exitProgress = (relativeZ - persistDist) / 500;
                         opacity = clamp(1 - exitProgress, 0, 1);
                     }
                 }
@@ -117,10 +126,10 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
                 // --- 2. Scale & Position Calculation ---
                 let transform;
 
-                if (isPinnable && relativeZ >= 0 && relativeZ < PIN_RANGE) {
+                if (isPinnable && relativeZ >= 0 && relativeZ < persistDist) {
                     // PINNED: Force to 0,0,0 (Camera center)
                     transform = `translate3d(0, 0, 0px)`;
-                } else if (isPinnable && relativeZ >= PIN_RANGE) {
+                } else if (isPinnable && relativeZ >= persistDist) {
                     // EXITED: Resume movement relative to z
                     transform = `translate3d(0, 0, ${relativeZ.toFixed(2)}px)`;
                 } else {
@@ -138,8 +147,8 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
                 element.style.visibility = opacity < 0.05 ? 'hidden' : 'visible';
 
                 // Active state for interactions
-                // Extended active range for pinned elements
-                const effectiveDistance = isPinnable && relativeZ >= 0 && relativeZ < PIN_RANGE ? 0 : Math.abs(relativeZ);
+                // Extended active range for pinned elements (using persistDist)
+                const effectiveDistance = isPinnable && relativeZ >= 0 && relativeZ < persistDist ? 0 : Math.abs(relativeZ);
 
                 if (effectiveDistance < 300) {
                     element.classList.add('active');
@@ -160,7 +169,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
             lenis.destroy();
             scrollTrack.remove();
         };
-    }, [containerRef]);
+    }, [containerRef, onUpdate]); // depend on onUpdate
 
-    return cameraZ;
+    // No longer returning cameraZ
 };

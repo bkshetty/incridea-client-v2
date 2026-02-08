@@ -10,6 +10,7 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLDivElement>(null);
 
+<<<<<<< HEAD
     // Layer configuration
     // Note: We only track the main "Text/Content" layers here for the reveal logic chain.
     // The Image layers are handled as "attachments" to these main IDs in the useEffect.
@@ -23,21 +24,31 @@ const PronitePage: React.FC = () => {
         { id: "artist4", z: -11000 },
         { id: "artist5", z: -13500 },
     ];
+=======
+    // Layer configuration 
+    const layersConfig = useRef([
+        { id: "hero", z: 0 },
+        { id: "about", z: -900 },
+        { id: "about2", z: -1900 },
+        { id: "artist1", z: -3500 }, // Increased gap for pinning
+        { id: "artist2", z: -6000 }, // +2500
+        { id: "artist3", z: -8500 }, // +2500
+        { id: "artist4", z: -11000 }, // +2500
+        { id: "artist5", z: -13500 }, // +2500
+    ]).current;
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
     const revealedLayers = useRef<Set<string>>(new Set());
 
+<<<<<<< HEAD
     // Hook handles the visual loop
     const cameraZ = useZScroll(containerRef);
 
+=======
+    // Updated to match the useZScroll FADE_DISTANCE (800)
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
     const fadeOutDistance = 800;
-
-    const canRevealLayer = (index: number, z: number) => {
-        if (index === 0) return cameraZ <= z;
-        const previousZ = layersConfig[index - 1]?.z ?? 0;
-        // Keep layer "active" in the DOM state as long as it's within range
-        return cameraZ <= z && cameraZ <= previousZ - fadeOutDistance;
-    };
 
     // Cursor Effect
     useEffect(() => {
@@ -76,17 +87,53 @@ const PronitePage: React.FC = () => {
         };
     }, []);
 
-    // Layer Activation Logic
+    // Cache for DOM elements to avoid querySelectorAll in the loop
+    const layerCache = useRef<Record<string, { el: HTMLElement, texts: NodeListOf<Element> }>>({});
+
+    // Initialize cache on mount
     useEffect(() => {
-        layersConfig.forEach(({ id, z }, index) => {
+        layersConfig.forEach(({ id }) => {
             const el = layerRefs.current[id];
+<<<<<<< HEAD
             // Look for a corresponding image layer (e.g., "artist1_imgs")
             const imgEl = layerRefs.current[`${id}_imgs`];
             
             if (!el) return;
+=======
+            if (el) {
+                layerCache.current[id] = {
+                    el,
+                    texts: el.querySelectorAll('.text-mask > *')
+                };
+            }
+        });
+    }, [layersConfig]);
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
 
-            const shouldBeRevealed = canRevealLayer(index, z);
+    const handleScrollUpdate = React.useCallback((cameraZ: number) => {
+        layersConfig.forEach(({ id, z }, index) => {
+            const cache = layerCache.current[id];
+            if (!cache) return;
 
+            const { el, texts } = cache;
+
+            // Updated visibility logic: Keep layers "active" longer to prevent rapid mounting/unmounting
+            let shouldBeRevealed = false;
+
+            // Special handling for the first few layers (Hero, About) to keep them visible longer
+            const isEarlyLayer = index <= 2;
+            const entryBuffer = isEarlyLayer ? 2000 : 0; // Extra buffer for early layers
+
+            if (index === 0) {
+                // Hero layer is always revealed if camera is before it (or slightly past)
+                shouldBeRevealed = cameraZ <= (z + 500);
+            } else {
+                const previousZ = layersConfig[index - 1]?.z ?? 0;
+                // Reveal if we are within the layer's zone OR the previous layer's zone (with buffer)
+                shouldBeRevealed = cameraZ <= (z + 500) && cameraZ <= (previousZ - fadeOutDistance + entryBuffer);
+            }
+
+<<<<<<< HEAD
             // Exit Logic Check for Pinned Text
             const isExiting = cameraZ < (z - 1200);
 
@@ -111,16 +158,34 @@ const PronitePage: React.FC = () => {
                 if (isExiting && el.dataset.exited !== "true") {
                     el.dataset.exited = "true";
                     const texts = el.querySelectorAll('.text-mask > *');
+=======
+            // Exit Logic Check
+            // Disable exit (slide down) animation for the first 3 layers (Hero, About, About2)
+            // ensuring they are always in position (y=0) when we scroll back up to them.
+            const isExiting = cameraZ < (z - 1200) && index > 2;
+
+            if (shouldBeRevealed) {
+                if (!revealedLayers.current.has(id)) {
+                    revealedLayers.current.add(id);
+                    el.dataset.revealed = "true";
+                    el.dataset.exited = "false";
+
+                    // GSAP Enter Animation (Slide Up)
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
                     if (texts.length) {
-                        gsap.to(texts,
-                            { y: "100%", duration: 2.5, ease: "power3.out", stagger: 0.1, overwrite: true }
+                        gsap.fromTo(texts,
+                            { y: "100%" },
+                            { y: "0%", duration: 1, ease: "power4.out", stagger: 0.1, overwrite: true }
                         );
                     }
-                } else if (!isExiting && el.dataset.exited === "true") {
-                    // Reset if scrolling back up
+                } else if (el.dataset.exited === "true") {
+                    // Reset if scrolling back up into an exited layer
                     el.dataset.exited = "false";
-                    gsap.to(el.querySelectorAll('.text-mask > *'), { y: "0%", duration: 0.5 });
+                    if (texts.length) {
+                        gsap.to(texts, { y: "0%", duration: 0.5, overwrite: true });
+                    }
                 }
+<<<<<<< HEAD
 
                 if (!shouldBeRevealed) {
                     revealedLayers.current.delete(id);
@@ -133,6 +198,33 @@ const PronitePage: React.FC = () => {
             }
         });
     }, [cameraZ]); 
+=======
+            } else {
+                if (revealedLayers.current.has(id)) {
+                    if (isExiting) {
+                        // Scrolled strictly PAST it (down) -> Exit Animation
+                        if (el.dataset.exited !== "true") {
+                            el.dataset.exited = "true";
+                            if (texts.length) {
+                                gsap.to(texts,
+                                    { y: "100%", duration: 2.5, ease: "power3.out", stagger: 0.1, overwrite: true }
+                                );
+                            }
+                        }
+                    } else {
+                        // Scrolled BACK UP before it -> Hide Immediately
+                        revealedLayers.current.delete(id);
+                        el.dataset.revealed = "false";
+                        el.dataset.exited = "false";
+                    }
+                }
+            }
+        });
+    }, [layersConfig, fadeOutDistance]);
+
+    // Hook handles the visual loop
+    useZScroll(containerRef, handleScrollUpdate);
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
 
     return (
         <div className="pronite-page">
@@ -165,27 +257,47 @@ const PronitePage: React.FC = () => {
                 <Starfield />
 
                 <div className="z-content">
+<<<<<<< HEAD
                     
                     {/* LAYER 0: HERO */}
                     <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0">
                         <div className="hero-subtitle mb-4">
                             <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
+=======
+                    {/* ... (Layer content remains exactly the same as provided) ... */}
+                    {/* Just ensuring refs are attached correctly, which they were in your snippet */}
+
+                    {/* LAYER 0: HERO - Persist long enough to stay visible throughout scroll */}
+                    <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0" data-persist="15000">
+                        <div className="text-mask">
+                            <div className="hero-subtitle mb-4">
+                                <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
+                            </div>
                         </div>
-                        <h1 className="hero-title">
-                            <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
-                        </h1>
+                        <div className="text-mask">
+                            <h1 className="hero-title">
+                                <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
+                            </h1>
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
+                        </div>
                     </section>
 
-                    {/* LAYER 1: ABOUT */}
-                    <section ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-900">
-                        <div>
+                    {/* LAYER 1: ABOUT - Persist long enough to stay visible throughout scroll */}
+                    <section ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-900" data-persist="15000">
+                        <div className="text-mask">
                             <h2 className="about-text">PRESENTING TO YOU</h2>
                         </div>
                     </section>
+<<<<<<< HEAD
                     
                     {/* LAYER 1.5: ABOUT 2 */}
                     <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900">
                         <div>
+=======
+                    {/* LAYER 1.5: ABOUT 2 - Persist long enough to stay visible throughout scroll */}
+                    <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900" data-persist="15000">
+                        <div className="text-mask">
+>>>>>>> da4a044b47a33cab049dd99169062d7327a0b38d
                             <h2 className="about-text">PRONITE ARTIST</h2>
                         </div>
                     </section>
