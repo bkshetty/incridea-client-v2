@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '../styles/Pronite.css';
+import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
 import { useZScroll } from '../hooks/useZScroll';
 import gsap from 'gsap';
