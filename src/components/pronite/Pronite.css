@@ -1,32 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-:root {
-    --color-bg: #050505;
-    --color-text: #ffffff;
+/* Scope variables to the page container */
+.pronite-page {
+    --pronite-bg: #050505;
+    --pronite-text: #ffffff;
     --font-primary: 'Inter', sans-serif;
     --font-display: 'Space Grotesk', sans-serif;
-}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-    background: var(--color-bg);
-    color: var(--color-text);
-    overflow: hidden;
-    /* Hide native scrollbar */
-}
-
-/* ========================================
-   MAIN CONTAINER - CRITICAL FOR 3D
-   ======================================== */
-.pronite-page {
     position: fixed;
     top: 0;
     left: 0;
@@ -34,40 +14,40 @@ body {
     height: 100vh;
     overflow: hidden;
     cursor: none;
+    background: var(--pronite-bg);
+    color: var(--pronite-text);
+    z-index: 1000;
 }
 
-/* ========================================
-   3D SPACE CONTAINER - PERSPECTIVE HERE
-   ======================================== */
-#z-space-container {
+/* Reset for children of pronite-page only */
+.pronite-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 3D Space */
+.pronite-page #z-space-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     perspective: 1000px;
-    /* The camera lens */
     perspective-origin: 50% 50%;
     overflow: hidden;
 }
 
-/* ========================================
-   3D CONTENT WRAPPER - PRESERVE 3D
-   ======================================== */
-.z-content {
+.pronite-page .z-content {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    /* CRITICAL: maintains 3D for children */
 }
 
-/* ========================================
-   Z-LAYERS - INDIVIDUAL 3D ELEMENTS
-   ======================================== */
-.z-layer {
+.pronite-page .z-layer {
     position: absolute;
     top: 0;
     left: 0;
@@ -78,14 +58,11 @@ body {
     justify-content: center;
     transform-style: preserve-3d;
     will-change: transform, opacity;
-    /* Initial state - will be overridden by JS */
     transform: translate3d(0, 0, 0);
 }
 
-/* ========================================
-   CUSTOM CURSOR
-   ======================================== */
-.cursor {
+/* Cursor */
+.pronite-page .cursor {
     position: fixed;
     top: 0;
     left: 0;
@@ -94,7 +71,7 @@ body {
     mix-blend-mode: difference;
 }
 
-.cursor-dot {
+.pronite-page .cursor-dot {
     width: 8px;
     height: 8px;
     background: white;
@@ -103,7 +80,7 @@ body {
     position: fixed;
 }
 
-.cursor-circle {
+.pronite-page .cursor-circle {
     width: 40px;
     height: 40px;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -113,16 +90,14 @@ body {
     transition: width 0.3s, height 0.3s, background 0.3s;
 }
 
-.cursor.hover .cursor-circle {
+.pronite-page .cursor.hover .cursor-circle {
     width: 60px;
     height: 60px;
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* ========================================
-   NAVIGATION
-   ======================================== */
-.nav {
+/* Navigation */
+.pronite-page .nav {
     position: fixed;
     top: 0;
     left: 0;
@@ -135,11 +110,11 @@ body {
     pointer-events: none;
 }
 
-.nav>* {
+.pronite-page .nav>* {
     pointer-events: auto;
 }
 
-.menu-btn {
+.pronite-page .menu-btn {
     background: none;
     border: none;
     cursor: none;
@@ -148,17 +123,15 @@ body {
     gap: 6px;
 }
 
-.menu-btn span {
+.pronite-page .menu-btn span {
     display: block;
     width: 30px;
     height: 2px;
     background: white;
 }
 
-/* ========================================
-   SCROLL PROGRESS
-   ======================================== */
-.scroll-progress {
+/* Scroll Progress */
+.pronite-page .scroll-progress {
     position: fixed;
     right: 2rem;
     top: 50%;
@@ -169,7 +142,7 @@ body {
     z-index: 100;
 }
 
-.progress-line {
+.pronite-page .progress-line {
     position: absolute;
     top: 0;
     left: 0;
@@ -180,56 +153,48 @@ body {
     transform: scaleY(0);
 }
 
-.progress-rocket {
+.pronite-page .progress-rocket {
     position: absolute;
     right: -10px;
     font-size: 16px;
     transform: translateY(-50%);
 }
 
-/* ========================================
-   HERO LAYER
-   ======================================== */
-.hero-layer {
+/* Layers */
+.pronite-page .hero-layer {
     flex-direction: column;
     text-align: center;
 }
 
-.hero-subtitle {
+.pronite-page .hero-subtitle {
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     opacity: 0.6;
     margin-bottom: 1.5rem;
 }
 
-.hero-title {
+.pronite-page .hero-title {
     font-family: var(--font-display);
     font-size: clamp(4rem, 15vw, 10rem);
     font-weight: 700;
     margin-bottom: 2rem;
 }
 
-/* Initial hidden state for layers that will be revealed on scroll */
-.about-layer,
-.project-layer,
-.contact-layer {
+.pronite-page .about-layer,
+.pronite-page .project-layer,
+.pronite-page .contact-layer {
     opacity: 0;
     transform: translateY(40px);
     pointer-events: none;
 }
 
-/* ========================================
-   ABOUT LAYER
-   ======================================== */
-.about-layer {
+.pronite-page .about-layer {
     text-align: center;
     padding: 0 2rem;
 }
 
-/* ========================================
-   NEW ARTIST LAYER STYLES
-   ======================================== */
-.artist-content {
+/* Artist Layer */
+.pronite-page .artist-content {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -237,14 +202,14 @@ body {
     gap: 1rem;
 }
 
-.artist-name {
+.pronite-page .artist-name {
     font-family: var(--font-display);
     font-size: clamp(4rem, 12vw, 8rem);
     font-weight: 700;
     line-height: 1.1;
 }
 
-.artist-date {
+.pronite-page .artist-date {
     font-family: var(--font-primary);
     font-size: 1.25rem;
     letter-spacing: 0.2em;
@@ -252,16 +217,14 @@ body {
     text-transform: uppercase;
 }
 
-.text-mask {
+.pronite-page .text-mask {
     overflow: hidden;
     display: block;
 }
 
-/* ========================================
-   BUTTONS (Keep if used elsewhere or generic)
-   ======================================== */
-.cta-btn,
-.view-project-btn {
+/* Buttons */
+.pronite-page .cta-btn,
+.pronite-page .view-project-btn {
     padding: 1rem 2rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 100px;
@@ -274,14 +237,14 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.cta-btn:hover,
-.view-project-btn:hover {
+.pronite-page .cta-btn:hover,
+.pronite-page .view-project-btn:hover {
     background: white;
     color: black;
     transform: translateY(-2px);
 }
 
-.about-text {
+.pronite-page .about-text {
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 4vw, 3rem);
     font-weight: 300;
@@ -289,10 +252,8 @@ body {
     max-width: 800px;
 }
 
-/* ========================================
-   STARFIELD CANVAS
-   ======================================== */
-#bg-canvas {
+/* Starfield */
+.pronite-page #bg-canvas {
     position: fixed;
     top: 0;
     left: 0;
