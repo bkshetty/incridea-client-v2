@@ -222,6 +222,35 @@
     display: block;
 }
 
+/* Artist Images */
+.pronite-page .artist-images-container {
+    perspective: 1500px;
+    pointer-events: none;
+}
+
+.pronite-page .artist-img {
+    position: absolute;
+    top: 50%;
+    transform-style: preserve-3d;
+    /* 9:16 Ratio: e.g. 270px x 480px, or 300px x 533px */
+    width: 270px;
+    height: 480px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    /* Initial state handled by CSS now, fade-in by GSAP on container */
+}
+
+.pronite-page .artist-img.left {
+    left: 10%;
+    transform: translateY(-50%) rotateY(15deg);
+}
+
+.pronite-page .artist-img.right {
+    right: 10%;
+    transform: translateY(-50%) rotateY(-15deg);
+}
+
 /* Buttons */
 .pronite-page .cta-btn,
 .pronite-page .view-project-btn {

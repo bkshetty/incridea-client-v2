@@ -1,16 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
 import { useZScroll } from '../hooks/useZScroll';
-// Removed gsap import for the scroll logic itself to avoid conflict, 
-// unless used for strictly non-scroll related entrance effects elsewhere.
-
-// ... [GlitchText and PhoneMockup components remain unchanged] ...
-// ... [PhoneMockup components] ...
-// GlitchText removed as it is no longer used in artist layers.
-
-// React component imports and setup
 
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -18,16 +10,18 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLDivElement>(null);
 
-    // Layer configuration 
+    // Layer configuration
+    // Note: We only track the main "Text/Content" layers here for the reveal logic chain.
+    // The Image layers are handled as "attachments" to these main IDs in the useEffect.
     const layersConfig = [
         { id: "hero", z: 0 },
         { id: "about", z: -900 },
         { id: "about2", z: -1900 },
-        { id: "artist1", z: -3500 }, // Increased gap for pinning
-        { id: "artist2", z: -6000 }, // +2500
-        { id: "artist3", z: -8500 }, // +2500
-        { id: "artist4", z: -11000 }, // +2500
-        { id: "artist5", z: -13500 }, // +2500
+        { id: "artist1", z: -3500 },
+        { id: "artist2", z: -6000 },
+        { id: "artist3", z: -8500 },
+        { id: "artist4", z: -11000 },
+        { id: "artist5", z: -13500 },
     ];
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -36,8 +30,6 @@ const PronitePage: React.FC = () => {
     // Hook handles the visual loop
     const cameraZ = useZScroll(containerRef);
 
-    // Updated to match the useZScroll FADE_DISTANCE (1500)
-    // Updated to match the useZScroll FADE_DISTANCE (800)
     const fadeOutDistance = 800;
 
     const canRevealLayer = (index: number, z: number) => {
@@ -88,21 +80,24 @@ const PronitePage: React.FC = () => {
     useEffect(() => {
         layersConfig.forEach(({ id, z }, index) => {
             const el = layerRefs.current[id];
+            // Look for a corresponding image layer (e.g., "artist1_imgs")
+            const imgEl = layerRefs.current[`${id}_imgs`];
+            
             if (!el) return;
 
             const shouldBeRevealed = canRevealLayer(index, z);
 
-            // Exit Logic Check
-            // Exit Logic Check
-            // If cameraZ is well past the layer (z - 1200 for pin range), trigger exit
-            // Note: coordinates are negative, so "past" means LESS THAN (more negative)
+            // Exit Logic Check for Pinned Text
             const isExiting = cameraZ < (z - 1200);
 
             if (shouldBeRevealed && !revealedLayers.current.has(id)) {
                 revealedLayers.current.add(id);
                 el.dataset.revealed = "true";
+                
+                // Sync the image layer reveal state
+                if (imgEl) imgEl.dataset.revealed = "true";
 
-                // GSAP Enter Animation (Slide Up)
+                // GSAP Enter Animation (Slide Up for Text)
                 const texts = el.querySelectorAll('.text-mask > *');
                 if (texts.length) {
                     gsap.fromTo(texts,
@@ -112,8 +107,7 @@ const PronitePage: React.FC = () => {
                 }
 
             } else if (revealedLayers.current.has(id)) {
-                // If it's already revealed, check if we need to trigger EXIT animation
-                // We only want to trigger this ONCE when it crosses the threshold
+                // If it's already revealed, check if we need to trigger EXIT animation for TEXT
                 if (isExiting && el.dataset.exited !== "true") {
                     el.dataset.exited = "true";
                     const texts = el.querySelectorAll('.text-mask > *');
@@ -131,11 +125,14 @@ const PronitePage: React.FC = () => {
                 if (!shouldBeRevealed) {
                     revealedLayers.current.delete(id);
                     el.dataset.revealed = "false";
-                    el.dataset.exited = "false"; // Reset exit state on full hide
+                    el.dataset.exited = "false"; 
+
+                    // Sync hide images
+                    if (imgEl) imgEl.dataset.revealed = "false";
                 }
             }
         });
-    }, [cameraZ]); // Dependent on scroll position
+    }, [cameraZ]); 
 
     return (
         <div className="pronite-page">
@@ -168,9 +165,7 @@ const PronitePage: React.FC = () => {
                 <Starfield />
 
                 <div className="z-content">
-                    {/* ... (Layer content remains exactly the same as provided) ... */}
-                    {/* Just ensuring refs are attached correctly, which they were in your snippet */}
-
+                    
                     {/* LAYER 0: HERO */}
                     <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0">
                         <div className="hero-subtitle mb-4">
@@ -187,6 +182,7 @@ const PronitePage: React.FC = () => {
                             <h2 className="about-text">PRESENTING TO YOU</h2>
                         </div>
                     </section>
+                    
                     {/* LAYER 1.5: ABOUT 2 */}
                     <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900">
                         <div>
@@ -194,7 +190,33 @@ const PronitePage: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* ID: artist1 */}
+                    {/* --- ARTIST 1 --- */}
+                    
+                    {/* ID: artist1_imgs (The flying images) */}
+                    {/* Placed at same Z as text but NOT pinned, so they fly past the camera */}
+                    <section 
+                        ref={(el) => { layerRefs.current["artist1_imgs"] = el; }} 
+                        className="z-layer" 
+                        data-z="-3500"
+                    >
+                        <div className="artist-images-container" style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                            {/* Inline styles added to reduce size (220px) as requested */}
+                            <img 
+                                src="/artist1-left.jpg" 
+                                alt="Artist 1 Left" 
+                                className="artist-img left" 
+                                style={{ width: '220px', height: 'auto' }} 
+                            />
+                            <img 
+                                src="/artist1-right.jpg" 
+                                alt="Artist 1 Right" 
+                                className="artist-img right" 
+                                style={{ width: '220px', height: 'auto' }} 
+                            />
+                        </div>
+                    </section>
+
+                    {/* ID: artist1 (The Text - Pinned) */}
                     <section ref={(el) => { layerRefs.current["artist1"] = el; }} className="z-layer artist-layer" data-z="-3500" data-pin="true">
                         <div className="artist-content">
                             <div className="text-mask">
@@ -207,8 +229,14 @@ const PronitePage: React.FC = () => {
                     </section>
 
 
+                    {/* --- ARTIST 2 --- */}
+                    
+                    {/* Placeholder for Artist 2 Images */}
+                    <section ref={(el) => { layerRefs.current["artist2_imgs"] = el; }} className="z-layer" data-z="-6000">
+                         {/* Add images here later following the structure above */}
+                    </section>
 
-                    {/* ID: artist2 */}
+                    {/* ID: artist2 Text */}
                     <section ref={(el) => { layerRefs.current["artist2"] = el; }} className="z-layer artist-layer" data-z="-6000" data-pin="true">
                         <div className="artist-content">
                             <div className="text-mask">
@@ -220,7 +248,7 @@ const PronitePage: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* ID: artist3 */}
+                    {/* --- ARTIST 3 --- */}
                     <section ref={(el) => { layerRefs.current["artist3"] = el; }} className="z-layer artist-layer" data-z="-8500" data-pin="true">
                         <div className="artist-content">
                             <div className="text-mask">
@@ -232,7 +260,7 @@ const PronitePage: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* ID: artist4 */}
+                    {/* --- ARTIST 4 --- */}
                     <section ref={(el) => { layerRefs.current["artist4"] = el; }} className="z-layer artist-layer" data-z="-11000" data-pin="true">
                         <div className="artist-content">
                             <div className="text-mask">
@@ -244,7 +272,7 @@ const PronitePage: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* ID: artist5 */}
+                    {/* --- ARTIST 5 --- */}
                     <section ref={(el) => { layerRefs.current["artist5"] = el; }} className="z-layer artist-layer" data-z="-13500" data-pin="true">
                         <div className="artist-content">
                             <div className="text-mask">
@@ -255,7 +283,6 @@ const PronitePage: React.FC = () => {
                             </div>
                         </div>
                     </section>
-
 
                 </div>
             </div>
