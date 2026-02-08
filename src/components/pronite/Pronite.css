@@ -233,8 +233,8 @@
     top: 50%;
     transform-style: preserve-3d;
     /* 9:16 Ratio: e.g. 270px x 480px, or 300px x 533px */
-    width: 270px;
-    height: 480px;
+    width: 500px;
+    height: 888px;
     object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
@@ -242,13 +242,13 @@
 }
 
 .pronite-page .artist-img.left {
-    left: 10%;
-    transform: translateY(-50%) rotateY(15deg);
+    left: 15%;
+    transform: translateY(-50%) rotateY(25deg) scale(2.5);
 }
 
 .pronite-page .artist-img.right {
-    right: 10%;
-    transform: translateY(-50%) rotateY(-15deg);
+    right: 15%;
+    transform: translateY(-50%) rotateY(-25deg) scale(2.5);
 }
 
 /* Buttons */
@@ -290,4 +290,24 @@
     height: 100%;
     z-index: 0;
     pointer-events: none;
+}
+
+.pronite-page .text-mask {
+    overflow: hidden;
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    line-height: 1.1;
+    /* Tighter line height prevents gaps */
+}
+
+/* 2. Inner Text: Prepares it for animation */
+.pronite-page .text-mask>h2,
+.pronite-page .text-mask>p {
+    display: block;
+    margin: 0;
+    /* Start invisible (pushed down) */
+    transform: translateY(110%);
+    will-change: transform;
 }
