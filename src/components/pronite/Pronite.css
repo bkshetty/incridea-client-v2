@@ -13,12 +13,14 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     background: var(--color-bg);
     color: var(--color-text);
-    overflow: hidden; /* Hide native scrollbar */
+    overflow: hidden;
+    /* Hide native scrollbar */
 }
 
 /* ========================================
@@ -43,7 +45,8 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    perspective: 1000px; /* The camera lens */
+    perspective: 1000px;
+    /* The camera lens */
     perspective-origin: 50% 50%;
     overflow: hidden;
 }
@@ -57,7 +60,8 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    transform-style: preserve-3d; /* CRITICAL: maintains 3D for children */
+    transform-style: preserve-3d;
+    /* CRITICAL: maintains 3D for children */
 }
 
 /* ========================================
@@ -131,7 +135,7 @@ html, body {
     pointer-events: none;
 }
 
-.nav > * {
+.nav>* {
     pointer-events: auto;
 }
 
@@ -209,66 +213,55 @@ html, body {
 .about-layer,
 .project-layer,
 .contact-layer {
-  opacity: 0;
-  transform: translateY(40px);
-  pointer-events: none;
-}
-
-/* ========================================
-   GLITCH EFFECT
-   ======================================== */
-[data-glitch] {
-    position: relative;
-    display: inline-block;
-}
-
-[data-glitch]::before,
-[data-glitch]::after {
-    content: attr(data-glitch);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     opacity: 0;
-}
-
-[data-glitch].glitching::before {
-    animation: glitch-1 0.3s infinite linear alternate-reverse;
-    color: #0ff;
-    opacity: 0.8;
-    z-index: -1;
-}
-
-[data-glitch].glitching::after {
-    animation: glitch-2 0.3s infinite linear alternate-reverse;
-    color: #f0f;
-    opacity: 0.8;
-    z-index: -2;
-}
-
-@keyframes glitch-1 {
-    0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
-    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-    40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
-    60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
-    80% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 2px); }
-    100% { clip-path: inset(30% 0 20% 0); transform: translate(1px, -1px); }
-}
-
-@keyframes glitch-2 {
-    0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
-    20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
-    40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
-    60% { clip-path: inset(10% 0 80% 0); transform: translate(-1px, -2px); }
-    80% { clip-path: inset(50% 0 30% 0); transform: translate(1px, 2px); }
-    100% { clip-path: inset(20% 0 60% 0); transform: translate(-2px, 1px); }
+    transform: translateY(40px);
+    pointer-events: none;
 }
 
 /* ========================================
-   BUTTONS
+   ABOUT LAYER
    ======================================== */
-.cta-btn, .view-project-btn {
+.about-layer {
+    text-align: center;
+    padding: 0 2rem;
+}
+
+/* ========================================
+   NEW ARTIST LAYER STYLES
+   ======================================== */
+.artist-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.artist-name {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.artist-date {
+    font-family: var(--font-primary);
+    font-size: 1.25rem;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+    text-transform: uppercase;
+}
+
+.text-mask {
+    overflow: hidden;
+    display: block;
+}
+
+/* ========================================
+   BUTTONS (Keep if used elsewhere or generic)
+   ======================================== */
+.cta-btn,
+.view-project-btn {
     padding: 1rem 2rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 100px;
@@ -281,25 +274,11 @@ html, body {
     backdrop-filter: blur(10px);
 }
 
-.cta-btn:hover, .view-project-btn:hover {
+.cta-btn:hover,
+.view-project-btn:hover {
     background: white;
     color: black;
     transform: translateY(-2px);
-}
-
-/* ========================================
-   ABOUT LAYER
-   ======================================== */
-.about-layer {
-    text-align: center;
-    padding: 0 2rem;
-}
-
-.about-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    opacity: 0.5;
-    margin-bottom: 2rem;
 }
 
 .about-text {
@@ -308,137 +287,6 @@ html, body {
     font-weight: 300;
     line-height: 1.4;
     max-width: 800px;
-}
-
-/* ========================================
-   PROJECT LAYERS
-   ======================================== */
-.project-layer {
-    padding: 0 2rem;
-}
-
-.project-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3rem;
-    max-width: 1000px;
-}
-
-@media (min-width: 768px) {
-    .project-card {
-        flex-direction: row;
-        gap: 5rem;
-    }
-    .project-card.reverse {
-        flex-direction: row-reverse;
-    }
-}
-
-.project-visual {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.project-info {
-    flex: 1;
-    text-align: center;
-}
-
-@media (min-width: 768px) {
-    .project-info {
-        text-align: left;
-    }
-    .project-card.reverse .project-info {
-        text-align: right;
-    }
-}
-
-.project-title {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.project-tags {
-    font-size: 0.875rem;
-    opacity: 0.5;
-    margin-bottom: 2rem;
-}
-
-/* ========================================
-   PHONE MOCKUP
-   ======================================== */
-.phone-mockup {
-    width: 260px;
-    height: 520px;
-    background: linear-gradient(145deg, #1a1a2e, #0a0a0a);
-    border-radius: 40px;
-    border: 3px solid #333;
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.8),
-        0 0 0 1px rgba(255,255,255,0.1);
-    transform: rotateY(-15deg) rotateX(5deg);
-    transition: transform 0.5s ease-out;
-    overflow: hidden;
-}
-
-.phone-screen {
-    width: 100%;
-    height: 100%;
-    background: #000;
-    border-radius: 37px;
-    overflow: hidden;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.project-card:hover .phone-mockup {
-    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
-}
-
-/* ========================================
-   CONTACT LAYER
-   ======================================== */
-.contact-layer {
-    text-align: center;
-    flex-direction: column;
-}
-
-.contact-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    opacity: 0.5;
-    margin-bottom: 2rem;
-}
-
-.contact-title {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 10vw, 8rem);
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 3rem;
-}
-
-.contact-title .highlight {
-    color: #00d4ff;
-    text-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
-}
-
-.block {
-    display: block;
-}
-
-.text-cyan-400 {
-    color: #00d4ff;
-}
-
-.mt-8 {
-    margin-top: 2rem;
 }
 
 /* ========================================

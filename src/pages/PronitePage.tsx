@@ -1,128 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
 import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
 import { useZScroll } from '../hooks/useZScroll';
-import gsap from 'gsap';
+// Removed gsap import for the scroll logic itself to avoid conflict, 
+// unless used for strictly non-scroll related entrance effects elsewhere.
 
-// Glitch Text Component
-const GlitchText: React.FC<{ text: string }> = ({ text }) => {
-    const [isGlitching, setIsGlitching] = useState(false);
-    
-    return (
-        <span 
-            data-glitch={text} 
-            className={isGlitching ? 'glitching' : ''}
-            onMouseEnter={() => setIsGlitching(true)}
-            onMouseLeave={() => setIsGlitching(false)}
-        >
-            {text}
-        </span>
-    );
-};
+// ... [GlitchText and PhoneMockup components remain unchanged] ...
+// ... [PhoneMockup components] ...
+// GlitchText removed as it is no longer used in artist layers.
 
-// Phone Mockup
-const PhoneMockup: React.FC<{ variant: string }> = ({ variant }) => {
-    const getContent = () => {
-        const variants: Record<string, React.ReactNode> = {
-            modus: (
-                <div style={{ 
-                    height: '100%', 
-                    background: 'linear-gradient(135deg, #1a1a2e, #16213e)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    padding: '1rem'
-                }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>MODUS</div>
-                    <div style={{ height: '60%', background: 'rgba(255,255,255,0.1)', borderRadius: '12px' }} />
-                </div>
-            ),
-            trinity: (
-                <div style={{ 
-                    height: '100%', 
-                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '1rem'
-                }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Trinity</div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {[1,2,3].map(i => (
-                            <div key={i} style={{ 
-                                width: '30px', 
-                                height: '30px', 
-                                borderRadius: '50%', 
-                                background: 'rgba(255,255,255,0.3)',
-                                border: '2px solid white'
-                            }} />
-                        ))}
-                    </div>
-                </div>
-            ),
-            zenith: (
-                <div style={{ 
-                    height: '100%', 
-                    background: '#f5f5f5',
-                    color: '#000',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    padding: '1rem'
-                }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000' }}>ZENITH</div>
-                    <div style={{ color: '#666', fontSize: '0.9rem' }}>BMW Z4</div>
-                </div>
-            ),
-            sage: (
-                <div style={{ 
-                    height: '100%', 
-                    background: 'linear-gradient(135deg, #11998e, #38ef7d)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>SAGE</div>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>PAVE THE WAY</div>
-                </div>
-            ),
-            recur: (
-                <div style={{ 
-                    height: '100%', 
-                    background: '#0a0a0a',
-                    border: '1px solid #333',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    padding: '1rem'
-                }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#00ff88' }}>RECUR</div>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '80px' }}>
-                        {[40,60,30,80,50,70,90,45,65,55].map((h,i) => (
-                            <div key={i} style={{
-                                width: '6px',
-                                height: `${h}%`,
-                                background: i > 5 ? '#ff4444' : '#00ff88',
-                                borderRadius: '1px'
-                            }} />
-                        ))}
-                    </div>
-                </div>
-            )
-        };
-        return variants[variant] || variants.modus;
-    };
-
-    return (
-        <div className="phone-mockup">
-            <div className="phone-screen">
-                {getContent()}
-            </div>
-        </div>
-    );
-};
+// React component imports and setup
 
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -132,27 +20,34 @@ const PronitePage: React.FC = () => {
 
     // Layer configuration 
     const layersConfig = [
-  { id: "hero", z: 0 },
-  { id: "about", z: -800 },
-  { id: "modus", z: -1600 },
-  { id: "trinity", z: -2400 },
-  { id: "zenith", z: -3200 },
-  { id: "sage", z: -4000 },
-  { id: "recur", z: -4800 },
-];
-    // Refs to layer elements for revealing 
+        { id: "hero", z: 0 },
+        { id: "about", z: -900 },
+        { id: "about2", z: -1900 },
+        { id: "artist1", z: -3500 }, // Increased gap for pinning
+        { id: "artist2", z: -6000 }, // +2500
+        { id: "artist3", z: -8500 }, // +2500
+        { id: "artist4", z: -11000 }, // +2500
+        { id: "artist5", z: -13500 }, // +2500
+    ];
+
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
     const revealedLayers = useRef<Set<string>>(new Set());
+
+    // Hook handles the visual loop
     const cameraZ = useZScroll(containerRef);
+
+    // Updated to match the useZScroll FADE_DISTANCE (1500)
+    // Updated to match the useZScroll FADE_DISTANCE (800)
     const fadeOutDistance = 800;
 
     const canRevealLayer = (index: number, z: number) => {
         if (index === 0) return cameraZ <= z;
         const previousZ = layersConfig[index - 1]?.z ?? 0;
+        // Keep layer "active" in the DOM state as long as it's within range
         return cameraZ <= z && cameraZ <= previousZ - fadeOutDistance;
     };
 
-    // Simple cursor - NO GSAP
+    // Cursor Effect
     useEffect(() => {
         const moveCursor = (e: MouseEvent) => {
             if (cursorDotRef.current) {
@@ -160,7 +55,6 @@ const PronitePage: React.FC = () => {
                 cursorDotRef.current.style.top = e.clientY + 'px';
             }
             if (cursorCircleRef.current) {
-                // Simple lag effect without GSAP
                 setTimeout(() => {
                     if (cursorCircleRef.current) {
                         cursorCircleRef.current.style.left = e.clientX + 'px';
@@ -190,7 +84,7 @@ const PronitePage: React.FC = () => {
         };
     }, []);
 
-    // Layer reveal only on scroll
+    // Layer Activation Logic
     useEffect(() => {
         layersConfig.forEach(({ id, z }, index) => {
             const el = layerRefs.current[id];
@@ -198,29 +92,50 @@ const PronitePage: React.FC = () => {
 
             const shouldBeRevealed = canRevealLayer(index, z);
 
+            // Exit Logic Check
+            // Exit Logic Check
+            // If cameraZ is well past the layer (z - 1200 for pin range), trigger exit
+            // Note: coordinates are negative, so "past" means LESS THAN (more negative)
+            const isExiting = cameraZ < (z - 1200);
+
             if (shouldBeRevealed && !revealedLayers.current.has(id)) {
-                // Reveal the layer
                 revealedLayers.current.add(id);
                 el.dataset.revealed = "true";
 
-                gsap.to(el, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: "power3.out",
-                    onComplete: () => {
-                        el.style.pointerEvents = "auto";
-                    },
-                });
-            } else if (!shouldBeRevealed && revealedLayers.current.has(id)) {
-                // Hide the layer when scrolling back
-                revealedLayers.current.delete(id);
-                el.dataset.revealed = "false";
-                el.style.pointerEvents = "none";
+                // GSAP Enter Animation (Slide Up)
+                const texts = el.querySelectorAll('.text-mask > *');
+                if (texts.length) {
+                    gsap.fromTo(texts,
+                        { y: "100%" },
+                        { y: "0%", duration: 1, ease: "power4.out", stagger: 0.1, overwrite: true }
+                    );
+                }
+
+            } else if (revealedLayers.current.has(id)) {
+                // If it's already revealed, check if we need to trigger EXIT animation
+                // We only want to trigger this ONCE when it crosses the threshold
+                if (isExiting && el.dataset.exited !== "true") {
+                    el.dataset.exited = "true";
+                    const texts = el.querySelectorAll('.text-mask > *');
+                    if (texts.length) {
+                        gsap.to(texts,
+                            { y: "100%", duration: 2.5, ease: "power3.out", stagger: 0.1, overwrite: true }
+                        );
+                    }
+                } else if (!isExiting && el.dataset.exited === "true") {
+                    // Reset if scrolling back up
+                    el.dataset.exited = "false";
+                    gsap.to(el.querySelectorAll('.text-mask > *'), { y: "0%", duration: 0.5 });
+                }
+
+                if (!shouldBeRevealed) {
+                    revealedLayers.current.delete(id);
+                    el.dataset.revealed = "false";
+                    el.dataset.exited = "false"; // Reset exit state on full hide
+                }
             }
         });
-    }, [cameraZ]);
-
+    }, [cameraZ]); // Dependent on scroll position
 
     return (
         <div className="pronite-page">
@@ -239,9 +154,7 @@ const PronitePage: React.FC = () => {
                         <span></span>
                     </button>
                 </div>
-                <div className="nav-right">
-                    <a href="#contact">CONTACT ↗</a>
-                </div>
+                <div className="nav-right"></div>
             </nav>
 
             {/* Scroll Progress */}
@@ -253,114 +166,97 @@ const PronitePage: React.FC = () => {
             {/* Main 3D Container */}
             <div id="z-space-container" ref={containerRef}>
                 <Starfield />
-                
+
                 <div className="z-content">
-                    
+                    {/* ... (Layer content remains exactly the same as provided) ... */}
+                    {/* Just ensuring refs are attached correctly, which they were in your snippet */}
+
                     {/* LAYER 0: HERO */}
                     <section ref={(el) => { layerRefs.current["hero"] = el; }} className="z-layer hero-layer" data-z="0">
-                        <div>
-                            <p className="hero-subtitle">{'{ Branding, Web & Motion Studio ® }'}</p>
-                            <h1 className="hero-title">
-                                <GlitchText text="Fantik" />
-                            </h1>
-                            <button className="cta-btn">View Our Work ↗</button>
+                        <div className="hero-subtitle mb-4">
+                            <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
                         </div>
+                        <h1 className="hero-title">
+                            <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
+                        </h1>
                     </section>
 
                     {/* LAYER 1: ABOUT */}
-                    <section  ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-800">
+                    <section ref={(el) => { layerRefs.current["about"] = el; }} className="z-layer about-layer" data-z="-900">
                         <div>
-                            <p className="about-label">{'{ About Us }'}</p>
-                            <h2 className="about-text">
-                                We are an award-winning full-cycle digital studio crafting immersive web & motion that makes brands grow and stand out
-                            </h2>
+                            <h2 className="about-text">PRESENTING TO YOU</h2>
                         </div>
                     </section>
-
-                    {/* LAYER 2: MODUS */}
-                    <section ref={(el) => { layerRefs.current["modus"] = el; }} className="z-layer project-layer" data-z="-1600">
-                        <div className="project-card">
-                            <div className="project-visual">
-                                <PhoneMockup variant="modus" />
-                            </div>
-                            <div className="project-info">
-                                <h2 className="project-title"><GlitchText text="MODUS" /></h2>
-                                <p className="project-tags">Website Design · WebGL · Development</p>
-                                <button className="view-project-btn">View Project</button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* LAYER 3: TRINITY */}
-                    <section ref={(el) => { layerRefs.current["trinity"] = el; }} className="z-layer project-layer" data-z="-2400">
-                        <div className="project-card reverse">
-                            <div className="project-visual">
-                                <PhoneMockup variant="trinity" />
-                            </div>
-                            <div className="project-info">
-                                <h2 className="project-title"><GlitchText text="TRINITY" /></h2>
-                                <p className="project-tags">App Design · UI/UX · Development</p>
-                                <button className="view-project-btn">View Project</button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* LAYER 4: ZENITH */}
-                    <section ref={(el) => { layerRefs.current["zenith"] = el; }} className="z-layer project-layer" data-z="-3200">
-                        <div className="project-card">
-                            <div className="project-visual">
-                                <PhoneMockup variant="zenith" />
-                            </div>
-                            <div className="project-info">
-                                <h2 className="project-title"><GlitchText text="ZENITH" /></h2>
-                                <p className="project-tags">Art Direction · Website Design · Branding</p>
-                                <button className="view-project-btn">View Project</button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* LAYER 5: SAGE */}
-                    <section ref={(el) => { layerRefs.current["sage"] = el; }} className="z-layer project-layer" data-z="-4000">
-                        <div className="project-card reverse">
-                            <div className="project-visual">
-                                <PhoneMockup variant="sage" />
-                            </div>
-                            <div className="project-info">
-                                <h2 className="project-title"><GlitchText text="SAGE" /></h2>
-                                <p className="project-tags">Website Design · WebGL · Development</p>
-                                <button className="view-project-btn">View Project</button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* LAYER 6: RECUR */}
-                    <section ref={(el) => { layerRefs.current["recur"] = el; }} className="z-layer project-layer" data-z="-4800">
-                        <div className="project-card">
-                            <div className="project-visual">
-                                <PhoneMockup variant="recur" />
-                            </div>
-                            <div className="project-info">
-                                <h2 className="project-title"><GlitchText text="RECUR" /></h2>
-                                <p className="project-tags">Script · 3D · Motion Design</p>
-                                <button className="view-project-btn">View Project</button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* LAYER 7: CONTACT */}
-                    <section ref={(el) => { layerRefs.current["contact"] = el; }} className="z-layer contact-layer" id="contact" data-z="-5600">
+                    {/* LAYER 1.5: ABOUT 2 */}
+                    <section ref={(el) => { layerRefs.current["about2"] = el; }} className="z-layer about-layer" data-z="-1900">
                         <div>
-                            <p className="contact-label">{'{ Say Hi }'}</p>
-                            <h2 className="contact-title">
-                                <span className="block">WE CAN</span>
-                                <span className="block highlight"><GlitchText text="TALK" /></span>
-                                <span className="block">NOW</span>
-                            </h2>
-                            <a href="mailto:hello@fantik.studio" className="cta-btn mt-8">
-                                HELLO@FANTIK.STUDIO
-                            </a>
+                            <h2 className="about-text">PRONITE ARTIST</h2>
                         </div>
                     </section>
+
+                    {/* ID: artist1 */}
+                    <section ref={(el) => { layerRefs.current["artist1"] = el; }} className="z-layer artist-layer" data-z="-3500" data-pin="true">
+                        <div className="artist-content">
+                            <div className="text-mask">
+                                <h2 className="artist-name">ARTIST 1</h2>
+                            </div>
+                            <div className="text-mask">
+                                <p className="artist-date">DAY 1 · 7:00 PM</p>
+                            </div>
+                        </div>
+                    </section>
+
+
+
+                    {/* ID: artist2 */}
+                    <section ref={(el) => { layerRefs.current["artist2"] = el; }} className="z-layer artist-layer" data-z="-6000" data-pin="true">
+                        <div className="artist-content">
+                            <div className="text-mask">
+                                <h2 className="artist-name">ARTIST 2</h2>
+                            </div>
+                            <div className="text-mask">
+                                <p className="artist-date">DAY 2 · 7:00 PM</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ID: artist3 */}
+                    <section ref={(el) => { layerRefs.current["artist3"] = el; }} className="z-layer artist-layer" data-z="-8500" data-pin="true">
+                        <div className="artist-content">
+                            <div className="text-mask">
+                                <h2 className="artist-name">ARTIST 3</h2>
+                            </div>
+                            <div className="text-mask">
+                                <p className="artist-date">DAY 3 · 7:00 PM</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ID: artist4 */}
+                    <section ref={(el) => { layerRefs.current["artist4"] = el; }} className="z-layer artist-layer" data-z="-11000" data-pin="true">
+                        <div className="artist-content">
+                            <div className="text-mask">
+                                <h2 className="artist-name">ARTIST 4</h2>
+                            </div>
+                            <div className="text-mask">
+                                <p className="artist-date">DAY 4 · 7:00 PM</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ID: artist5 */}
+                    <section ref={(el) => { layerRefs.current["artist5"] = el; }} className="z-layer artist-layer" data-z="-13500" data-pin="true">
+                        <div className="artist-content">
+                            <div className="text-mask">
+                                <h2 className="artist-name">ARTIST 5</h2>
+                            </div>
+                            <div className="text-mask">
+                                <p className="artist-date">DAY 5 · 7:00 PM</p>
+                            </div>
+                        </div>
+                    </section>
+
+
                 </div>
             </div>
         </div>
