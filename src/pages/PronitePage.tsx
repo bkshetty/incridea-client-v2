@@ -1,11 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { AnimatePresence } from 'framer-motion';
 import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
+import ProniteCard from '../components/pronite/ProniteCard';
 import { useZScroll } from '../hooks/useZScroll';
 
 // --- Layer Configuration ---
+interface ArtistData {
+    id: string;
+    name: string;
+    date: string;
+    image: string;
+    accent: string;
+}
 
+const ARTISTS: Record<string, ArtistData> = {
+    "artist1": { id: "a1", name: "Sujan Dasgupta", date: "5th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
+    "artist2": { id: "a2", name: "Artist 2", date: "6th Mar @ 7PM", image: "/artist1-left.jpg", accent: "#4DA6D8" },
+    "artist3": { id: "a3", name: "Artist 3", date: "7th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
+    "artist4": { id: "a4", name: "Artist 4", date: "8th Mar @ 7PM", image: "/artist1-left.jpg", accent: "#4DA6D8" },
+    "artist5": { id: "a5", name: "Artist 5", date: "9th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
+};
 
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -14,11 +30,53 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
+    const [activeArtist, setActiveArtist] = useState<ArtistData | null>(null);
 
+    // --- Precise Scroll Tracking ---
+    const onUpdate = (currentZ: number) => {
+        // Iterate through all artist layers to see if any are currently "pinned" (active)
+        let foundArtist: ArtistData | null = null;
+
+        // Check each artist in defined order or just keys
+        const artistKeys = Object.keys(ARTISTS);
+        for (const key of artistKeys) {
+            const el = layerRefs.current[key];
+            if (el) {
+                const depth = parseFloat(el.dataset.z || '0');
+                const persist = parseFloat(el.dataset.persist || '0');
+                const relativeZ = depth - currentZ;
+
+                // Active Window:
+                // Starts just before it hits 0 (e.g., -500 for fade in)
+                // Ends when it unpins (persist distance)
+                // We use -100 to ensure it triggers right as it "locks"
+                if (relativeZ >= -100 && relativeZ <= persist) {
+                    foundArtist = ARTISTS[key];
+                    break; // Found the active one
+                }
+            }
+        }
+
+        // Only update state if changed to avoid renders? 
+        // React sets state is cheap if value is same (reference equality might be issue if logic recreates object, but ARTISTS are const)
+        setActiveArtist(prev => (prev === foundArtist ? prev : foundArtist));
+    };
 
     // --- Event Handlers (Passed to useZScroll) ---
     // ANIMATION: TEXT REVEAL
     const onLayerEnter = (el: HTMLElement) => {
+        // Card Visibility Logic
+        // Find which artist layer this is
+        const artistKey = Object.keys(layerRefs.current).find(key => layerRefs.current[key] === el);
+
+        if (artistKey && ARTISTS[artistKey]) {
+            setActiveArtist(ARTISTS[artistKey]);
+        } else if (el === layerRefs.current["hero"] ||
+            el === layerRefs.current["about"] ||
+            el === layerRefs.current["about2"]) {
+            setActiveArtist(null);
+        }
+
         const texts = el.querySelectorAll('.text-mask > *');
         if (texts.length) {
             gsap.fromTo(texts,
@@ -51,7 +109,8 @@ const PronitePage: React.FC = () => {
     // Hook handles the visual loop and events
     useZScroll(containerRef, {
         onLayerEnter,
-        onLayerExit
+        onLayerExit,
+        onUpdate
     });
 
     // --- Initial Setup & Cursor ---
@@ -232,6 +291,18 @@ const PronitePage: React.FC = () => {
 
                 </div>
             </div>
+
+            <AnimatePresence>
+                {activeArtist && (
+                    <ProniteCard
+                        key={activeArtist.id}
+                        artistName={activeArtist.name}
+                        artistDate={activeArtist.date}
+                        artistImage={activeArtist.image}
+                        accentColor={activeArtist.accent}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 };
