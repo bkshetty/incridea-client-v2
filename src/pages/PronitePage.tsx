@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useEffect, useRef, useState } from 'react';
-=======
-import React, { useEffect, useRef, useCallback } from 'react';
->>>>>>> d4112a600eec2d3069c555145d61abfd5c7f6d85
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { AnimatePresence } from 'framer-motion';
 import '../components/pronite/Pronite.css';
@@ -10,7 +6,6 @@ import Starfield from '../components/pronite/Starfield';
 import ProniteCard from '../components/pronite/ProniteCard';
 import { useZScroll } from '../hooks/useZScroll';
 
-<<<<<<< HEAD
 // --- Layer Configuration ---
 interface ArtistData {
     id: string;
@@ -28,8 +23,6 @@ const ARTISTS: Record<string, ArtistData> = {
     "artist5": { id: "a5", name: "Artist 5", date: "9th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
 };
 
-=======
->>>>>>> d4112a600eec2d3069c555145d61abfd5c7f6d85
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLDivElement>(null);
@@ -38,8 +31,10 @@ const PronitePage: React.FC = () => {
     const tiltRef = useRef<HTMLDivElement>(null);
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
-<<<<<<< HEAD
     const [activeArtist, setActiveArtist] = useState<ArtistData | null>(null);
+    const mousePos = useRef({ x: 0, y: 0 });
+    const rafId = useRef<number | undefined>(undefined);
+    const isHovering = useRef(false);
 
     // --- Precise Scroll Tracking ---
     const onUpdate = (currentZ: number) => {
@@ -70,10 +65,6 @@ const PronitePage: React.FC = () => {
         // React sets state is cheap if value is same (reference equality might be issue if logic recreates object, but ARTISTS are const)
         setActiveArtist(prev => (prev === foundArtist ? prev : foundArtist));
     };
-=======
-    const mousePos = useRef({ x: 0, y: 0 });
-    const rafId = useRef<number | undefined>(undefined);
-    const isHovering = useRef(false);
 
     // --- 3D TILT EFFECT (Only affects tilt layer, NOT Z-scroll) ---
     const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -128,7 +119,6 @@ const PronitePage: React.FC = () => {
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, []);
->>>>>>> d4112a600eec2d3069c555145d61abfd5c7f6d85
 
     // --- Event Handlers (Passed to useZScroll) ---
     const onLayerEnter = (el: HTMLElement) => {
