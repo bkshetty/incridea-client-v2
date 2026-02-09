@@ -108,9 +108,18 @@ const PronitePage: React.FC = () => {
                 </div>
             </nav>
 
-            <div className="scroll-progress">
-                <div className="progress-line"></div>
-                <div className="progress-rocket">🚀</div>
+            {/* --- UPDATED SCROLL PROGRESS BAR --- */}
+            <div className="scroll-progress-container">
+                <div className="scroll-track">
+
+                    {/* The Fill Line (Grows upwards) */}
+                    <div className="progress-fill"></div>
+
+                    {/* The Rocket (Moves upwards) */}
+                    <div className="logo-bottom-wrapper">
+                        <img src="/ryoku_emoji.png" className="progress-logo-bottom" alt="Ryoku" />
+                    </div>
+                </div>
             </div>
 
             <div id="z-space-container" ref={containerRef}>
@@ -124,7 +133,7 @@ const PronitePage: React.FC = () => {
                             <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
                         </div>
                         <h1 className="hero-title">
-                            <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
+                            <img src="/pronite.svg" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
                         </h1>
                     </section>
 
@@ -139,11 +148,6 @@ const PronitePage: React.FC = () => {
                     </section>
 
                     {/* --- ARTIST 1 SEQUENCE --- */}
-
-                    {/* 1. TEXT (Fixed) 
-                        data-pin="true": This tells useZScroll to HOLD this element in place.
-                        data-persist="4000": Keeps it held for 4000px.
-                    */}
                     <section
                         ref={(el) => { layerRefs.current["artist1"] = el; }}
                         className="z-layer artist-layer"
