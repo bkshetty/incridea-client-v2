@@ -350,3 +350,27 @@
     transform: translateY(110%);
     will-change: transform;
 }
+
+
+.pronite-page .tilt-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    /* Initial state */
+    transform: rotateX(0deg) rotateY(0deg);
+    transition: transform 0.1s ease-out;
+    pointer-events: none; 
+}
+
+
+.pronite-page .tilt-layer > * {
+    pointer-events: auto;
+}
+
+.pronite-page .z-layer {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+}
