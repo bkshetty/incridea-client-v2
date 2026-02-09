@@ -351,6 +351,7 @@
     will-change: transform;
 }
 
+<<<<<<< HEAD
 /* Pronite Card */
 .pronite-card {
     position: fixed;
@@ -537,4 +538,28 @@
         width: 16px;
         height: 16px;
     }
+=======
+
+.pronite-page .tilt-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    /* Initial state */
+    transform: rotateX(0deg) rotateY(0deg);
+    transition: transform 0.1s ease-out;
+    pointer-events: none; 
+}
+
+
+.pronite-page .tilt-layer > * {
+    pointer-events: auto;
+}
+
+.pronite-page .z-layer {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+>>>>>>> d4112a600eec2d3069c555145d61abfd5c7f6d85
 }
