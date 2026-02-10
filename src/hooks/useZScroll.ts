@@ -6,10 +6,12 @@ import { lerp, clamp } from '@/utils/pronite';
 // Event-driven Z-Scroll Hook
 type ScrollEventCallback = (element: HTMLElement) => void;
 
+
 interface UseZScrollOptions {
     onUpdate?: (cameraZ: number) => void;
     onLayerEnter?: ScrollEventCallback;
     onLayerExit?: ScrollEventCallback;
+
 }
 
 export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, options?: UseZScrollOptions) => {

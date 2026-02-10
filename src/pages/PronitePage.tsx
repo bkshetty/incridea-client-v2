@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
+import ImageDistortion from '../components/pronite/ImageDistortion';
 import { useZScroll } from '../hooks/useZScroll';
 
 // --- Layer Configuration ---
@@ -14,6 +15,9 @@ const PronitePage: React.FC = () => {
     const cursorCircleRef = useRef<HTMLDivElement>(null);
 
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
+
+    // Mesh Refs
+
 
 
     // --- Event Handlers (Passed to useZScroll) ---
@@ -94,7 +98,8 @@ const PronitePage: React.FC = () => {
     }, []);
 
     return (
-        <div className="pronite-page">
+        <div className="pronite-page" ref={containerRef}>
+            <Starfield />
             <div ref={cursorRef} className="cursor">
                 <div ref={cursorDotRef} className="cursor-dot"></div>
                 <div ref={cursorCircleRef} className="cursor-circle"></div>
@@ -124,7 +129,7 @@ const PronitePage: React.FC = () => {
                             <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
                         </div>
                         <h1 className="hero-title">
-                            <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
+                            <ImageDistortion src="/pronite.png" width={'520px'} height={'180px'} dataZ={0} />
                         </h1>
                     </section>
 
@@ -167,15 +172,17 @@ const PronitePage: React.FC = () => {
                     <section
                         ref={(el) => { layerRefs.current["artist1_right"] = el; }}
                         className="z-layer"
+                        data-id="artist1_right"
                         data-z="-5000"
                         data-pin="false"
                     >
                         <div style={{ position: 'absolute', width: '100%', height: '100%', pointerEvents: 'none' }}>
-                            <img
+                            <ImageDistortion
                                 src="/artist1-right.jpg"
-                                alt="Artist 1 Right"
+                                dataZ={-5000}
+                                width={220}
+                                height={220}
                                 className="artist-img right"
-                                style={{ width: '220px', height: 'auto' }}
                             />
                         </div>
                     </section>
@@ -184,15 +191,17 @@ const PronitePage: React.FC = () => {
                     <section
                         ref={(el) => { layerRefs.current["artist1_left"] = el; }}
                         className="z-layer"
+                        data-id="artist1_left"
                         data-z="-6500"
                         data-pin="false"
                     >
                         <div style={{ position: 'absolute', width: '100%', height: '100%', pointerEvents: 'none' }}>
-                            <img
+                            <ImageDistortion
                                 src="/artist1-left.jpg"
-                                alt="Artist 1 Left"
+                                dataZ={-6500}
+                                width={220}
+                                height={220}
                                 className="artist-img left"
-                                style={{ width: '220px', height: 'auto' }}
                             />
                         </div>
                     </section>
