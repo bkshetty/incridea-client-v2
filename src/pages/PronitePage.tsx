@@ -300,7 +300,8 @@ const PronitePage: React.FC = () => {
     };
 
     return (
-        <div className="pronite-page">
+        <div className="pronite-page" ref={containerRef}>
+            <Starfield />
             <div ref={cursorRef} className="cursor">
                 <div ref={cursorDotRef} className="cursor-dot"></div>
                 <div ref={cursorCircleRef} className="cursor-circle"></div>
