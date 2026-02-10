@@ -23,6 +23,15 @@ const ARTISTS: Record<string, ArtistData> = {
     "artist5": { id: "a5", name: "Artist 5", date: "9th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
 };
 
+const SCROLL_STOPS = [
+    { id: 'hero', z: 0, label: 'EXPLORE LINEUP' },
+    { id: 'artist1', z: -3500, label: 'NEXT ARTIST' },
+    { id: 'artist2', z: -10000, label: 'NEXT ARTIST' },
+    { id: 'artist3', z: -12500, label: 'NEXT ARTIST' },
+    { id: 'artist4', z: -15000, label: 'NEXT ARTIST' },
+    { id: 'artist5', z: -17500, label: 'BACK TO TOP' },
+];
+
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLDivElement>(null);
@@ -35,6 +44,8 @@ const PronitePage: React.FC = () => {
     const mousePos = useRef({ x: 0, y: 0 });
     const rafId = useRef<number | undefined>(undefined);
     const isHovering = useRef(false);
+    const starSpeed = useRef(1); // Control star speed from here
+    const [buttonLabel, setButtonLabel] = useState('EXPLORE LINEUP');
 
     // --- Precise Scroll Tracking ---
     const onUpdate = (currentZ: number) => {
@@ -61,9 +72,28 @@ const PronitePage: React.FC = () => {
             }
         }
 
-        // Only update state if changed to avoid renders? 
         // React sets state is cheap if value is same (reference equality might be issue if logic recreates object, but ARTISTS are const)
         setActiveArtist(prev => (prev === foundArtist ? prev : foundArtist));
+
+        // Update button label based on current Z
+        // find the last stop we passed
+        // precise enough for UI updates
+        const currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
+            const nextStop = SCROLL_STOPS[i + 1];
+            // If we are past this stop but before next one
+            // Note: Z becomes more negative as we scroll down. 
+            // So "past" means currentZ <= stop.z
+            if (!nextStop) return true; // Last one
+            return currentZ <= s.z + 100 && currentZ > nextStop.z + 100;
+        });
+
+        if (currentStopIndex !== -1) {
+            // The label should be for the *next* action
+            setButtonLabel(SCROLL_STOPS[currentStopIndex].label); // Actually, the label in defined array is "what to show when AT this stop"
+            // Wait, if I am at Hero, I want button to say "EXPLORE". 
+            // If I am at Artist 1, I want button to say "NEXT".
+            // So yes, SCROLL_STOPS[currentStopIndex].label works if defined correctly.
+        }
     };
 
     // --- 3D TILT EFFECT (Only affects tilt layer, NOT Z-scroll) ---
@@ -89,7 +119,7 @@ const PronitePage: React.FC = () => {
     useEffect(() => {
         let currentX = 0;
         let currentY = 0;
-        
+
         const animate = () => {
             if (tiltRef.current) {
                 if (isHovering.current) {
@@ -109,7 +139,7 @@ const PronitePage: React.FC = () => {
                 // Apply to tilt layer only
                 tiltRef.current.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
             }
-            
+
             rafId.current = requestAnimationFrame(animate);
         };
 
@@ -162,7 +192,7 @@ const PronitePage: React.FC = () => {
         }
     };
 
-    useZScroll(containerRef, {
+    const { lenisRef, totalDistanceRef } = useZScroll(containerRef, {
         onLayerEnter,
         onLayerExit,
         onUpdate
@@ -193,7 +223,7 @@ const PronitePage: React.FC = () => {
                 }, 50);
             }
         };
-        
+
         const handleHover = () => cursorRef.current?.classList.add('hover');
         const handleLeave = () => cursorRef.current?.classList.remove('hover');
 
@@ -215,6 +245,60 @@ const PronitePage: React.FC = () => {
         };
     }, [handleMouseMove, handleMouseLeave]);
 
+    const handleExploreClick = () => {
+        if (!lenisRef.current || !totalDistanceRef.current) return;
+
+        const totalDist = totalDistanceRef.current;
+        const windowHeight = window.innerHeight;
+        const maxScroll = totalDist - windowHeight;
+        const currentScroll = lenisRef.current.scroll; // Lenis exposes .scroll
+
+        // Calculate current Z from scroll position
+        const currentZ = - (currentScroll / maxScroll) * totalDist;
+
+        // Find current stop index based on intervals
+        // Use the same logic as onUpdate to ensure consistency
+        let currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
+            const nextStop = SCROLL_STOPS[i + 1];
+            if (!nextStop) return true; // Last one (Artist 5) covers everything after it
+            // Check if we are in the interval [currentStop.z, nextStop.z]
+            // Added some buffer (100) to ensure we capture the stop itself
+            return currentZ <= s.z + 100 && currentZ > nextStop.z + 100;
+        });
+
+        if (currentStopIndex === -1) currentStopIndex = 0; // Default to Hero if lost
+
+        // Determine next stop (Loop back to 0 if at end)
+        const nextIndex = (currentStopIndex + 1) % SCROLL_STOPS.length;
+        const nextStop = SCROLL_STOPS[nextIndex];
+
+        // Warp Speed Effect
+        gsap.to(starSpeed, {
+            current: 20,
+            duration: 2, // Slower acceleration
+            ease: "power2.in"
+        });
+
+        // Calculate scroll position for Target
+        const targetZ = nextStop.z;
+        const targetScroll = (-targetZ * maxScroll) / totalDist;
+
+        const duration = 12; // Even slower, 12 seconds
+
+        lenisRef.current.scrollTo(targetScroll, {
+            duration: duration,
+            easing: (t: number) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t), // Exponential easing
+            onComplete: () => {
+                // Slow down stars
+                gsap.to(starSpeed, {
+                    current: 1,
+                    duration: 2,
+                    ease: "power2.out"
+                });
+            }
+        });
+    };
+
     return (
         <div className="pronite-page">
             <div ref={cursorRef} className="cursor">
@@ -230,6 +314,10 @@ const PronitePage: React.FC = () => {
                 </div>
             </nav>
 
+            <button className="explore-btn" onClick={handleExploreClick}>
+                {buttonLabel}
+            </button>
+
             <div className="scroll-progress-container">
                 <div className="scroll-track">
                     <div className="progress-fill"></div>
@@ -240,7 +328,7 @@ const PronitePage: React.FC = () => {
             </div>
 
             <div id="z-space-container" ref={containerRef}>
-                <Starfield />
+                <Starfield speedRef={starSpeed} />
 
                 {/* TILT LAYER: Wraps all content, separate from Z-scroll */}
                 <div ref={tiltRef} className="tilt-layer">

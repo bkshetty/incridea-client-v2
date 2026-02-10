@@ -489,27 +489,20 @@
 
 @media (max-width: 768px) {
     .pronite-card {
-        bottom: 6rem;
-        /* Move up to avoid bottom nav/bars if any */
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%) !important;
-        /* Force center, override motion transform if needed, but motion uses 'x' so be careful. Actually, standard centering */
-        /* To avoid conflict with Framer Motion 'x', we should center via margin or left/right: 0 + margin: auto */
-
-        /* Better mobile centering strategy compatible with motion 'x' animation: */
+        bottom: 7rem;
+        /* Moved up to clear the fixed button */
         left: 1rem;
         right: 1rem;
         width: auto;
         max-width: 400px;
         margin: 0 auto;
-        /* Centers if width < 100% */
+        transform: none !important;
+        /* Ensure no conflict with framer motion */
 
         height: auto;
         padding: 0.75rem;
         backdrop-filter: blur(16px);
         background: rgba(20, 20, 20, 0.6);
-        /* Darker background for legibility */
         border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
@@ -537,6 +530,30 @@
         width: 16px;
         height: 16px;
     }
+
+    /* Resize 3D Images */
+    .pronite-page .artist-img {
+        width: 280px !important;
+        height: 500px !important;
+    }
+
+    .pronite-page .artist-img.left {
+        left: 5% !important;
+        transform: translateY(-50%) rotateY(15deg) scale(1.5) !important;
+    }
+
+    .pronite-page .artist-img.right {
+        right: 5% !important;
+        transform: translateY(-50%) rotateY(-15deg) scale(1.5) !important;
+    }
+
+    .pronite-page .hero-title {
+        font-size: clamp(3rem, 12vw, 5rem);
+    }
+
+    .pronite-page .artist-name {
+        font-size: clamp(3rem, 10vw, 5rem);
+    }
 }
 
 .pronite-page .tilt-layer {
@@ -550,13 +567,60 @@
     /* Initial state */
     transform: rotateX(0deg) rotateY(0deg);
     transition: transform 0.1s ease-out;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
-.pronite-page .tilt-layer > * {
+.pronite-page .tilt-layer>* {
     pointer-events: auto;
 }
 
 .pronite-page .z-layer {
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+}
+
+.explore-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 100px;
+    color: white;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    overflow: hidden;
+    z-index: 1001;
+    /* Higher than tilt layer and everything else */
+    pointer-events: auto;
+    /* Ensure it's clickable */
+}
+
+.explore-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    transform: translateX(-50%) translateY(-2px);
+    /* Maintain centering + lift */
+}
+
+.explore-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.explore-btn:hover::before {
+    left: 100%;
 }

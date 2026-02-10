@@ -2,7 +2,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const Starfield: React.FC = () => {
+interface StarfieldProps {
+    speedRef?: React.MutableRefObject<number>;
+}
+
+const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -31,7 +35,7 @@ const Starfield: React.FC = () => {
         }
 
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        
+
         const material = new THREE.PointsMaterial({
             size: 0.003,
             color: 0xffffff,
@@ -49,8 +53,9 @@ const Starfield: React.FC = () => {
         const animate = () => {
             animationId = requestAnimationFrame(animate);
             // Rotate the entire star system slowly
-            starMesh.rotation.y += 0.0003;
-            starMesh.rotation.x += 0.0001;
+            const currentSpeed = speedRef ? speedRef.current : 1;
+            starMesh.rotation.y += 0.0003 * currentSpeed;
+            starMesh.rotation.x += 0.0001 * currentSpeed;
             renderer.render(scene, camera);
         };
         animate();
@@ -74,18 +79,18 @@ const Starfield: React.FC = () => {
     }, []);
 
     return (
-        <canvas 
-            ref={canvasRef} 
-            id="bg-canvas" 
-            style={{ 
-                position: 'fixed', 
-                top: 0, 
-                left: 0, 
-                width: '100%', 
-                height: '100%', 
+        <canvas
+            ref={canvasRef}
+            id="bg-canvas"
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
                 zIndex: 0,
-                pointerEvents: 'none' 
-            }} 
+                pointerEvents: 'none'
+            }}
         />
     );
 };

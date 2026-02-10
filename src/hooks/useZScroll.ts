@@ -18,6 +18,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
     const currentZRef = useRef(0);
     const targetZRef = useRef(0);
     const enteredLayers = useRef<Set<HTMLElement>>(new Set());
+    const totalDistanceRef = useRef(0);
 
     const FADE_DISTANCE = 4000;
 
@@ -46,6 +47,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
         const furthestZ = Math.min(...layerData.map(l => l.depth));
         const totalDistance = Math.abs(furthestZ) + 2000;
+        totalDistanceRef.current = totalDistance;
 
         // Scroll track
         const scrollTrack = document.createElement('div');
@@ -198,4 +200,6 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             scrollTrack.remove();
         };
     }, [containerRef, onUpdate, onLayerEnter, onLayerExit]);
+
+    return { lenisRef, totalDistanceRef };
 };
