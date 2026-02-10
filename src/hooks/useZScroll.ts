@@ -27,8 +27,8 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         if (!containerRef.current) return;
 
         const layers = containerRef.current.querySelectorAll<HTMLElement>('.z-layer');
-        const progressBar = document.querySelector<HTMLElement>('.progress-line');
-        const rocket = document.querySelector<HTMLElement>('.progress-rocket');
+        const progressFill = document.querySelector<HTMLElement>('.progress-fill');
+        const rocketWrapper = document.querySelector<HTMLElement>('.logo-bottom-wrapper');
 
         // Parse depths & Init
         const layerData = Array.from(layers).map(layer => {
@@ -66,10 +66,21 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         });
         lenisRef.current = lenis;
 
+        // Initialize elements
+        if (rocketWrapper) gsap.set(rocketWrapper, { bottom: '0%' });
+        if (progressFill) gsap.set(progressFill, { height: '0%' });
+
         lenis.on('scroll', ({ progress }: { progress: number }) => {
             targetZRef.current = -progress * totalDistance;
-            if (progressBar) gsap.set(progressBar, { scaleY: progress, overwrite: 'auto' });
-            if (rocket) gsap.set(rocket, { top: `${progress * 100}%`, overwrite: 'auto' });
+
+            // Sync Scroll Progress Bar
+            const p = Math.max(0, Math.min(1, progress));
+            if (progressFill) {
+                progressFill.style.height = `${p * 100}%`;
+            }
+            if (rocketWrapper) {
+                rocketWrapper.style.bottom = `${p * 100}%`;
+            }
         });
 
         // Loop

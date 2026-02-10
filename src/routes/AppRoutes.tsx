@@ -18,9 +18,10 @@ import CoreTeamPage from "../pages/coreteam";
 import NotFoundPage from "../pages/NotFoundPage";
 import RefundPolicy from '../pages/refundpolicy';
 import ProfilePage from "@/pages/ProfilePage";
+import PronitePage from "../pages/PronitePage";
 
 // 1. Import the Pronite Page
-import PronitePage from "../pages/PronitePage";
+
 
 const AuthRedirect = () => {
   const params = new URLSearchParams(window.location.search);
@@ -62,6 +63,7 @@ function AppRoutes() {
         <Route path="/rules" element={<RulesPage />} />
         <Route path="/login" element={<AuthRedirect />} />
         <Route path="/reset-password" element={<ResetRedirect />} />
+        <Route path="/pronite" element={<PronitePage />} />
         <Route path="/quiz/:quizId" element={<QuizPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/register" element={<RegisterPage />} />

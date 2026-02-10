@@ -131,34 +131,73 @@
 }
 
 /* Scroll Progress */
-.pronite-page .scroll-progress {
+.pronite-page .scroll-progress-container {
     position: fixed;
-    right: 2rem;
+    right: 4rem;
     top: 50%;
     transform: translateY(-50%);
-    height: 200px;
-    width: 2px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 60vh;
+    /* Fixed height for the track */
+    width: 4px;
+    /* Track width */
     z-index: 100;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
 }
 
-.pronite-page .progress-line {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Background Track */
+.pronite-page .scroll-track {
+    position: relative;
     width: 100%;
     height: 100%;
-    background: white;
-    transform-origin: top;
-    transform: scaleY(0);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
 }
 
-.pronite-page .progress-rocket {
+/* The White Progress Fill */
+.pronite-page .progress-fill {
     position: absolute;
-    right: -10px;
-    font-size: 16px;
-    transform: translateY(-50%);
+    bottom: 0;
+    /* ANCHORED TO BOTTOM */
+    left: 0;
+    width: 100%;
+    height: 0%;
+    /* Grows upwards */
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: height 0.1s linear;
 }
+
+/* --- BOTTOM LOGO (Moving Indicator) --- */
+.pronite-page .logo-bottom-wrapper {
+    position: absolute;
+    /* bottom is set by JS from 0% -> 100% */
+    bottom: 0%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    /* Sit right on the fill line tip */
+    width: 70px;
+    /* Adjusted size */
+    display: flex;
+    justify-content: center;
+    z-index: 3;
+    transition: bottom 0.1s linear;
+    padding-bottom: 5px;
+    /* Slight padding to not overlap the line instantly */
+}
+
+.pronite-page .progress-logo-bottom {
+    width: 40%;
+    height: auto;
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.8));
+    display: block;
+}
+
+
+
+
 
 /* Layers */
 .pronite-page .hero-layer {
@@ -310,4 +349,214 @@
     /* Start invisible (pushed down) */
     transform: translateY(110%);
     will-change: transform;
+}
+
+/* Pronite Card */
+.pronite-card {
+    position: fixed;
+    bottom: 2rem;
+    right: 5rem;
+    width: 320px;
+    height: 140px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.light-ray {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    width: 60px;
+    height: 100%;
+    /* Intensified White Glow */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    z-index: 2;
+    /* Use screen to add brightness on top of dark card */
+    mix-blend-mode: screen;
+    /* Reduced blur for sharper core, increased brightness */
+    filter: blur(2px) brightness(1.7);
+    /* Add external glow */
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+    will-change: transform;
+}
+
+.pronite-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.pronite-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Gradient Background Effect */
+.pronite-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Accent Glow */
+.pronite-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, var(--accent-color, #ff0055) 0%, transparent 50%);
+    opacity: 0.15;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.card-image-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.card-artist-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: white;
+}
+
+.card-artist-date {
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+    .pronite-card {
+        bottom: 6rem;
+        /* Move up to avoid bottom nav/bars if any */
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%) !important;
+        /* Force center, override motion transform if needed, but motion uses 'x' so be careful. Actually, standard centering */
+        /* To avoid conflict with Framer Motion 'x', we should center via margin or left/right: 0 + margin: auto */
+
+        /* Better mobile centering strategy compatible with motion 'x' animation: */
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        max-width: 400px;
+        margin: 0 auto;
+        /* Centers if width < 100% */
+
+        height: auto;
+        padding: 0.75rem;
+        backdrop-filter: blur(16px);
+        background: rgba(20, 20, 20, 0.6);
+        /* Darker background for legibility */
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .card-image-container {
+        width: 70px;
+        height: 70px;
+    }
+
+    .card-artist-name {
+        font-size: 1.25rem;
+    }
+
+    .card-artist-date {
+        font-size: 0.75rem;
+    }
+
+    .card-icon {
+        width: 28px;
+        height: 28px;
+        top: -6px;
+        left: -6px;
+    }
+
+    .card-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.pronite-page .tilt-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    /* Initial state */
+    transform: rotateX(0deg) rotateY(0deg);
+    transition: transform 0.1s ease-out;
+    pointer-events: none; 
+}
+
+.pronite-page .tilt-layer > * {
+    pointer-events: auto;
+}
+
+.pronite-page .z-layer {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
 }
