@@ -341,7 +341,7 @@ const PronitePage: React.FC = () => {
                                 <img src="/incridea.png" alt="Incridea" style={{ height: '70px', width: 'auto', margin: '0 auto' }} />
                             </div>
                             <h1 className="hero-title">
-                                <img src="/pronite.svg" alt="Pronite" style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }} />
+                                <img src="/pronite.png" alt="Pronite" style={{ maxWidth: '50%', height: 'auto', display: 'block', margin: '0 auto' }} />
                             </h1>
                         </section>
 
