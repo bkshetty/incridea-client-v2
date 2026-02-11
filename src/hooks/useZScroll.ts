@@ -48,7 +48,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         });
 
         const furthestZ = Math.min(...layerData.map(l => l.depth));
-        const totalDistance = Math.abs(furthestZ) + 2000;
+        const totalDistance = Math.abs(furthestZ)// Stop exactly at the last element
         totalDistanceRef.current = totalDistance;
 
         // Scroll track
@@ -184,12 +184,10 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
                 // Active State
                 const effectiveDistance = (isPinnable && relativeZ >= 0 && relativeZ < persistDist) ? 0 : Math.abs(relativeZ);
-                if (effectiveDistance < 300) {
+                if (effectiveDistance < 300 || opacity > 0.1) {
                     element.classList.add('active');
-                    element.style.pointerEvents = 'auto';
                 } else {
                     element.classList.remove('active');
-                    element.style.pointerEvents = 'none';
                 }
             });
         };

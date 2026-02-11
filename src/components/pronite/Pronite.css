@@ -59,6 +59,14 @@
     transform-style: preserve-3d;
     will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
+    /* Hidden by default to prevent flash */
+}
+
+.pronite-page .hero-layer {
+    opacity: 1;
+    /* Hero always visible */
 }
 
 /* Cursor */

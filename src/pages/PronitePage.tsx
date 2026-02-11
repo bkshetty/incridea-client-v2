@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import '../components/pronite/Pronite.css';
 import Starfield from '../components/pronite/Starfield';
 import ProniteCard from '../components/pronite/ProniteCard';
+import FinalReveal from '../components/pronite/FinalReveal';
 import { useZScroll } from '../hooks/useZScroll';
 
 // --- Layer Configuration ---
@@ -16,21 +17,20 @@ interface ArtistData {
 }
 
 const ARTISTS: Record<string, ArtistData> = {
-    "artist1": { id: "a1", name: "Sujan Dasgupta", date: "5th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
-    "artist2": { id: "a2", name: "Artist 2", date: "6th Mar @ 7PM", image: "/artist1-left.jpg", accent: "#4DA6D8" },
-    "artist3": { id: "a3", name: "Artist 3", date: "7th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
-    "artist4": { id: "a4", name: "Artist 4", date: "8th Mar @ 7PM", image: "/artist1-left.jpg", accent: "#4DA6D8" },
-    "artist5": { id: "a5", name: "Artist 5", date: "9th Mar @ 7PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
+    "artist1": { id: "a1", name: "Sujan Dasgupta", date: "5th Mar @ 9PM", image: "/artist1-right.jpg", accent: "#D84D7D" },
+    "artist2": { id: "a2", name: "Artist 2", date: "5th Mar @ 11:30PM", image: "/artist1-left.jpg", accent: "#4DA6D8" },
+    "artist3": { id: "a3", name: "Artist 3", date: "6th Mar @ 1:30AM", image: "/artist1-right.jpg", accent: "#D84D7D" },
 };
 
 const SCROLL_STOPS = [
     { id: 'hero', z: 0, label: 'EXPLORE LINEUP' },
     { id: 'artist1', z: -3500, label: 'NEXT ARTIST' },
-    { id: 'artist2', z: -10000, label: 'NEXT ARTIST' },
-    { id: 'artist3', z: -12500, label: 'NEXT ARTIST' },
-    { id: 'artist4', z: -15000, label: 'NEXT ARTIST' },
-    { id: 'artist5', z: -17500, label: 'BACK TO TOP' },
+    { id: 'artist2', z: -8500, label: 'NEXT ARTIST' },
+    { id: 'artist3', z: -11000, label: 'REVEAL FULL LINEUP' },
+    { id: 'final-reveal', z: -16000, label: 'BACK TO TOP' },
 ];
+
+
 
 const PronitePage: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -200,6 +200,12 @@ const PronitePage: React.FC = () => {
 
     // --- Initial Setup & Cursor ---
     useEffect(() => {
+        // Force scroll to top on reload
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+
         // Immediately force all text-masks to be hidden on load
         const allMaskedText = document.querySelectorAll('.text-mask > *');
         gsap.set(allMaskedText, { y: "100%" });
@@ -407,32 +413,23 @@ const PronitePage: React.FC = () => {
                         </section>
 
                         {/* OTHER ARTISTS */}
-                        <section ref={(el) => { layerRefs.current["artist2"] = el; }} className="z-layer artist-layer" data-z="-10000" data-pin="true">
+                        <section ref={(el) => { layerRefs.current["artist2"] = el; }} className="z-layer artist-layer" data-z="-8500" data-pin="true">
                             <div className="artist-content">
                                 <div className="text-mask"><h2 className="artist-name">ARTIST 2</h2></div>
                                 <div className="text-mask"><p className="artist-date">DAY 2 · 7:00 PM</p></div>
                             </div>
                         </section>
 
-                        <section ref={(el) => { layerRefs.current["artist3"] = el; }} className="z-layer artist-layer" data-z="-12500" data-pin="true">
+                        <section ref={(el) => { layerRefs.current["artist3"] = el; }} className="z-layer artist-layer" data-z="-11000" data-pin="true" data-persist="4000">
                             <div className="artist-content">
                                 <div className="text-mask"><h2 className="artist-name">ARTIST 3</h2></div>
                                 <div className="text-mask"><p className="artist-date">DAY 3 · 7:00 PM</p></div>
                             </div>
                         </section>
 
-                        <section ref={(el) => { layerRefs.current["artist4"] = el; }} className="z-layer artist-layer" data-z="-15000" data-pin="true">
-                            <div className="artist-content">
-                                <div className="text-mask"><h2 className="artist-name">ARTIST 4</h2></div>
-                                <div className="text-mask"><p className="artist-date">DAY 4 · 7:00 PM</p></div>
-                            </div>
-                        </section>
-
-                        <section ref={(el) => { layerRefs.current["artist5"] = el; }} className="z-layer artist-layer" data-z="-17500" data-pin="true">
-                            <div className="artist-content">
-                                <div className="text-mask"><h2 className="artist-name">ARTIST 5</h2></div>
-                                <div className="text-mask"><p className="artist-date">DAY 5 · 7:00 PM</p></div>
-                            </div>
+                        {/* FINAL REVEAL */}
+                        <section ref={(el) => { layerRefs.current["final-reveal"] = el; }} className="z-layer" data-z="-16000" data-pin="true" style={{ opacity: 0 }}>
+                            <FinalReveal />
                         </section>
 
                     </div>
