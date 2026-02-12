@@ -676,6 +676,11 @@
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
 }
 
+/* Disable expensive drop-shadow on video layers — prevents GPU rasterisation lag */
+.pronite-page .z-layer.artist-image-layer {
+    filter: none;
+}
+
 .explore-btn {
     position: fixed;
     bottom: 2rem;

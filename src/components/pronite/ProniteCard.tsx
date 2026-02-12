@@ -154,12 +154,11 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
             style={{
               width: "380px",
               borderRadius: "24px",
-              background: "rgba(12, 12, 14, 0.85)",
-              backdropFilter: "blur(40px) saturate(1.6)",
-              WebkitBackdropFilter: "blur(40px) saturate(1.6)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow:
-                "0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)",
+              background: "rgba(255, 255, 255, 0.05)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
               overflow: "hidden",
               position: "relative",
             }}

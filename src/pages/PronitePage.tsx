@@ -12,12 +12,16 @@ import armaanSong from "../assets/pronite/audios/pehla_pyar_armaan_malik.mp3";
 import nikhitaSong from "../assets/pronite/audios/jugnu_nikitha_gandhi.mp3";
 import aloSong from "../assets/pronite/audios/saibo_alo.mp3";
 
+import armaanVideo from "../assets/pronite/videos/armaan_malik.webm";
+import aloVideo from "../assets/pronite/videos/alo.webm";
+
 // --- Layer Configuration ---
 interface ArtistData {
   id: string;
   name: string;
   date: string;
   image: string;
+  profileImage: string;
   accent: string;
   song: string;
 }
@@ -28,24 +32,27 @@ const ARTISTS: Record<string, ArtistData> = {
     name: "Armaan Malik",
     date: "5th Mar @ 9PM",
     image: "/artist1-right.jpg",
+    profileImage: "/Armaan_Malik_Profile.jpg",
     accent: "#D84D7D",
-    song: armaanSong, // Add this
+    song: armaanSong,
   },
   artist2: {
     id: "a2",
     name: "Nikhita Gandhi",
     date: "5th Mar @ 11:30PM",
     image: "/artist2-right.jpg",
+    profileImage: "/Nikhita_Gandhi_profile.jpg",
     accent: "#4DA6D8",
-    song: nikhitaSong, // Add this
+    song: nikhitaSong,
   },
   artist3: {
     id: "a3",
     name: "ALO",
     date: "6th Mar @ 1:30AM",
     image: "/artist3-right.jpg",
+    profileImage: "/The_alo_band_profile.jpg",
     accent: "#D84D7D",
-    song: aloSong, // Add this
+    song: aloSong,
   },
 };
 
@@ -78,25 +85,25 @@ const PronitePage: React.FC = () => {
   const starSpeed = useRef(1);
   const [buttonLabel, setButtonLabel] = useState("EXPLORE LINEUP");
   const lastActiveArtistKey = useRef<string | null>(null);
-const handleArtistNavigation = (direction: "next" | "prev") => {
-  if (!lenisRef.current || !totalDistanceRef.current) return;
-  const artistKeys = Object.keys(ARTISTS);
-  const currentIdKey = activeArtist
-    ? Object.keys(ARTISTS).find((k) => ARTISTS[k].id === activeArtist.id)
-    : "artist1";
-  let currentIndex = artistKeys.indexOf(currentIdKey || "artist1");
+  const handleArtistNavigation = (direction: "next" | "prev") => {
+    if (!lenisRef.current || !totalDistanceRef.current) return;
+    const artistKeys = Object.keys(ARTISTS);
+    const currentIdKey = activeArtist
+      ? Object.keys(ARTISTS).find((k) => ARTISTS[k].id === activeArtist.id)
+      : "artist1";
+    let currentIndex = artistKeys.indexOf(currentIdKey || "artist1");
 
-  let nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
-  if (nextIndex >= artistKeys.length) nextIndex = 0;
-  if (nextIndex < 0) nextIndex = artistKeys.length - 1;
+    let nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+    if (nextIndex >= artistKeys.length) nextIndex = 0;
+    if (nextIndex < 0) nextIndex = artistKeys.length - 1;
 
-  const targetStop = SCROLL_STOPS.find((s) => s.id === artistKeys[nextIndex]);
-  if (targetStop) {
-    const maxScroll = totalDistanceRef.current - window.innerHeight;
-    const targetScroll = (-targetStop.z * maxScroll) / totalDistanceRef.current;
-    lenisRef.current.scrollTo(targetScroll, { duration: 2.5 });
-  }
-};
+    const targetStop = SCROLL_STOPS.find((s) => s.id === artistKeys[nextIndex]);
+    if (targetStop) {
+      const maxScroll = totalDistanceRef.current - window.innerHeight;
+      const targetScroll = (-targetStop.z * maxScroll) / totalDistanceRef.current;
+      lenisRef.current.scrollTo(targetScroll, { duration: 2.5 });
+    }
+  };
   // --- Improved Scroll Tracking with Priority System ---
   const onUpdate = (currentZ: number) => {
     let foundArtistKey: string | null = null;
@@ -678,11 +685,17 @@ const handleArtistNavigation = (direction: "next" | "prev") => {
               data-artist-image="true"
             >
               <div className="artist-img-wrapper">
-                <img
-                  src="/artist1-left.jpg"
-                  alt="Armaan Malik Left"
+                <video
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
                   className="artist-img left"
-                />
+                  style={{ filter: 'none' }}
+                >
+                  <source src={armaanVideo} type="video/webm" />
+                </video>
               </div>
             </section>
 
@@ -804,11 +817,17 @@ const handleArtistNavigation = (direction: "next" | "prev") => {
               data-artist-image="true"
             >
               <div className="artist-img-wrapper">
-                <img
-                  src="/artist3-left.jpg"
-                  alt="ALO Left"
+                <video
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
                   className="artist-img left"
-                />
+                  style={{ filter: 'none' }}
+                >
+                  <source src={aloVideo} type="video/webm" />
+                </video>
               </div>
             </section>
 
@@ -834,7 +853,7 @@ const handleArtistNavigation = (direction: "next" | "prev") => {
             key={activeArtist.id}
             artistName={activeArtist.name}
             artistDate={activeArtist.date}
-            artistImage={activeArtist.image}
+            artistImage={activeArtist.profileImage}
             accentColor={activeArtist.accent}
             songUrl={activeArtist.song} // Add this
             onNext={() => handleArtistNavigation("next")} // Add this
