@@ -5,6 +5,7 @@ import "../components/pronite/Pronite.css";
 import Starfield from "../components/pronite/Starfield";
 import ProniteCard from "../components/pronite/ProniteCard";
 import FinalReveal from "../components/pronite/FinalReveal";
+import type { FinalRevealRef } from "../components/pronite/FinalReveal";
 import { useZScroll } from "../hooks/useZScroll";
 import { clamp } from "../utils/pronite";
 
@@ -61,7 +62,7 @@ const SCROLL_STOPS = [
     { id: "artist1", z: -3500, label: "NEXT ARTIST" },
     { id: "artist2", z: -11000, label: "NEXT ARTIST" },
     { id: "artist3", z: -18500, label: "REVEAL FULL LINEUP" },
-    { id: "final-reveal", z: -26000, label: "BACK TO TOP" },
+    { id: "final-reveal", z: -27500, label: "BACK TO TOP" },
 ];
 
 // --- Easing helpers ---
@@ -85,6 +86,8 @@ const PronitePage: React.FC = () => {
     const starSpeed = useRef(1);
     const [buttonLabel, setButtonLabel] = useState("EXPLORE LINEUP");
     const lastActiveArtistKey = useRef<string | null>(null);
+    const finalRevealRef = useRef<FinalRevealRef>(null);
+    const finalRevealAnimationTriggered = useRef(false);
     const handleArtistNavigation = (direction: "next" | "prev") => {
         if (!lenisRef.current || !totalDistanceRef.current) return;
         const artistKeys = Object.keys(ARTISTS);
@@ -140,9 +143,10 @@ const PronitePage: React.FC = () => {
         // --- Final Reveal Animation ---
         const finalRevealLayer = layerRefs.current["final-reveal"];
         if (finalRevealLayer) {
-            const finalZ = -26000;
+            const finalZ = -27500;
             const dist = currentZ - finalZ;
-            const opacity = 1 - clamp((dist - 500) / 4000, 0, 1);
+            // Start fade at z=-26000 (when dist=1500), full opacity at z=-27500 (dist=0)
+            const opacity = 1 - clamp((dist - 0) / 1500, 0, 1);
             const scale = 0.8 + 0.2 * opacity;
 
             gsap.set(finalRevealLayer, {
@@ -151,6 +155,19 @@ const PronitePage: React.FC = () => {
                 visibility: opacity > 0 ? "visible" : "hidden",
                 pointerEvents: opacity > 0.9 ? "auto" : "none"
             });
+
+            // Trigger GSAP animation when reaching z=-26000
+            if (currentZ <= -26000 && !finalRevealAnimationTriggered.current) {
+                finalRevealAnimationTriggered.current = true;
+                setTimeout(() => {
+                    finalRevealRef.current?.playAnimation();
+                }, 300);
+            }
+
+            // Reset trigger if scrolling back up
+            if (currentZ > -25500 && finalRevealAnimationTriggered.current) {
+                finalRevealAnimationTriggered.current = false;
+            }
         }
 
         const currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
@@ -855,12 +872,13 @@ const PronitePage: React.FC = () => {
                                 layerRefs.current["final-reveal"] = el;
                             }}
                             className="z-layer"
-                            data-z="-30000"
+                            data-z="-27500"
                             data-pin="true"
                             data-persist="5000"
                             style={{ opacity: 0, pointerEvents: "none" }}
                         >
                             <FinalReveal
+                                ref={finalRevealRef}
                                 artists={[
                                     {
                                         name: (

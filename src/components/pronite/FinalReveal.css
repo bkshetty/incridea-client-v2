@@ -37,35 +37,38 @@
 
 .glass-card {
     will-change: transform;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .glass-card:hover {
-    border-color: rgba(238, 43, 111, 0.6);
-    background: rgba(238, 43, 111, 0.1);
-    /* Slightly more visible on hover */
+    border-color: rgba(238, 43, 111, 0.5);
+    background: rgba(238, 43, 111, 0.08);
     transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(238, 43, 111, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(238, 43, 111, 0.25);
 }
 
 .text-glow {
-    text-shadow: 0 0 20px rgba(238, 43, 111, 0.6), 0 0 40px rgba(238, 43, 111, 0.3);
+    text-shadow: 0 0 20px rgba(238, 43, 111, 0.7),
+        0 0 40px rgba(238, 43, 111, 0.4),
+        0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .focal-card {
-    box-shadow: 0 0 50px rgba(238, 43, 111, 0.1);
-    border-color: rgba(238, 43, 111, 0.3);
-    background: rgba(238, 43, 111, 0.05);
-    /* Subtle tint for headliner */
+    box-shadow: 0 0 50px rgba(238, 43, 111, 0.2);
+    border-color: rgba(238, 43, 111, 0.4);
+    background: rgba(238, 43, 111, 0.06);
 }
 
 .hashtag-gradient {
-    background: linear-gradient(90deg, #ee2b6f, #ff6b9d, #ee2b6f);
+    background: linear-gradient(90deg,
+            #ee2b6f 0%,
+            #ff6b9d 50%,
+            #ee2b6f 100%);
     background-size: 200% auto;
     background-clip: text;
     -webkit-background-clip: text;
@@ -87,15 +90,15 @@
 
     0%,
     100% {
-        box-shadow: 0 0 30px rgba(238, 43, 111, 0.2);
+        box-shadow: 0 0 30px rgba(238, 43, 111, 0.25);
         border-color: rgba(238, 43, 111, 0.4);
         transform: scale(1);
     }
 
     50% {
-        box-shadow: 0 0 80px rgba(238, 43, 111, 0.6);
-        border-color: rgba(238, 43, 111, 0.9);
-        transform: scale(1.02);
+        box-shadow: 0 0 70px rgba(238, 43, 111, 0.5);
+        border-color: rgba(238, 43, 111, 0.7);
+        transform: scale(1.01);
     }
 }
 
@@ -148,7 +151,52 @@
 .animate-fade-up {
     animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     opacity: 0;
-    /* Start hidden */
+}
+
+/* Slide from center animations for desktop */
+@keyframes slideFromCenterLeft {
+    from {
+        opacity: 0;
+        transform: translateX(200px) translateY(20px) scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0) scale(1);
+    }
+}
+
+@keyframes slideFromCenterRight {
+    from {
+        opacity: 0;
+        transform: translateX(-200px) translateY(20px) scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0) scale(1);
+    }
+}
+
+.animate-slide-from-center-left {
+    animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+}
+
+.animate-slide-from-center-right {
+    animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+}
+
+/* Apply slide animations only on desktop */
+@media (min-width: 768px) {
+    .animate-slide-from-center-left {
+        animation: slideFromCenterLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-from-center-right {
+        animation: slideFromCenterRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 }
 
 /* Delays */
@@ -218,8 +266,8 @@
 
 .headliner-card:hover {
     transform: translateY(-10px) scale(1.08);
-    /* 1.05 * ~1.03 */
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(238, 43, 111, 0.4);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(238, 43, 111, 0.4);
 }
 
 .text-gradient-gold {
