@@ -4,8 +4,10 @@
 .pronite-page {
     --pronite-bg: #050505;
     --pronite-text: #ffffff;
-    --font-primary: 'Inter', sans-serif;
-    --font-display: 'Space Grotesk', sans-serif;
+    --font-primary: 'mocoSans', sans-serif;
+    --font-display: 'mocoSans', sans-serif;
+    font-family: 'mocoSans', sans-serif;
+    font-weight: 700;
 
     position: fixed;
     top: 0;
@@ -279,7 +281,8 @@
 }
 
 .pronite-page .artist-date {
-    font-family: var(--font-primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
     font-size: 1.1rem;
     letter-spacing: 0.25em;
     opacity: 1;

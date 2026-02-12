@@ -10,7 +10,6 @@ import {
   VolumeX,
 } from "lucide-react";
 import { motion, type Variants, AnimatePresence } from "framer-motion";
-import LiquidGlassCard from "../liquidglass/LiquidGlassCard";
 
 interface ProniteCardProps {
   artistName: string;
@@ -37,7 +36,7 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const heartBtnRef = useRef<HTMLButtonElement>(null);
 
   const [hearts, setHearts] = useState<
     {
@@ -51,8 +50,8 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
   >([]);
 
   const triggerBurst = () => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
+    if (!heartBtnRef.current) return;
+    const rect = heartBtnRef.current.getBoundingClientRect();
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2;
 
@@ -89,19 +88,20 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     }
   }, [isPlaying, isMuted, songUrl]);
 
-  const glitchVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.8, y: 50 },
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.85, y: 40 },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 260, damping: 20 },
+      transition: { type: "spring", stiffness: 280, damping: 22 },
     },
-    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
+    exit: { opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.2 } },
   };
 
   return (
     <>
+      {/* Floating heart burst particles */}
       {createPortal(
         <div className="fixed inset-0 pointer-events-none z-[10000]">
           <AnimatePresence>
@@ -134,62 +134,127 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
         document.body,
       )}
 
-      <div className="fixed bottom-12 right-20 z-[9999] pointer-events-none flex justify-end items-end font-sans">
+      {/* ─── Card ─── */}
+      <div className="fixed bottom-8 right-8 z-[9999] pointer-events-none flex justify-end items-end">
         <audio ref={audioRef} src={songUrl} loop />
 
         <motion.div
-          variants={glitchVariants}
+          variants={cardVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="pointer-events-auto relative w-[24rem] rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10"
+          className="pointer-events-auto"
+          style={
+            {
+              "--accent": accentColor,
+            } as React.CSSProperties
+          }
         >
-          <div className="absolute inset-0 z-0 rounded-[2.5rem] overflow-hidden">
-            <LiquidGlassCard colorScheme="dark" className="w-full h-full" />
-          </div>
-
           <div
-            className="absolute left-0 top-10 bottom-10 w-[4px] rounded-r-full z-20"
-            style={{ backgroundColor: accentColor }}
-          />
+            style={{
+              width: "380px",
+              borderRadius: "24px",
+              background: "rgba(12, 12, 14, 0.85)",
+              backdropFilter: "blur(40px) saturate(1.6)",
+              WebkitBackdropFilter: "blur(40px) saturate(1.6)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow:
+                "0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            {/* Accent glow */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-60px",
+                right: "-40px",
+                width: "200px",
+                height: "200px",
+                background: accentColor,
+                borderRadius: "50%",
+                filter: "blur(100px)",
+                opacity: 0.15,
+                pointerEvents: "none",
+              }}
+            />
 
-          <div className="relative z-10 p-8 pb-10">
-            {/* Header */}
-            <div className="flex items-center justify-start gap-5 mb-8">
+            {/* ─── Top: Image + Info ─── */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                padding: "16px 20px 12px 16px",
+              }}
+            >
+              {/* Album art */}
               <img
                 src={artistImage}
                 alt={artistName}
-                className="w-24 h-24 object-cover rounded-2xl shadow-2xl border border-white/5"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "16px",
+                  objectFit: "cover",
+                  flexShrink: 0,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                }}
               />
-              <div className="min-w-0 flex flex-col justify-center">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-white font-bold text-3xl truncate tracking-tight">
-                    {artistName}
-                  </h3>
-                  <button
-                    ref={buttonRef}
-                    onClick={handleLikeClick}
-                    className="active:scale-150 transition-transform relative z-10 p-1"
-                  >
-                    <Heart
-                      size={26}
-                      fill={isLiked ? HEART_RED : "none"}
-                      stroke={isLiked ? HEART_RED : "white"}
-                      className="opacity-90 hover:opacity-100 transition-opacity"
-                    />
-                  </button>
-                </div>
-                <p className="text-white/50 text-xs uppercase tracking-[0.3em] mt-1 font-semibold">
+
+              {/* Name + Date */}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <h3
+                  style={{
+                    color: "#fff",
+                    fontSize: "1.35rem",
+                    fontWeight: 700,
+                    lineHeight: 1.15,
+                    margin: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontFamily: "'mocoSans', sans-serif",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {artistName}
+                </h3>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,0.45)",
+                    fontSize: "0.7rem",
+                    fontWeight: 300,
+                    letterSpacing: "0.25em",
+                    textTransform: "uppercase",
+                    margin: "6px 0 0",
+                    fontFamily: "'Outfit', sans-serif",
+                  }}
+                >
                   {artistDate}
                 </p>
               </div>
             </div>
 
-            {/* Progress Area */}
-            <div className="mb-2">
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative border border-white/5">
+            {/* ─── Progress bar ─── */}
+            <div style={{ padding: "0 20px" }}>
+              <div
+                style={{
+                  height: "3px",
+                  width: "100%",
+                  background: "rgba(255,255,255,0.08)",
+                  borderRadius: "2px",
+                  overflow: "hidden",
+                }}
+              >
                 <motion.div
-                  className="h-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                  style={{
+                    height: "100%",
+                    background: "#fff",
+                    borderRadius: "2px",
+                    boxShadow: "0 0 8px rgba(255,255,255,0.3)",
+                  }}
                   animate={{ width: isPlaying ? "100%" : "35%" }}
                   transition={{
                     duration: isPlaying ? 30 : 0.5,
@@ -199,58 +264,162 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
               </div>
             </div>
 
-            {/* Spacing Nudge */}
-            <div className="h-6" />
+            {/* ─── Controls row ─── */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "14px 20px 16px",
+              }}
+            >
+              {/* Volume — far left */}
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "6px",
+                  borderRadius: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                  color: isMuted ? "#f87171" : "rgba(255,255,255,0.35)",
+                }}
+                onMouseEnter={(e) =>
+                (e.currentTarget.style.color = isMuted
+                  ? "#f87171"
+                  : "rgba(255,255,255,0.7)")
+                }
+                onMouseLeave={(e) =>
+                (e.currentTarget.style.color = isMuted
+                  ? "#f87171"
+                  : "rgba(255,255,255,0.35)")
+                }
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
 
-            {/* Controls Row */}
-            <div className="grid grid-cols-3 items-center w-full">
-              <div className="flex justify-start opacity-0 pointer-events-none">
-                <Volume2 size={32} />
-              </div>
-
-              <div className="flex items-center justify-center gap-8">
-                <SkipBack
-                  size={32}
+              {/* Centre transport: Prev · Play/Pause · Next */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <button
                   onClick={onPrev}
-                  className="text-white/50 hover:text-white cursor-pointer transition-all hover:scale-110 active:scale-90"
-                  fill="currentColor"
-                />
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,0.5)",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "4px",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#fff")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
+                  }
+                >
+                  <SkipBack size={22} fill="currentColor" />
+                </button>
+
+                {/* Play / Pause — large white circle */}
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="text-white hover:scale-110 active:scale-90 transition-all p-1"
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    background: "#fff",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#0c0c0e",
+                    boxShadow: "0 4px 16px rgba(255,255,255,0.15)",
+                    transition: "transform 0.15s, box-shadow 0.15s",
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.08)";
+                    e.currentTarget.style.boxShadow =
+                      "0 6px 24px rgba(255,255,255,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 16px rgba(255,255,255,0.15)";
+                  }}
                 >
                   {isPlaying ? (
-                    <Pause size={32} fill="currentColor" />
+                    <Pause size={20} fill="currentColor" />
                   ) : (
-                    <Play size={32} fill="currentColor" />
+                    <Play size={20} fill="currentColor" style={{ marginLeft: "2px" }} />
                   )}
                 </button>
-                <SkipForward
-                  size={32}
-                  onClick={onNext}
-                  className="text-white/50 hover:text-white cursor-pointer transition-all hover:scale-110 active:scale-90"
-                  fill="currentColor"
-                />
-              </div>
 
-              <div className="flex justify-center pr-12">
                 <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="text-white/30 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl"
+                  onClick={onNext}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,0.5)",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "4px",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#fff")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
+                  }
                 >
-                  {isMuted ? (
-                    <VolumeX size={24} className="text-red-400" />
-                  ) : (
-                    <Volume2 size={24} />
-                  )}
+                  <SkipForward size={22} fill="currentColor" />
                 </button>
               </div>
-            </div>
 
-            <div
-              className="absolute -bottom-20 -right-20 w-64 h-64 blur-[100px] opacity-20 pointer-events-none rounded-full"
-              style={{ backgroundColor: accentColor }}
-            />
+              {/* Heart — far right */}
+              <button
+                ref={heartBtnRef}
+                onClick={handleLikeClick}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "transform 0.15s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.15)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                <Heart
+                  size={20}
+                  fill={isLiked ? HEART_RED : "none"}
+                  stroke={isLiked ? HEART_RED : "rgba(255,255,255,0.45)"}
+                  strokeWidth={2}
+                />
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
