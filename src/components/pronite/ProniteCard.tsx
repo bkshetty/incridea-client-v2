@@ -23,6 +23,193 @@ interface ProniteCardProps {
 
 const HEART_RED = "#FF4B4B";
 
+/* ─── Inline <style> for responsive rules (injected once) ─── */
+const RESPONSIVE_CSS = `
+  /* ── Desktop (default) ── */
+  .pronite-card-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 9999;
+    pointer-events: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+
+  .pronite-card-shell {
+    width: 380px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Desktop: info row */
+  .pronite-card-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px 12px 16px;
+  }
+
+  /* Desktop: album art */
+  .pronite-card-art {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  /* Desktop: progress bar wrapper */
+  .pronite-card-progress {
+    padding: 0 20px;
+  }
+
+  /* Desktop: controls row */
+  .pronite-card-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 16px;
+  }
+
+  /* Desktop: centre transport */
+  .pronite-card-transport {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Play/Pause button */
+  .pronite-card-play-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0c0c0e;
+    box-shadow: 0 4px 16px rgba(255,255,255,0.15);
+    transition: transform 0.15s, box-shadow 0.15s;
+    flex-shrink: 0;
+  }
+  .pronite-card-play-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(255,255,255,0.25);
+  }
+
+  /* Artist name */
+  .pronite-card-name {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'mocoSans', sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Artist date */
+  .pronite-card-date {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin: 6px 0 0;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  /* Mobile: top row with name + heart */
+  .pronite-card-mobile-top {
+    display: none;
+  }
+
+  /* ── Mobile (≤768px) ── */
+  @media (max-width: 768px) {
+    .pronite-card-container {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      justify-content: stretch;
+      padding: 0;
+    }
+
+    .pronite-card-shell {
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      border-bottom: none;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* Hide desktop info row on mobile */
+    .pronite-card-info {
+      display: none;
+    }
+
+    /* Show mobile top row */
+    .pronite-card-mobile-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px 4px;
+    }
+
+    /* Mobile album art — smaller */
+    .pronite-card-art-mobile {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .pronite-card-name {
+      font-size: 0.95rem;
+      letter-spacing: 0;
+    }
+
+    .pronite-card-date {
+      font-size: 0.6rem;
+      margin: 2px 0 0;
+      letter-spacing: 0.15em;
+    }
+
+    /* Mobile progress */
+    .pronite-card-progress {
+      padding: 0 16px;
+    }
+
+    /* Mobile controls */
+    .pronite-card-controls {
+      padding: 8px 16px 14px;
+    }
+
+    .pronite-card-transport {
+      gap: 16px;
+    }
+
+    .pronite-card-play-btn {
+      width: 36px;
+      height: 36px;
+    }
+  }
+`;
+
 const ProniteCard: React.FC<ProniteCardProps> = ({
   artistName,
   artistDate,
@@ -37,6 +224,7 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const heartBtnRef = useRef<HTMLButtonElement>(null);
+  const mobileHeartRef = useRef<HTMLButtonElement>(null);
 
   const [hearts, setHearts] = useState<
     {
@@ -49,9 +237,9 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     }[]
   >([]);
 
-  const triggerBurst = () => {
-    if (!heartBtnRef.current) return;
-    const rect = heartBtnRef.current.getBoundingClientRect();
+  const triggerBurst = (btnRef: React.RefObject<HTMLButtonElement | null>) => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2;
 
@@ -72,8 +260,8 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     }, 2000);
   };
 
-  const handleLikeClick = () => {
-    if (!isLiked) triggerBurst();
+  const handleLikeClick = (btnRef: React.RefObject<HTMLButtonElement | null>) => {
+    if (!isLiked) triggerBurst(btnRef);
     setIsLiked(!isLiked);
   };
 
@@ -99,8 +287,22 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     exit: { opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.2 } },
   };
 
+  const controlBtnStyle: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "rgba(255,255,255,0.5)",
+    display: "flex",
+    alignItems: "center",
+    padding: "4px",
+    transition: "all 0.2s",
+  };
+
   return (
     <>
+      {/* Inject responsive CSS */}
+      <style>{RESPONSIVE_CSS}</style>
+
       {/* Floating heart burst particles */}
       {createPortal(
         <div className="fixed inset-0 pointer-events-none z-[10000]">
@@ -135,7 +337,7 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
       )}
 
       {/* ─── Card ─── */}
-      <div className="fixed bottom-8 right-8 z-[9999] pointer-events-none flex justify-end items-end">
+      <div className="pronite-card-container">
         <audio ref={audioRef} src={songUrl} loop />
 
         <motion.div
@@ -144,25 +346,9 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
           animate="visible"
           exit="exit"
           className="pointer-events-auto"
-          style={
-            {
-              "--accent": accentColor,
-            } as React.CSSProperties
-          }
+          style={{ width: "100%" }}
         >
-          <div
-            style={{
-              width: "380px",
-              borderRadius: "24px",
-              background: "rgba(255, 255, 255, 0.05)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
+          <div className="pronite-card-shell">
             {/* Accent glow */}
             <div
               style={{
@@ -179,65 +365,55 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
               }}
             />
 
-            {/* ─── Top: Image + Info ─── */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                padding: "16px 20px 12px 16px",
-              }}
-            >
-              {/* Album art */}
+            {/* ─── Desktop: Image + Info row ─── */}
+            <div className="pronite-card-info">
               <img
                 src={artistImage}
                 alt={artistName}
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  borderRadius: "16px",
-                  objectFit: "cover",
-                  flexShrink: 0,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-                }}
+                className="pronite-card-art"
               />
-
-              {/* Name + Date */}
               <div style={{ minWidth: 0, flex: 1 }}>
-                <h3
-                  style={{
-                    color: "#fff",
-                    fontSize: "1.35rem",
-                    fontWeight: 700,
-                    lineHeight: 1.15,
-                    margin: 0,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    fontFamily: "'mocoSans', sans-serif",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  {artistName}
-                </h3>
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.45)",
-                    fontSize: "0.7rem",
-                    fontWeight: 300,
-                    letterSpacing: "0.25em",
-                    textTransform: "uppercase",
-                    margin: "6px 0 0",
-                    fontFamily: "'Outfit', sans-serif",
-                  }}
-                >
-                  {artistDate}
-                </p>
+                <h3 className="pronite-card-name">{artistName}</h3>
+                <p className="pronite-card-date">{artistDate}</p>
               </div>
             </div>
 
+            {/* ─── Mobile: Compact top row ─── */}
+            <div className="pronite-card-mobile-top">
+              <img
+                src={artistImage}
+                alt={artistName}
+                className="pronite-card-art-mobile"
+              />
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <h3 className="pronite-card-name">{artistName}</h3>
+                <p className="pronite-card-date">{artistDate}</p>
+              </div>
+              <button
+                ref={mobileHeartRef}
+                onClick={() => handleLikeClick(mobileHeartRef)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Heart
+                  size={18}
+                  fill={isLiked ? HEART_RED : "none"}
+                  stroke={isLiked ? HEART_RED : "rgba(255,255,255,0.45)"}
+                  strokeWidth={2}
+                />
+              </button>
+            </div>
+
             {/* ─── Progress bar ─── */}
-            <div style={{ padding: "0 20px" }}>
+            <div className="pronite-card-progress">
               <div
                 style={{
                   height: "3px",
@@ -264,14 +440,7 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
             </div>
 
             {/* ─── Controls row ─── */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "14px 20px 16px",
-              }}
-            >
+            <div className="pronite-card-controls">
               {/* Volume — far left */}
               <button
                 onClick={() => setIsMuted(!isMuted)}
@@ -287,113 +456,43 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
                   transition: "all 0.2s",
                   color: isMuted ? "#f87171" : "rgba(255,255,255,0.35)",
                 }}
-                onMouseEnter={(e) =>
-                (e.currentTarget.style.color = isMuted
-                  ? "#f87171"
-                  : "rgba(255,255,255,0.7)")
-                }
-                onMouseLeave={(e) =>
-                (e.currentTarget.style.color = isMuted
-                  ? "#f87171"
-                  : "rgba(255,255,255,0.35)")
-                }
               >
                 {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
               </button>
 
-              {/* Centre transport: Prev · Play/Pause · Next */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "20px",
-                }}
-              >
+              {/* Centre transport */}
+              <div className="pronite-card-transport">
                 <button
                   onClick={onPrev}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "rgba(255,255,255,0.5)",
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "4px",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#fff")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
-                  }
+                  style={controlBtnStyle}
                 >
-                  <SkipBack size={22} fill="currentColor" />
+                  <SkipBack size={20} fill="currentColor" />
                 </button>
 
-                {/* Play / Pause — large white circle */}
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                    borderRadius: "50%",
-                    background: "#fff",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#0c0c0e",
-                    boxShadow: "0 4px 16px rgba(255,255,255,0.15)",
-                    transition: "transform 0.15s, box-shadow 0.15s",
-                    flexShrink: 0,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.08)";
-                    e.currentTarget.style.boxShadow =
-                      "0 6px 24px rgba(255,255,255,0.25)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 16px rgba(255,255,255,0.15)";
-                  }}
+                  className="pronite-card-play-btn"
                 >
                   {isPlaying ? (
-                    <Pause size={20} fill="currentColor" />
+                    <Pause size={18} fill="currentColor" />
                   ) : (
-                    <Play size={20} fill="currentColor" style={{ marginLeft: "2px" }} />
+                    <Play size={18} fill="currentColor" style={{ marginLeft: "2px" }} />
                   )}
                 </button>
 
                 <button
                   onClick={onNext}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "rgba(255,255,255,0.5)",
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "4px",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#fff")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
-                  }
+                  style={controlBtnStyle}
                 >
-                  <SkipForward size={22} fill="currentColor" />
+                  <SkipForward size={20} fill="currentColor" />
                 </button>
               </div>
 
-              {/* Heart — far right */}
+              {/* Heart — far right (desktop only, mobile heart is in top row) */}
               <button
                 ref={heartBtnRef}
-                onClick={handleLikeClick}
+                onClick={() => handleLikeClick(heartBtnRef)}
+                className="pronite-card-heart-desktop"
                 style={{
                   background: "none",
                   border: "none",
@@ -404,12 +503,6 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
                   justifyContent: "center",
                   transition: "transform 0.15s",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.15)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
               >
                 <Heart
                   size={20}

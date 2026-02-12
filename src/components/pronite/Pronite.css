@@ -653,6 +653,29 @@
     .pronite-page .artist-content {
         gap: 1.5rem;
     }
+
+    /* Explore button — smooth transition, lifts when card appears */
+    .explore-btn {
+        font-size: 0.75rem;
+        padding: 0.75rem 1.8rem;
+        transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .explore-btn.card-active {
+        bottom: 8rem;
+    }
+
+    /* Shorten and reposition scroll progress so it doesn't overlap the card */
+    .pronite-page .scroll-progress-container {
+        right: 1rem;
+        height: 35vh;
+        top: 40%;
+    }
+
+    /* Hide the desktop heart in controls — mobile has its own in the top row */
+    .pronite-card-heart-desktop {
+        display: none !important;
+    }
 }
 
 .pronite-page .tilt-layer {

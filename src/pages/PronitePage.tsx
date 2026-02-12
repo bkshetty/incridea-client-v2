@@ -543,7 +543,7 @@ const PronitePage: React.FC = () => {
         </div>
       </nav>
 
-      <button className="explore-btn" onClick={handleExploreClick}>
+      <button className={`explore-btn${activeArtist ? ' card-active' : ''}`} onClick={handleExploreClick}>
         {buttonLabel}
       </button>
 
