@@ -8,9 +8,9 @@ import FinalReveal from "../components/pronite/FinalReveal";
 import { useZScroll } from "../hooks/useZScroll";
 import { clamp } from "../utils/pronite";
 
-import armaanSong from "../assets/audio/pehla_pyar_armaan_malik.mp3";
-import nikhitaSong from "../assets/audio/jugnu_nikitha_gandhi.mp3";
-import aloSong from "../assets/audio/saibo_alo.mp3";
+import armaanSong from "../assets/pronite/audios/pehla_pyar_armaan_malik.mp3";
+import nikhitaSong from "../assets/pronite/audios/jugnu_nikitha_gandhi.mp3";
+import aloSong from "../assets/pronite/audios/saibo_alo.mp3";
 
 // --- Layer Configuration ---
 interface ArtistData {
