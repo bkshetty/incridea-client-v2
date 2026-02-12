@@ -59,6 +59,56 @@
     transform-style: preserve-3d;
     will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pronite-page .hero-layer {
+    opacity: 1;
+    flex-direction: column;
+    text-align: center;
+}
+
+/* Hero Partners Row - TribeVibe | Incridea */
+.pronite-page .hero-partners-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.pronite-page .hero-partner-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pronite-page .tribe-vibe-logo {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.pronite-page .incridea-logo {
+    height: 65px;
+    width: auto;
+    object-fit: contain;
+}
+
+.pronite-page .hero-partner-divider {
+    width: 2px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.pronite-page .pronite-main-logo {
+    max-width: 45%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Cursor */
@@ -137,16 +187,13 @@
     top: 50%;
     transform: translateY(-50%);
     height: 60vh;
-    /* Fixed height for the track */
     width: 4px;
-    /* Track width */
     z-index: 100;
     pointer-events: none;
     display: flex;
     justify-content: center;
 }
 
-/* Background Track */
 .pronite-page .scroll-track {
     position: relative;
     width: 100%;
@@ -155,37 +202,29 @@
     border-radius: 4px;
 }
 
-/* The White Progress Fill */
 .pronite-page .progress-fill {
     position: absolute;
     bottom: 0;
-    /* ANCHORED TO BOTTOM */
     left: 0;
     width: 100%;
     height: 0%;
-    /* Grows upwards */
     background: white;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     transition: height 0.1s linear;
 }
 
-/* --- BOTTOM LOGO (Moving Indicator) --- */
 .pronite-page .logo-bottom-wrapper {
     position: absolute;
-    /* bottom is set by JS from 0% -> 100% */
     bottom: 0%;
     left: 50%;
     transform: translate(-50%, 0%);
-    /* Sit right on the fill line tip */
     width: 70px;
-    /* Adjusted size */
     display: flex;
     justify-content: center;
     z-index: 3;
     transition: bottom 0.1s linear;
     padding-bottom: 5px;
-    /* Slight padding to not overlap the line instantly */
 }
 
 .pronite-page .progress-logo-bottom {
@@ -195,30 +234,7 @@
     display: block;
 }
 
-
-
-
-
 /* Layers */
-.pronite-page .hero-layer {
-    flex-direction: column;
-    text-align: center;
-}
-
-.pronite-page .hero-subtitle {
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    opacity: 0.6;
-    margin-bottom: 1.5rem;
-}
-
-.pronite-page .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(4rem, 15vw, 10rem);
-    font-weight: 700;
-    margin-bottom: 2rem;
-}
-
 .pronite-page .about-layer,
 .pronite-page .project-layer,
 .pronite-page .contact-layer {
@@ -232,62 +248,151 @@
     padding: 0 2rem;
 }
 
-/* Artist Layer */
+/* Artist Layer - IMPROVED SPACING */
 .pronite-page .artist-content {
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 2.5rem;
+    padding: 2rem 0;
+    will-change: transform, clip-path;
+    transition: none;
+    /* GSAP controls all transforms */
 }
 
-.pronite-page .artist-name {
-    font-family: var(--font-display);
-    font-size: clamp(4rem, 12vw, 8rem);
-    font-weight: 700;
-    line-height: 1.1;
+/* Artist Name SVG Styling */
+.pronite-page .artist-name-svg {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    /* INCREASED for larger appearance */
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    margin: 0 auto;
+}
+
+/* ALO is shorter, so smaller max-width */
+.pronite-page .artist-name-svg.alo-svg {
+    max-width: 350px;
 }
 
 .pronite-page .artist-date {
     font-family: var(--font-primary);
-    font-size: 1.25rem;
-    letter-spacing: 0.2em;
-    opacity: 0.7;
+    font-size: 1.1rem;
+    letter-spacing: 0.25em;
+    opacity: 1;
     text-transform: uppercase;
+    display: block;
+    margin-top: 0.5rem;
+    /* Neon core — bright white center like a real tube */
+    color: #fff;
+    /* Layered glow: tight core → mid bloom → wide ambient */
+    text-shadow:
+        0 0 1px #fff,
+        0 0 5px #fff,
+        0 0 20px #400f4c,
+        0 0 40px #400f4c,
+        0 0 80px #400f4c,
+        0 0 100px #400f4c;
+    /* Subtle neon pulse */
+    animation: neonPulse 2.5s ease-in-out infinite alternate;
 }
 
+@keyframes neonPulse {
+    0% {
+        text-shadow:
+            0 0 2px #fff,
+            0 0 5px #fff,
+            0 0 20px #400f4c,
+            0 0 40px #400f4c,
+            0 0 80px #400f4c,
+            0 0 100px #400f4c;
+    }
+
+    100% {
+        text-shadow:
+            0 0 2px #fff,
+            0 0 8px #fff,
+            0 0 15px #5a1a6e,
+            0 0 30px #5a1a6e,
+            0 0 55px #400f4c,
+            0 0 100px #400f4c;
+    }
+}
+
+/* Text Mask - CRITICAL for animation */
 .pronite-page .text-mask {
     overflow: hidden;
     display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
 }
 
-/* Artist Images */
-.pronite-page .artist-images-container {
-    perspective: 1500px;
+/* Direct children selector for GSAP — non-artist layers use translateY */
+.pronite-page .about-layer .text-mask>img,
+.pronite-page .about-layer .text-mask>p,
+.pronite-page .about-layer .text-mask>h2,
+.pronite-page .about-layer .text-mask>div {
+    display: block;
+    margin: 0;
+    transform: translateY(110%);
+    will-change: transform;
+}
+
+/* Artist layers use clip-path masking instead of translateY */
+.pronite-page .artist-layer .text-mask>img,
+.pronite-page .artist-layer .text-mask>p {
+    display: block;
+    margin: 0;
+    transform: none;
+    clip-path: inset(0 0 100% 0);
+    /* Hidden by default — revealed top-to-bottom */
+    will-change: clip-path, opacity;
+}
+
+/* Artist Image Layers - NEW STYLING */
+.pronite-page .artist-image-layer {
     pointer-events: none;
 }
 
+.pronite-page .artist-img-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transform-style: preserve-3d;
+}
+
+/* Artist images — natural aspect ratio, constrained by max dimensions */
 .pronite-page .artist-img {
     position: absolute;
     top: 50%;
-    transform-style: preserve-3d;
-    /* 9:16 Ratio: e.g. 270px x 480px, or 300px x 533px */
-    width: 500px;
-    height: 888px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-    /* Initial state handled by CSS now, fade-in by GSAP on container */
+    left: 50%;
+    /* Let the image keep its natural aspect ratio */
+    width: auto;
+    height: auto;
+    max-width: min(420px, 80vw);
+    max-height: min(560px, 70vh);
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
+    visibility: hidden;
+    opacity: 0;
+    will-change: transform, opacity, visibility;
+    transform-origin: center center;
 }
 
-.pronite-page .artist-img.left {
-    left: 15%;
-    transform: translateY(-50%) rotateY(25deg) scale(2.5);
-}
-
+/* Both images centered — scale() drives depth emergence */
+.pronite-page .artist-img.left,
 .pronite-page .artist-img.right {
-    right: 15%;
-    transform: translateY(-50%) rotateY(-25deg) scale(2.5);
+    transform: translate(-50%, -50%) scale(0.05);
 }
 
 /* Buttons */
@@ -331,26 +436,6 @@
     pointer-events: none;
 }
 
-.pronite-page .text-mask {
-    overflow: hidden;
-    display: block;
-    position: relative;
-    margin: 0;
-    padding: 0;
-    line-height: 1.1;
-    /* Tighter line height prevents gaps */
-}
-
-/* 2. Inner Text: Prepares it for animation */
-.pronite-page .text-mask>h2,
-.pronite-page .text-mask>p {
-    display: block;
-    margin: 0;
-    /* Start invisible (pushed down) */
-    transform: translateY(110%);
-    will-change: transform;
-}
-
 /* Pronite Card */
 .pronite-card {
     position: fixed;
@@ -377,18 +462,12 @@
     left: 0;
     width: 60px;
     height: 100%;
-    width: 60px;
-    height: 100%;
-    /* Intensified White Glow */
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
     transform: skewX(-25deg);
     pointer-events: none;
     z-index: 2;
-    /* Use screen to add brightness on top of dark card */
     mix-blend-mode: screen;
-    /* Reduced blur for sharper core, increased brightness */
     filter: blur(2px) brightness(1.7);
-    /* Add external glow */
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
     will-change: transform;
 }
@@ -405,7 +484,6 @@
     border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Gradient Background Effect */
 .pronite-card::before {
     content: '';
     position: absolute;
@@ -418,7 +496,6 @@
     z-index: -1;
 }
 
-/* Accent Glow */
 .pronite-card::after {
     content: '';
     position: absolute;
@@ -487,18 +564,16 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
     .pronite-card {
         bottom: 7rem;
-        /* Moved up to clear the fixed button */
         left: 1rem;
         right: 1rem;
         width: auto;
         max-width: 400px;
         margin: 0 auto;
         transform: none !important;
-        /* Ensure no conflict with framer motion */
-
         height: auto;
         padding: 0.75rem;
         backdrop-filter: blur(16px);
@@ -531,28 +606,49 @@
         height: 16px;
     }
 
-    /* Resize 3D Images */
+    /* Mobile Artist Images — smaller max size, natural ratio */
     .pronite-page .artist-img {
-        width: 280px !important;
-        height: 500px !important;
+        max-width: min(280px, 85vw);
+        max-height: min(380px, 60vh);
     }
 
-    .pronite-page .artist-img.left {
-        left: 5% !important;
-        transform: translateY(-50%) rotateY(15deg) scale(1.5) !important;
-    }
-
+    .pronite-page .artist-img.left,
     .pronite-page .artist-img.right {
-        right: 5% !important;
-        transform: translateY(-50%) rotateY(-15deg) scale(1.5) !important;
+        transform: translate(-50%, -50%) scale(0.05);
     }
 
     .pronite-page .hero-title {
         font-size: clamp(3rem, 12vw, 5rem);
     }
 
-    .pronite-page .artist-name {
-        font-size: clamp(3rem, 10vw, 5rem);
+    .pronite-page .artist-name-svg {
+        max-width: 85% !important;
+    }
+
+    .pronite-page .artist-name-svg.alo-svg {
+        max-width: 200px !important;
+    }
+
+    .pronite-page .hero-partners-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .pronite-page .hero-partner-divider {
+        width: 50px;
+        height: 2px;
+    }
+
+    .pronite-page .tribe-vibe-logo {
+        height: 40px;
+    }
+
+    .pronite-page .incridea-logo {
+        height: 50px;
+    }
+
+    .pronite-page .artist-content {
+        gap: 1.5rem;
     }
 }
 
@@ -564,7 +660,6 @@
     height: 100%;
     transform-style: preserve-3d;
     will-change: transform;
-    /* Initial state */
     transform: rotateX(0deg) rotateY(0deg);
     transition: transform 0.1s ease-out;
     pointer-events: none;
@@ -597,9 +692,7 @@
     text-transform: uppercase;
     overflow: hidden;
     z-index: 1001;
-    /* Higher than tilt layer and everything else */
     pointer-events: auto;
-    /* Ensure it's clickable */
 }
 
 .explore-btn:hover {
@@ -607,7 +700,6 @@
     color: black;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
     transform: translateX(-50%) translateY(-2px);
-    /* Maintain centering + lift */
 }
 
 .explore-btn::before {
