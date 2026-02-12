@@ -5,17 +5,17 @@ import { lerp, clamp } from '@/utils/pronite';
 
 // Event-driven Z-Scroll Hook
 type ScrollEventCallback = (element: HTMLElement) => void;
-
+type ScrollProgressCallback = (element: HTMLElement, phase: number) => void;
 
 interface UseZScrollOptions {
     onUpdate?: (cameraZ: number) => void;
     onLayerEnter?: ScrollEventCallback;
     onLayerExit?: ScrollEventCallback;
-
+    onLayerScrollProgress?: ScrollProgressCallback;
 }
 
 export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, options?: UseZScrollOptions) => {
-    const { onUpdate, onLayerEnter, onLayerExit } = options || {};
+    const { onUpdate, onLayerEnter, onLayerExit, onLayerScrollProgress } = options || {};
     const lenisRef = useRef<Lenis | null>(null);
     const currentZRef = useRef(0);
     const targetZRef = useRef(0);
@@ -42,13 +42,16 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
                 element: layer,
                 depth: parseFloat(layer.dataset.z || '0'),
                 persistDist: layer.dataset.persist ? parseFloat(layer.dataset.persist) : 1500,
-                fadeExp: layer.dataset.fadeExp ? parseFloat(layer.dataset.fadeExp) : 1.5, // Default to 1.5
-                isPinnable: layer.dataset.pin === "true"
+                fadeExp: layer.dataset.fadeExp ? parseFloat(layer.dataset.fadeExp) : 1.5,
+                isPinnable: layer.dataset.pin === "true",
+                isArtist: !!layer.dataset.artistId,
+                isArtistImage: !!layer.dataset.artistImage,  // NEW: skip in update loop
+                artistRange: parseFloat(layer.dataset.artistRange || '5000'),
             };
         });
 
         const furthestZ = Math.min(...layerData.map(l => l.depth));
-        const totalDistance = Math.abs(furthestZ)// Stop exactly at the last element
+        const totalDistance = Math.abs(furthestZ);
         totalDistanceRef.current = totalDistance;
 
         // Scroll track
@@ -93,11 +96,83 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
             if (onUpdate) onUpdate(currentZ);
 
-            layerData.forEach(({ element, depth, persistDist, fadeExp, isPinnable }) => {
+            layerData.forEach(({ element, depth, persistDist, fadeExp, isPinnable, isArtist, isArtistImage, artistRange }) => {
                 const relativeZ = depth - currentZ;
 
+                // ======================================================
+                // ARTIST IMAGE LAYERS: fully managed by onArtistScrollProgress
+                // Skip here to prevent the hook from fighting with applyImageDepth()
+                // ======================================================
+                if (isArtistImage) return;
+
+                // ======================================================
+                // ARTIST LAYERS: Phase-driven system (replaces enter/exit)
+                // ======================================================
+                if (isArtist) {
+                    // Phase: 0 = artist just appeared, 1 = artist fully exited
+                    // relativeZ goes from some negative to some positive value
+                    // When relativeZ = 0, camera is exactly at artist depth
+                    // Artist active range: relativeZ from -200 (slight pre-reveal) to artistRange
+                    const phaseStart = -200;    // slight anticipation before depth
+                    const phaseEnd = artistRange; // full range
+                    const totalPhaseRange = phaseEnd - phaseStart;
+
+                    const rawPhase = (relativeZ - phaseStart) / totalPhaseRange;
+                    const phase = clamp(rawPhase, 0, 1);
+
+                    // Visibility: only visible while in phase range (with buffer)
+                    const isInRange = relativeZ >= phaseStart - 500 && relativeZ <= phaseEnd + 500;
+
+                    let opacity = 0;
+                    if (relativeZ < phaseStart - 500) {
+                        opacity = 0; // too far in front
+                    } else if (relativeZ < phaseStart) {
+                        // Fade in as approaching
+                        const fadeProgress = 1 - Math.abs(relativeZ - phaseStart) / 500;
+                        opacity = clamp(fadeProgress, 0, 1);
+                    } else if (relativeZ <= phaseEnd) {
+                        opacity = 1; // fully active
+                    } else if (relativeZ <= phaseEnd + 500) {
+                        // Fade out exiting
+                        const fadeProgress = (relativeZ - phaseEnd) / 500;
+                        opacity = clamp(1 - fadeProgress, 0, 1);
+                    }
+
+                    // PIN the artist layer while in active range
+                    let zPos = relativeZ;
+                    if (relativeZ >= 0 && relativeZ < artistRange) {
+                        zPos = 0; // pinned
+                    }
+
+                    gsap.set(element, {
+                        x: 0,
+                        y: 0,
+                        z: zPos,
+                        scale: 1,
+                        autoAlpha: opacity,
+                        overwrite: 'auto'
+                    });
+
+                    // Fire scroll progress callback
+                    if (onLayerScrollProgress && isInRange) {
+                        onLayerScrollProgress(element, phase);
+                    }
+
+                    // Active class
+                    if (opacity > 0.1) {
+                        element.classList.add('active');
+                    } else {
+                        element.classList.remove('active');
+                    }
+
+                    return; // skip generic logic below
+                }
+
+                // ======================================================
+                // NON-ARTIST LAYERS: Original enter/exit event system
+                // ======================================================
+
                 // --- VISIBILITY & EVENTS ---
-                // Check if totally gone
                 const isFarGone = relativeZ < -FADE_DISTANCE || relativeZ > 2000;
 
                 // Opacity Logic
@@ -106,59 +181,40 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
                 if (relativeZ < -FADE_DISTANCE) {
                     opacity = 0;
                 } else if (relativeZ < 0) {
-                    // Approaching from deep...
-                    // Map -4000...0 -> 0...1
-                    // Apply easing using configurable exponent
                     const linearProgress = 1 - (Math.abs(relativeZ) / FADE_DISTANCE);
                     opacity = Math.pow(linearProgress, fadeExp);
                 } else {
-                    // In front / Pinned
                     if (isPinnable && relativeZ < persistDist) {
                         opacity = 1;
                     } else {
-                        // Exiting
                         const exitProgress = (relativeZ - persistDist) / 500;
                         opacity = clamp(1 - exitProgress, 0, 1);
                     }
                 }
 
-                // --- EVENT TRIGGERING ---
+                // --- EVENT TRIGGERING (non-artist only) ---
                 if (opacity > 0.01) {
-                    // ENTER EVENT
-                    // Trigger when it "arrives" (relativeZ >= 0) OR if it's the Hero (depth 0) and we just started.
-                    // We use a small epsilon for float comparison safety
                     if (relativeZ >= -10 && !enteredLayers.current.has(element)) {
                         enteredLayers.current.add(element);
                         if (onLayerEnter) onLayerEnter(element);
                     }
 
-                    // EXIT EVENT
-                    // Trigger when we move past the persistence point
-                    // Buffer of 800px before fully fading out to start exit anim
-                    const exitPoint = persistDist - 800; // e.g. at 700px relativeZ (if persist is 1500)
+                    const exitPoint = persistDist - 800;
                     const isExiting = relativeZ >= exitPoint;
 
                     if (onLayerExit && isExiting && element.dataset.exited !== "true") {
                         element.dataset.exited = "true";
                         onLayerExit(element);
                     }
-                    // RE-ENTER (Reverse Scroll)
                     else if (onLayerExit && !isExiting && element.dataset.exited === "true") {
                         element.dataset.exited = "false";
-                        // Ideally we might want an 'onLayerReverseEnter' or just handle it in consumer
-                        // For now, let's just trigger Enter again logic? 
-                        // Or simply let consumer handle state.
-                        // But we should re-trigger enter if we want the "slide up" again?
-                        // For simplicity, we just clear exited flag. Consumer can watch dataset.
-                        if (onLayerEnter) onLayerEnter(element); // Re-trigger enter animation?
+                        if (onLayerEnter) onLayerEnter(element);
                     }
 
                 } else {
-                    // Cleanup when far gone
                     if (isFarGone && enteredLayers.current.has(element)) {
                         enteredLayers.current.delete(element);
                         element.dataset.exited = "false";
-                        // Allow re-run if we come back
                     }
                 }
 
@@ -174,8 +230,8 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
                 // Apply
                 gsap.set(element, {
-                    x: 0, // FORCE CENTER to override CSS offsets
-                    y: 0, // FORCE CENTER to override CSS offsets
+                    x: 0,
+                    y: 0,
                     z: zPos,
                     scale: scale,
                     autoAlpha: opacity,
@@ -199,7 +255,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             lenis.destroy();
             scrollTrack.remove();
         };
-    }, [containerRef, onUpdate, onLayerEnter, onLayerExit]);
+    }, [containerRef, onUpdate, onLayerEnter, onLayerExit, onLayerScrollProgress]);
 
     return { lenisRef, totalDistanceRef };
 };
