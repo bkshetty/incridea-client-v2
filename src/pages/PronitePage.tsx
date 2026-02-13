@@ -58,10 +58,10 @@ const ARTISTS: Record<string, ArtistData> = {
 };
 
 const SCROLL_STOPS = [
-    { id: "hero", z: 0, label: "EXPLORE LINEUP" },
-    { id: "artist1", z: -3500, label: "NEXT ARTIST" },
-    { id: "artist2", z: -11000, label: "NEXT ARTIST" },
-    { id: "artist3", z: -18500, label: "REVEAL FULL LINEUP" },
+    { id: "hero", z: -100, label: "EXPLORE LINEUP" },
+    { id: "artist1", z: -5000, label: "NEXT ARTIST" },
+    { id: "artist2", z: -12500, label: "NEXT ARTIST" },
+    { id: "artist3", z: -20000, label: "REVEAL FULL LINEUP" },
     { id: "final-reveal", z: -27500, label: "BACK TO TOP" },
 ];
 
@@ -173,8 +173,8 @@ const PronitePage: React.FC = () => {
 
         const currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
             const nextStop = SCROLL_STOPS[i + 1];
-            if (!nextStop) return currentZ <= s.z + 500;
-            return currentZ <= s.z + 500 && currentZ > nextStop.z + 500;
+            if (!nextStop) return currentZ <= s.z + 1000;
+            return currentZ <= s.z + 1000 && currentZ > nextStop.z + 1000;
         });
 
         if (currentStopIndex !== -1) {
@@ -524,24 +524,52 @@ const PronitePage: React.FC = () => {
     const handleExploreClick = () => {
         if (!lenisRef.current || !totalDistanceRef.current) return;
 
+        // Explicitly handle "BACK TO TOP" based on button state to match user expectation
+        if (buttonLabel === "BACK TO TOP") {
+            gsap.to(starSpeed, {
+                current: 20,
+                duration: 2,
+                ease: "power2.in",
+            });
+            lenisRef.current.scrollTo(0, {
+                duration: 3.5,
+                easing: (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+                onComplete: () => {
+                    gsap.to(starSpeed, {
+                        current: 1,
+                        duration: 2,
+                        ease: "power2.out",
+                    });
+                },
+            });
+            return;
+        }
+
         const totalDist = totalDistanceRef.current;
         const windowHeight = window.innerHeight;
         const maxScroll = totalDist - windowHeight;
         const currentScroll = lenisRef.current.scroll;
 
+        // Calculate current Z position based on scroll
         const currentZ = -(currentScroll / maxScroll) * totalDist;
 
+        // Find the current active section index
+        // Use a slightly larger buffer (1000px) to ensure we catch the current section even if slightly scrolled past
         let currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
             const nextStop = SCROLL_STOPS[i + 1];
-            if (!nextStop) return true;
-            return currentZ <= s.z + 500 && currentZ > nextStop.z + 500;
+            if (!nextStop) return true; // Last section always matches if we're past the second-to-last
+            // Check if we are within the range of this section (from its start to the next section's start)
+            // Adding buffer to ensure smooth transition detection
+            return currentZ <= s.z + 1000 && currentZ > nextStop.z + 1000;
         });
 
         if (currentStopIndex === -1) currentStopIndex = 0;
 
+        // Calculate next index
         const nextIndex = (currentStopIndex + 1) % SCROLL_STOPS.length;
         const nextStop = SCROLL_STOPS[nextIndex];
 
+        // Speed up stars for effect
         gsap.to(starSpeed, {
             current: 20,
             duration: 2,
@@ -549,11 +577,14 @@ const PronitePage: React.FC = () => {
         });
 
         const targetZ = nextStop.z;
-        const targetScroll = (-targetZ * maxScroll) / totalDist;
+        let targetScroll = (-targetZ * maxScroll) / totalDist;
 
+        // Smooth scroll to target
+        // Reduced duration from 10s to 3.5s for better responsiveness while keeping it smooth
+        // Changed easing to easeInOutCubic for a more natural start/stop feel
         lenisRef.current.scrollTo(targetScroll, {
-            duration: 10,
-            easing: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+            duration: 3.5,
+            easing: (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
             onComplete: () => {
                 gsap.to(starSpeed, {
                     current: 1,
@@ -610,7 +641,7 @@ const PronitePage: React.FC = () => {
                                 layerRefs.current["hero"] = el;
                             }}
                             className="z-layer hero-layer"
-                            data-z="0"
+                            data-z="-100"
                             data-persist="15000"
                         >
                             <div className="hero-partners-row">
