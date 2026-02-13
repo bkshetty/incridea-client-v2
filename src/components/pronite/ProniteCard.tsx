@@ -19,6 +19,11 @@ interface ProniteCardProps {
   songUrl: string;
   onNext: () => void;
   onPrev: () => void;
+  // ADD THESE:
+  isMuted: boolean;
+  onMuteToggle: () => void;
+  isPlaying: boolean;
+  onPlayToggle: () => void;
 }
 
 const HEART_RED = "#FF4B4B";
@@ -218,9 +223,11 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
   songUrl,
   onNext,
   onPrev,
+  isMuted, // Destructure this
+  onMuteToggle, // Destructure this
+  isPlaying, // Destructure this
+  onPlayToggle, // Destructure this
 }) => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const heartBtnRef = useRef<HTMLButtonElement>(null);
@@ -260,21 +267,38 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     }, 2000);
   };
 
-  const handleLikeClick = (btnRef: React.RefObject<HTMLButtonElement | null>) => {
+  const handleLikeClick = (
+    btnRef: React.RefObject<HTMLButtonElement | null>,
+  ) => {
     if (!isLiked) triggerBurst(btnRef);
     setIsLiked(!isLiked);
   };
+useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio) return;
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isMuted;
-      if (isPlaying) {
-        audioRef.current.play().catch(() => setIsPlaying(false));
-      } else {
-        audioRef.current.pause();
-      }
+  audio.muted = isMuted;
+
+  const handlePlay = () => {
+    if (isPlaying) {
+      // Small delay helps the browser swap the hardware stream for the new artist
+      setTimeout(() => {
+        audio.play().catch(() => {
+          // ❌ REMOVE: setIsPlaying(false);
+          // ✅ JUST LOG IT:
+          console.log("Audio awaiting user interaction...");
+        });
+      }, 50);
+    } else {
+      audio.pause();
     }
-  }, [isPlaying, isMuted, songUrl]);
+  };
+
+  handlePlay();
+  // Catch-all click listener to start audio if initial autoplay was blocked
+  window.addEventListener("click", handlePlay, { once: true });
+  return () => window.removeEventListener("click", handlePlay);
+}, [isPlaying, isMuted, songUrl]);
 
   const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.85, y: 40 },
@@ -443,47 +467,41 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
             <div className="pronite-card-controls">
               {/* Volume — far left */}
               <button
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={onMuteToggle} // Correct prop name from parent
                 style={{
                   background: "none",
                   border: "none",
                   cursor: "pointer",
                   padding: "6px",
-                  borderRadius: "10px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
                   color: isMuted ? "#f87171" : "rgba(255,255,255,0.35)",
                 }}
               >
+                {/* Switch icon based on the isMuted prop */}
                 {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
               </button>
 
               {/* Centre transport */}
               <div className="pronite-card-transport">
-                <button
-                  onClick={onPrev}
-                  style={controlBtnStyle}
-                >
+                <button onClick={onPrev} style={controlBtnStyle}>
                   <SkipBack size={20} fill="currentColor" />
                 </button>
 
                 <button
-                  onClick={() => setIsPlaying(!isPlaying)}
+                  onClick={onPlayToggle}
                   className="pronite-card-play-btn"
                 >
                   {isPlaying ? (
                     <Pause size={18} fill="currentColor" />
                   ) : (
-                    <Play size={18} fill="currentColor" style={{ marginLeft: "2px" }} />
+                    <Play
+                      size={18}
+                      fill="currentColor"
+                      style={{ marginLeft: "2px" }}
+                    />
                   )}
                 </button>
 
-                <button
-                  onClick={onNext}
-                  style={controlBtnStyle}
-                >
+                <button onClick={onNext} style={controlBtnStyle}>
                   <SkipForward size={20} fill="currentColor" />
                 </button>
               </div>

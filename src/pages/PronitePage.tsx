@@ -77,7 +77,8 @@ const PronitePage: React.FC = () => {
     const cursorDotRef = useRef<HTMLDivElement>(null);
     const cursorCircleRef = useRef<HTMLDivElement>(null);
     const tiltRef = useRef<HTMLDivElement>(null);
-
+const [isGlobalMuted, setIsGlobalMuted] = useState(false);
+const [isGlobalPlaying, setIsGlobalPlaying] = useState(true);
     const layerRefs = useRef<Record<string, HTMLElement | null>>({});
     const [activeArtist, setActiveArtist] = useState<ArtistData | null>(null);
     const mousePos = useRef({ x: 0, y: 0 });
@@ -181,7 +182,9 @@ const PronitePage: React.FC = () => {
             setButtonLabel(SCROLL_STOPS[currentStopIndex].label);
         }
     };
-
+const handleMuteToggle = () => {
+  setIsGlobalMuted((prev) => !prev); // This flips the boolean
+};
     // --- 3D TILT EFFECT ---
     const handleMouseMove = useCallback((e: MouseEvent) => {
         if (!tiltRef.current) return;
@@ -519,6 +522,13 @@ const PronitePage: React.FC = () => {
     }, [handleMouseMove, handleMouseLeave]);
 
     const handleExploreClick = () => {
+        const primer = new Audio();
+        primer.src =
+          "data:audio/wav;base64,UklGRiQAAABXQVZFRm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
+        primer
+          .play()
+          .then(() => primer.pause())
+          .catch(() => {});
         if (!lenisRef.current || !totalDistanceRef.current) return;
 
         const totalDist = totalDistanceRef.current;
@@ -562,381 +572,388 @@ const PronitePage: React.FC = () => {
     };
 
     return (
-        <div className="pronite-page" ref={containerRef}>
-            <Starfield />
-            <div ref={cursorRef} className="cursor">
-                <div ref={cursorDotRef} className="cursor-dot"></div>
-                <div ref={cursorCircleRef} className="cursor-circle"></div>
-            </div>
-
-            <nav className="nav">
-                <div className="nav-left">
-                    <button className="menu-btn" aria-label="Menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
-            </nav>
-
-            <button className={`explore-btn${activeArtist ? ' card-active' : ''}`} onClick={handleExploreClick}>
-                {buttonLabel}
-            </button>
-
-            <div className="scroll-progress-container">
-                <div className="scroll-track">
-                    <div className="progress-fill"></div>
-                    <div className="logo-bottom-wrapper">
-                        <img
-                            src="/ryoku_emoji.png"
-                            className="progress-logo-bottom"
-                            alt="Ryoku"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <div id="z-space-container" ref={containerRef}>
-                <Starfield speedRef={starSpeed} />
-
-                <div ref={tiltRef} className="tilt-layer">
-                    <div className="z-content">
-                        {/* HERO */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["hero"] = el;
-                            }}
-                            className="z-layer hero-layer"
-                            data-z="0"
-                            data-persist="15000"
-                        >
-                            <div className="hero-partners-row">
-                                <div className="hero-partner-item">
-                                    <img
-                                        src="/TribeVibe.svg"
-                                        alt="TribeVibe"
-                                        className="tribe-vibe-logo"
-                                    />
-                                </div>
-                                <div className="hero-partner-divider"></div>
-                                <div className="hero-partner-item">
-                                    <img
-                                        src="/incridea.png"
-                                        alt="Incridea"
-                                        className="incridea-logo"
-                                    />
-                                </div>
-                            </div>
-                            <h1 className="hero-title">
-                                <img
-                                    src="/inc_chrome.svg"
-                                    alt="Pronite"
-                                    className="pronite-main-logo"
-                                />
-                            </h1>
-                        </section>
-
-                        {/* ABOUT */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["about"] = el;
-                            }}
-                            className="z-layer about-layer"
-                            data-z="-900"
-                            data-persist="15000"
-                            data-fade-exp="25"
-                        >
-                            <div>
-                                <h2 className="about-text">PRESENTING TO YOU</h2>
-                            </div>
-                        </section>
-
-                        {/* ABOUT 2 */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["about2"] = el;
-                            }}
-                            className="z-layer about-layer"
-                            data-z="-1900"
-                            data-persist="15000"
-                            data-fade-exp="25"
-                        >
-                            <div>
-                                <h2 className="about-text">PRONITE ARTIST</h2>
-                            </div>
-                        </section>
-
-                        {/* ARMAAN MALIK (Artist 1) */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist1"] = el;
-                            }}
-                            className="z-layer artist-layer"
-                            data-z="-3500"
-                            data-pin="true"
-                            data-persist="7000"
-                            data-artist-id="artist1"
-                            data-artist-range="7000"
-                            data-fade-exp="25"
-                        >
-                            <div className="artist-content">
-                                <div className="text-mask text-mask-name">
-                                    <img
-                                        src="/ArmaanMalik.svg"
-                                        alt="Armaan Malik"
-                                        className="artist-name-svg"
-                                    />
-                                </div>
-                                <div className="text-mask text-mask-date">
-                                    <p className="artist-date">5th Mar · 9:00 PM</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist1_right"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-5200"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <img
-                                    src="/artist1-right.jpg"
-                                    alt="Armaan Malik Right"
-                                    className="artist-img right"
-                                />
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist1_left"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-5800"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <video
-                                    muted
-                                    autoPlay
-                                    loop
-                                    playsInline
-                                    preload="auto"
-                                    className="artist-img left"
-                                    style={{ filter: 'none' }}
-                                >
-                                    <source src={armaanVideo} type="video/webm" />
-                                </video>
-                            </div>
-                        </section>
-
-                        {/* NIKHITA GANDHI (Artist 2) */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist2"] = el;
-                            }}
-                            className="z-layer artist-layer"
-                            data-z="-11000"
-                            data-pin="true"
-                            data-persist="7000"
-                            data-artist-id="artist2"
-                            data-artist-range="7000"
-                            data-fade-exp="25"
-                        >
-                            <div className="artist-content">
-                                <div className="text-mask text-mask-name">
-                                    <img
-                                        src="/NikhitaGandhi.svg"
-                                        alt="Nikhita Gandhi"
-                                        className="artist-name-svg"
-                                    />
-                                </div>
-                                <div className="text-mask text-mask-date">
-                                    <p className="artist-date">5th Mar · 11:30 PM</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist2_right"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-13500"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <img
-                                    src="/artist1-right.jpg"
-                                    alt="Nikhita Gandhi Right"
-                                    className="artist-img right"
-                                />
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist2_left"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-14500"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <img
-                                    src="/artist1-right.jpg"
-                                    alt="Nikhita Gandhi Left"
-                                    className="artist-img left"
-                                />
-                            </div>
-                        </section>
-
-                        {/* ALO (Artist 3) */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist3"] = el;
-                            }}
-                            className="z-layer artist-layer"
-                            data-z="-18500"
-                            data-pin="true"
-                            data-persist="7000"
-                            data-artist-id="artist3"
-                            data-artist-range="7000"
-                            data-fade-exp="25"
-                        >
-                            <div className="artist-content">
-                                <div className="text-mask text-mask-name">
-                                    <img
-                                        src="/ALO.svg"
-                                        alt="ALO"
-                                        className="artist-name-svg alo-svg"
-                                    />
-                                </div>
-                                <div className="text-mask text-mask-date">
-                                    <p className="artist-date">6th Mar · 1:30 AM</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist3_right"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-21000"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <img
-                                    src="/artist3-right.jpg"
-                                    alt="ALO Right"
-                                    className="artist-img right"
-                                />
-                            </div>
-                        </section>
-
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["artist3_left"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-22000"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <video
-                                    muted
-                                    autoPlay
-                                    loop
-                                    playsInline
-                                    preload="auto"
-                                    className="artist-img left"
-                                    style={{ filter: 'none' }}
-                                >
-                                    <source src={aloVideo} type="video/webm" />
-                                </video>
-                            </div>
-                        </section>
-
-                        {/* FINAL REVEAL */}
-                        <section
-                            ref={(el) => {
-                                layerRefs.current["final-reveal"] = el;
-                            }}
-                            className="z-layer"
-                            data-z="-27500"
-                            data-pin="true"
-                            data-persist="5000"
-                            style={{ opacity: 0, pointerEvents: "none" }}
-                        >
-                            <FinalReveal
-                                ref={finalRevealRef}
-                                artists={[
-                                    {
-                                        name: (
-                                            <>
-                                                NIKITHA
-                                                <br />
-                                                GANDHI
-                                            </>
-                                        ),
-                                        role: "Special Guest",
-                                        time: "09:00 PM",
-                                        image: ARTISTS.artist2.profileImage,
-                                        className: "md:col-span-3",
-                                    },
-                                    {
-                                        name: "ARMAAN MALIK",
-                                        role: "HEADLINER",
-                                        time: "11:30 PM",
-                                        image: ARTISTS.artist1.profileImage,
-                                        isHeadliner: true,
-                                        className: "md:col-span-6",
-                                    },
-                                    {
-                                        name: (
-                                            <>
-                                                ALO
-                                                <br />
-                                                THE BAND
-                                            </>
-                                        ),
-                                        role: "Encore Act",
-                                        time: "01:30 AM",
-                                        image: ARTISTS.artist3.profileImage,
-                                        className: "md:col-span-3",
-                                    },
-                                ]}
-                            />
-                        </section>
-                    </div>
-                </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-                {activeArtist && (
-                    <ProniteCard
-                        key={activeArtist.id}
-                        artistName={activeArtist.name}
-                        artistDate={activeArtist.date}
-                        artistImage={activeArtist.profileImage}
-                        accentColor={activeArtist.accent}
-                        songUrl={activeArtist.song} // Add this
-                        onNext={() => handleArtistNavigation("next")} // Add this
-                        onPrev={() => handleArtistNavigation("prev")} // Add this
-                    />
-                )}
-            </AnimatePresence>
+      <div className="pronite-page" ref={containerRef}>
+        <Starfield />
+        <div ref={cursorRef} className="cursor">
+          <div ref={cursorDotRef} className="cursor-dot"></div>
+          <div ref={cursorCircleRef} className="cursor-circle"></div>
         </div>
+
+        <nav className="nav">
+          <div className="nav-left">
+            <button className="menu-btn" aria-label="Menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </nav>
+
+        <button
+          className={`explore-btn${activeArtist ? " card-active" : ""}`}
+          onClick={handleExploreClick}
+        >
+          {buttonLabel}
+        </button>
+
+        <div className="scroll-progress-container">
+          <div className="scroll-track">
+            <div className="progress-fill"></div>
+            <div className="logo-bottom-wrapper">
+              <img
+                src="/ryoku_emoji.png"
+                className="progress-logo-bottom"
+                alt="Ryoku"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="z-space-container" ref={containerRef}>
+          <Starfield speedRef={starSpeed} />
+
+          <div ref={tiltRef} className="tilt-layer">
+            <div className="z-content">
+              {/* HERO */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["hero"] = el;
+                }}
+                className="z-layer hero-layer"
+                data-z="0"
+                data-persist="15000"
+              >
+                <div className="hero-partners-row">
+                  <div className="hero-partner-item">
+                    <img
+                      src="/TribeVibe.svg"
+                      alt="TribeVibe"
+                      className="tribe-vibe-logo"
+                    />
+                  </div>
+                  <div className="hero-partner-divider"></div>
+                  <div className="hero-partner-item">
+                    <img
+                      src="/incridea.png"
+                      alt="Incridea"
+                      className="incridea-logo"
+                    />
+                  </div>
+                </div>
+                <h1 className="hero-title">
+                  <img
+                    src="/inc_chrome.svg"
+                    alt="Pronite"
+                    className="pronite-main-logo"
+                  />
+                </h1>
+              </section>
+
+              {/* ABOUT */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["about"] = el;
+                }}
+                className="z-layer about-layer"
+                data-z="-900"
+                data-persist="15000"
+                data-fade-exp="25"
+              >
+                <div>
+                  <h2 className="about-text">PRESENTING TO YOU</h2>
+                </div>
+              </section>
+
+              {/* ABOUT 2 */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["about2"] = el;
+                }}
+                className="z-layer about-layer"
+                data-z="-1900"
+                data-persist="15000"
+                data-fade-exp="25"
+              >
+                <div>
+                  <h2 className="about-text">PRONITE ARTIST</h2>
+                </div>
+              </section>
+
+              {/* ARMAAN MALIK (Artist 1) */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist1"] = el;
+                }}
+                className="z-layer artist-layer"
+                data-z="-3500"
+                data-pin="true"
+                data-persist="7000"
+                data-artist-id="artist1"
+                data-artist-range="7000"
+                data-fade-exp="25"
+              >
+                <div className="artist-content">
+                  <div className="text-mask text-mask-name">
+                    <img
+                      src="/ArmaanMalik.svg"
+                      alt="Armaan Malik"
+                      className="artist-name-svg"
+                    />
+                  </div>
+                  <div className="text-mask text-mask-date">
+                    <p className="artist-date">5th Mar · 9:00 PM</p>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist1_right"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-5200"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <img
+                    src="/artist1-right.jpg"
+                    alt="Armaan Malik Right"
+                    className="artist-img right"
+                  />
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist1_left"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-5800"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <video
+                    muted
+                    autoPlay
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="artist-img left"
+                    style={{ filter: "none" }}
+                  >
+                    <source src={armaanVideo} type="video/webm" />
+                  </video>
+                </div>
+              </section>
+
+              {/* NIKHITA GANDHI (Artist 2) */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist2"] = el;
+                }}
+                className="z-layer artist-layer"
+                data-z="-11000"
+                data-pin="true"
+                data-persist="7000"
+                data-artist-id="artist2"
+                data-artist-range="7000"
+                data-fade-exp="25"
+              >
+                <div className="artist-content">
+                  <div className="text-mask text-mask-name">
+                    <img
+                      src="/NikhitaGandhi.svg"
+                      alt="Nikhita Gandhi"
+                      className="artist-name-svg"
+                    />
+                  </div>
+                  <div className="text-mask text-mask-date">
+                    <p className="artist-date">5th Mar · 11:30 PM</p>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist2_right"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-13500"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <img
+                    src="/artist1-right.jpg"
+                    alt="Nikhita Gandhi Right"
+                    className="artist-img right"
+                  />
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist2_left"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-14500"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <img
+                    src="/artist1-right.jpg"
+                    alt="Nikhita Gandhi Left"
+                    className="artist-img left"
+                  />
+                </div>
+              </section>
+
+              {/* ALO (Artist 3) */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist3"] = el;
+                }}
+                className="z-layer artist-layer"
+                data-z="-18500"
+                data-pin="true"
+                data-persist="7000"
+                data-artist-id="artist3"
+                data-artist-range="7000"
+                data-fade-exp="25"
+              >
+                <div className="artist-content">
+                  <div className="text-mask text-mask-name">
+                    <img
+                      src="/ALO.svg"
+                      alt="ALO"
+                      className="artist-name-svg alo-svg"
+                    />
+                  </div>
+                  <div className="text-mask text-mask-date">
+                    <p className="artist-date">6th Mar · 1:30 AM</p>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist3_right"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-21000"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <img
+                    src="/artist3-right.jpg"
+                    alt="ALO Right"
+                    className="artist-img right"
+                  />
+                </div>
+              </section>
+
+              <section
+                ref={(el) => {
+                  layerRefs.current["artist3_left"] = el;
+                }}
+                className="z-layer artist-image-layer"
+                data-z="-22000"
+                data-pin="false"
+                data-artist-image="true"
+              >
+                <div className="artist-img-wrapper">
+                  <video
+                    muted
+                    autoPlay
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="artist-img left"
+                    style={{ filter: "none" }}
+                  >
+                    <source src={aloVideo} type="video/webm" />
+                  </video>
+                </div>
+              </section>
+
+              {/* FINAL REVEAL */}
+              <section
+                ref={(el) => {
+                  layerRefs.current["final-reveal"] = el;
+                }}
+                className="z-layer"
+                data-z="-27500"
+                data-pin="true"
+                data-persist="5000"
+                style={{ opacity: 0, pointerEvents: "none" }}
+              >
+                <FinalReveal
+                  ref={finalRevealRef}
+                  artists={[
+                    {
+                      name: (
+                        <>
+                          NIKITHA
+                          <br />
+                          GANDHI
+                        </>
+                      ),
+                      role: "Special Guest",
+                      time: "09:00 PM",
+                      image: ARTISTS.artist2.profileImage,
+                      className: "md:col-span-3",
+                    },
+                    {
+                      name: "ARMAAN MALIK",
+                      role: "HEADLINER",
+                      time: "11:30 PM",
+                      image: ARTISTS.artist1.profileImage,
+                      isHeadliner: true,
+                      className: "md:col-span-6",
+                    },
+                    {
+                      name: (
+                        <>
+                          ALO
+                          <br />
+                          THE BAND
+                        </>
+                      ),
+                      role: "Encore Act",
+                      time: "01:30 AM",
+                      image: ARTISTS.artist3.profileImage,
+                      className: "md:col-span-3",
+                    },
+                  ]}
+                />
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {activeArtist && (
+            <ProniteCard
+              key={activeArtist.id}
+              artistName={activeArtist.name}
+              artistDate={activeArtist.date}
+              artistImage={activeArtist.profileImage}
+              accentColor={activeArtist.accent}
+              songUrl={activeArtist.song} // Add this
+              onNext={() => handleArtistNavigation("next")} // Add this
+              onPrev={() => handleArtistNavigation("prev")} // Add this
+              isMuted={isGlobalMuted}
+              onMuteToggle={handleMuteToggle}
+              isPlaying={isGlobalPlaying}
+              onPlayToggle={() => setIsGlobalPlaying(!isGlobalPlaying)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     );
 };
 
