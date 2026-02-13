@@ -156,17 +156,18 @@ const PronitePage: React.FC = () => {
                 pointerEvents: opacity > 0.9 ? "auto" : "none"
             });
 
-            // Trigger GSAP animation when reaching z=-26000
-            if (currentZ <= -26000 && !finalRevealAnimationTriggered.current) {
+            // Trigger GSAP animation when reaching z=-26000 (when section starts fading in)
+            // Use opacity threshold to ensure cards animate as soon as section is visible
+            if (opacity > 0.1 && !finalRevealAnimationTriggered.current) {
                 finalRevealAnimationTriggered.current = true;
-                setTimeout(() => {
-                    finalRevealRef.current?.playAnimation();
-                }, 300);
+                // Immediate animation, no delay
+                finalRevealRef.current?.playAnimation();
             }
 
-            // Reset trigger if scrolling back up
-            if (currentZ > -25500 && finalRevealAnimationTriggered.current) {
+            // Reset animation if scrolling back up past the trigger point
+            if (opacity <= 0.05 && finalRevealAnimationTriggered.current) {
                 finalRevealAnimationTriggered.current = false;
+                finalRevealRef.current?.resetAnimation();
             }
         }
 

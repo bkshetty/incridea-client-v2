@@ -20,12 +20,35 @@ interface FinalRevealProps {
 
 export interface FinalRevealRef {
     playAnimation: () => void;
+    resetAnimation: () => void;
 }
 
 const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, ref) => {
     const cardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
     const containerRef = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<gsap.core.Timeline | null>(null);
+    const hasPlayedRef = useRef(false);
+
+    const resetAnimation = () => {
+        const card0 = cardRefs.current[0];
+        const card1 = cardRefs.current[1];
+        const card2 = cardRefs.current[2];
+
+        // Kill existing timeline if any
+        if (timelineRef.current) {
+            timelineRef.current.kill();
+            timelineRef.current = null;
+        }
+
+        // Reset to initial hidden state
+        if (card0 && card1 && card2) {
+            gsap.set(card0, { opacity: 0, x: 200, y: 20, scale: 0.8 });
+            gsap.set(card1, { opacity: 0, y: 20 });
+            gsap.set(card2, { opacity: 0, x: -200, y: 20, scale: 0.8 });
+        }
+
+        hasPlayedRef.current = false;
+    };
 
     const playAnimation = () => {
         // Ensure all 3 cards are available
@@ -40,6 +63,13 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
         if (!(card0 instanceof HTMLElement) || !(card1 instanceof HTMLElement) || !(card2 instanceof HTMLElement)) {
             return;
         }
+
+        // Only play once per scroll-in
+        if (hasPlayedRef.current) {
+            return;
+        }
+
+        hasPlayedRef.current = true;
 
         // Kill existing timeline if any
         if (timelineRef.current) {
@@ -83,9 +113,10 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
         }, "-=1"); // Start at the same time as card0
     };
 
-    // Expose playAnimation to parent component
+    // Expose playAnimation and resetAnimation to parent component
     useImperativeHandle(ref, () => ({
-        playAnimation
+        playAnimation,
+        resetAnimation
     }));
 
     // Set initial hidden state on mount
@@ -123,7 +154,7 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
 
                 <div ref={containerRef} className="flex flex-col md:grid md:grid-cols-12 md:justify-center gap-1 md:gap-6 w-full flex-1 min-h-0 h-[78%] relative">
                     {/* Nikitha - Slides from left */}
-                    <div ref={(el) => { cardRefs.current[0] = el; }} className="md:col-start-2 md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity' }}>
+                    <div ref={(el) => { cardRefs.current[0] = el; }} className="md:col-start-2 md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[0].name}
                             role={artists[0].role}
@@ -135,7 +166,7 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                     </div>
 
                     {/* Armaan - Appears first in center */}
-                    <div ref={(el) => { cardRefs.current[1] = el; }} className="md:col-span-4 flex-1 min-h-0 md:z-10" style={{ willChange: 'transform, opacity' }}>
+                    <div ref={(el) => { cardRefs.current[1] = el; }} className="md:col-span-4 flex-1 min-h-0 md:z-10" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[1].name}
                             role={artists[1].role}
@@ -147,7 +178,7 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                     </div>
 
                     {/* Alo - Slides from right */}
-                    <div ref={(el) => { cardRefs.current[2] = el; }} className="md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity' }}>
+                    <div ref={(el) => { cardRefs.current[2] = el; }} className="md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[2].name}
                             role={artists[2].role}
