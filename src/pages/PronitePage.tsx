@@ -108,7 +108,7 @@ const PronitePage: React.FC = () => {
         }
     };
     // --- Improved Scroll Tracking with Priority System ---
-    const onUpdate = (currentZ: number) => {
+    const onUpdate = useCallback((currentZ: number) => {
         let foundArtistKey: string | null = null;
         let foundArtist: ArtistData | null = null;
         let maxPriority = -Infinity;
@@ -178,9 +178,12 @@ const PronitePage: React.FC = () => {
         });
 
         if (currentStopIndex !== -1) {
-            setButtonLabel(SCROLL_STOPS[currentStopIndex].label);
+            const nextIndex = (currentStopIndex + 1) % SCROLL_STOPS.length;
+            setButtonLabel(
+                nextIndex === 0 ? "EXPLORE LINEUP" : `EXPLORE ${SCROLL_STOPS[nextIndex].id.toUpperCase()}`
+            );
         }
-    };
+    }, [setActiveArtist]);
 
     // --- 3D TILT EFFECT ---
     const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -408,7 +411,7 @@ const PronitePage: React.FC = () => {
     );
 
     // --- Event Handlers for NON-ARTIST layers only ---
-    const onLayerEnter = (el: HTMLElement) => {
+    const onLayerEnter = useCallback((el: HTMLElement) => {
         // Skip artist layers — they're handled by onArtistScrollProgress
         if (el.dataset.artistId) return;
 
@@ -427,9 +430,9 @@ const PronitePage: React.FC = () => {
                 },
             );
         }
-    };
+    }, []);
 
-    const onLayerExit = (el: HTMLElement) => {
+    const onLayerExit = useCallback((el: HTMLElement) => {
         // Skip artist layers
         if (el.dataset.artistId) return;
 
@@ -444,7 +447,7 @@ const PronitePage: React.FC = () => {
                 overwrite: true,
             });
         }
-    };
+    }, []);
 
     const { lenisRef, totalDistanceRef } = useZScroll(containerRef, {
         onLayerEnter,
