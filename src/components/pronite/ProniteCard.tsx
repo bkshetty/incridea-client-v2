@@ -273,32 +273,53 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     if (!isLiked) triggerBurst(btnRef);
     setIsLiked(!isLiked);
   };
-useEffect(() => {
-  const audio = audioRef.current;
-  if (!audio) return;
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-  audio.muted = isMuted;
+    audio.muted = isMuted;
 
-  const handlePlay = () => {
-    if (isPlaying) {
-      // Small delay helps the browser swap the hardware stream for the new artist
-      setTimeout(() => {
-        audio.play().catch(() => {
-          // ❌ REMOVE: setIsPlaying(false);
-          // ✅ JUST LOG IT:
-          console.log("Audio awaiting user interaction...");
-        });
-      }, 50);
-    } else {
-      audio.pause();
-    }
-  };
+    const attemptPlay = () => {
+      if (isPlaying) {
+        // Attempt to play with promise handling
+        setTimeout(() => {
+          audio
+            .play()
+            .then(() => {
+              console.log("Audio playing successfully");
+            })
+            .catch((error) => {
+              console.log(
+                "Autoplay blocked, awaiting user interaction:",
+                error.name,
+              );
+              // Autoplay was blocked - user interaction needed
+            });
+        }, 50);
+      } else {
+        audio.pause();
+      }
+    };
 
-  handlePlay();
-  // Catch-all click listener to start audio if initial autoplay was blocked
-  window.addEventListener("click", handlePlay, { once: true });
-  return () => window.removeEventListener("click", handlePlay);
-}, [isPlaying, isMuted, songUrl]);
+    // Initial play attempt
+    attemptPlay();
+
+    // Add robust user interaction listeners for multiple triggers
+    const handleUserInteraction = () => {
+      attemptPlay();
+    };
+
+    // Listen for multiple interaction types
+    window.addEventListener("click", handleUserInteraction);
+    window.addEventListener("touchstart", handleUserInteraction);
+    document.addEventListener("keydown", handleUserInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("touchstart", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, [isPlaying, isMuted, songUrl]);
 
   const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.85, y: 40 },

@@ -78,7 +78,8 @@ const PronitePage: React.FC = () => {
   const cursorCircleRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const [isGlobalMuted, setIsGlobalMuted] = useState(false);
-  const [isGlobalPlaying, setIsGlobalPlaying] = useState(true);
+  const [isGlobalPlaying, setIsGlobalPlaying] = useState(false);
+  const userInteractedRef = useRef(false);
   const layerRefs = useRef<Record<string, HTMLElement | null>>({});
   const [activeArtist, setActiveArtist] = useState<ArtistData | null>(null);
   const mousePos = useRef({ x: 0, y: 0 });
@@ -484,7 +485,16 @@ const PronitePage: React.FC = () => {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.body.addEventListener("mouseleave", handleMouseLeave);
 
+    // Enable audio playback on first user interaction
+    const enableAudioOnInteraction = () => {
+      if (!userInteractedRef.current) {
+        userInteractedRef.current = true;
+        setIsGlobalPlaying(true);
+      }
+    };
+
     const moveCursor = (e: MouseEvent) => {
+      enableAudioOnInteraction();
       if (cursorDotRef.current) {
         cursorDotRef.current.style.left = e.clientX + "px";
         cursorDotRef.current.style.top = e.clientY + "px";
@@ -503,6 +513,9 @@ const PronitePage: React.FC = () => {
     const handleLeave = () => cursorRef.current?.classList.remove("hover");
 
     window.addEventListener("mousemove", moveCursor);
+    window.addEventListener("click", enableAudioOnInteraction);
+    window.addEventListener("touchstart", enableAudioOnInteraction);
+
     const interactives = document.querySelectorAll(
       "a, button, .project-card, .cta-btn",
     );
@@ -515,6 +528,8 @@ const PronitePage: React.FC = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("mousemove", moveCursor);
+      window.removeEventListener("click", enableAudioOnInteraction);
+      window.removeEventListener("touchstart", enableAudioOnInteraction);
       interactives.forEach((el) => {
         el.removeEventListener("mouseenter", handleHover);
         el.removeEventListener("mouseleave", handleLeave);
