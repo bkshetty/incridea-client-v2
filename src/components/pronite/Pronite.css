@@ -189,19 +189,27 @@
     top: 50%;
     transform: translateY(-50%);
     height: 60vh;
-    width: 4px;
+    width: 60px;
     z-index: 100;
-    pointer-events: none;
+    pointer-events: auto;
     display: flex;
     justify-content: center;
+    touch-action: none;
+    cursor: grab;
+}
+
+.pronite-page .scroll-progress-container:active {
+    cursor: grabbing;
 }
 
 .pronite-page .scroll-track {
     position: relative;
-    width: 100%;
+    width: 6px;
     height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    overflow: visible;
 }
 
 .pronite-page .progress-fill {
@@ -210,10 +218,10 @@
     left: 0;
     width: 100%;
     height: 0%;
-    background: white;
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    transition: height 0.1s linear;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    transition: height 0.05s linear;
 }
 
 .pronite-page .logo-bottom-wrapper {
