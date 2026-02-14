@@ -111,6 +111,14 @@
     object-fit: contain;
 }
 
+.pronite-page .nmamit-logo {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 1;
+}
+
 .pronite-page .hero-partner-divider {
     width: 2px;
     height: 45px;
@@ -226,56 +234,25 @@
     overflow: visible;
 }
 
-.pronite-page .progress-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0%;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-    transition: height 0.05s linear;
-}
-
 .pronite-page .logo-bottom-wrapper {
     position: absolute;
     bottom: 0%;
     left: 50%;
-    transform: translate(-50%, 0%);
-    width: 70px;
+    transform: translate(-50%, 50%);
+    width: 32px;
     display: flex;
     justify-content: center;
     z-index: 3;
-    transition: bottom 0.1s linear;
-    padding-bottom: 5px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0%;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-}
-
-.pronite-page .logo-bottom-wrapper {
-    position: absolute;
-    bottom: 0%;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    width: 70px;
-    display: flex;
-    justify-content: center;
-    z-index: 3;
-    padding-bottom: 5px;
+    transition: bottom 0.05s linear;
+    pointer-events: none;
 }
 
 .pronite-page .progress-logo-bottom {
-    width: 40%;
+    width: 100%;
     height: auto;
-    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
     display: block;
+    pointer-events: none;
 }
 
 /* Layers */
@@ -321,6 +298,33 @@
 /* ALO is shorter, so smaller max-width */
 .pronite-page .artist-name-svg.alo-svg {
     max-width: 350px;
+}
+
+/* Sponsor Row — sits above artist name */
+.pronite-page .sponsor-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.85;
+    flex-wrap: wrap;
+    clip-path: inset(0 0 100% 0);
+    will-change: clip-path, opacity;
+}
+
+.pronite-page .sponsor-logo {
+    height: 36px;
+    width: auto;
+    max-width: 110px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.pronite-page .sponsor-logo:hover {
+    opacity: 1;
 }
 
 .pronite-page .artist-date {
@@ -702,6 +706,20 @@
         height: 50px;
     }
 
+    .pronite-page .nmamit-logo {
+        height: 60px;
+    }
+
+    .pronite-page .sponsor-row {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .pronite-page .sponsor-logo {
+        height: 26px;
+        max-width: 80px;
+    }
+
     .pronite-page .artist-content {
         gap: 1.5rem;
         /* Mobile: push name down to screenshot level */
@@ -721,25 +739,6 @@
     /* Mobile: Artist images positioned higher */
     .pronite-page .artist-image-layer {
         transform: translateY(-100px) !important;
-    }
-
-    /* Explore button — smooth transition, lifts when card appears */
-    .explore-btn {
-        font-size: 0.6rem;
-        padding: 0.5rem 1.2rem;
-        letter-spacing: 0.1em;
-        transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .explore-btn.card-active {
-        bottom: 8rem;
-    }
-
-    /* Shorten and reposition scroll progress so it doesn't overlap the card */
-    .pronite-page .scroll-progress-container {
-        right: 1rem;
-        height: 35vh;
-        top: 40%;
     }
 
     /* Hide the desktop heart in controls — mobile has its own in the top row */
@@ -864,5 +863,171 @@
     .pronite-page .exit-btn svg {
         width: 20px;
         height: 20px;
+    }
+}
+
+/* ===========================================================
+   MOBILE/TABLET: Hide explore button + progress bar,
+   Show glassmorphic Z-axis navigation buttons
+   =========================================================== */
+@media (max-width: 1024px) {
+
+    /* Hide desktop-only controls on mobile/tablet */
+    .explore-btn {
+        display: none !important;
+    }
+
+    .pronite-page .scroll-progress-container {
+        display: none !important;
+    }
+
+    /* Show mobile Z-nav buttons on mobile/tablet */
+    .mobile-z-nav {
+        display: flex !important;
+    }
+}
+
+/* Mobile Z-Nav — Glassmorphic Vertical Arrow Buttons
+   Hidden by default on desktop, shown via media query on mobile/tablet */
+.mobile-z-nav {
+    position: fixed;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    z-index: 1002;
+    pointer-events: auto;
+}
+
+.mobile-z-nav-btn {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Glossy inner highlight — replicates the glass sheen from the reference image */
+.mobile-z-nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 12%;
+    width: 76%;
+    height: 42%;
+    border-radius: 50% 50% 45% 45%;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.45) 0%,
+            rgba(255, 255, 255, 0.08) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Subtle outer glow ring */
+.mobile-z-nav-btn::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* ── Forward (Up Arrow) — Green tinted glass ── */
+.mobile-z-nav-forward {
+    background: linear-gradient(180deg,
+            rgba(76, 175, 80, 0.5) 0%,
+            rgba(27, 94, 32, 0.55) 100%);
+    box-shadow:
+        0 4px 20px rgba(76, 175, 80, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.mobile-z-nav-forward::after {
+    background: radial-gradient(circle,
+            rgba(76, 175, 80, 0.4) 0%,
+            transparent 70%);
+}
+
+.mobile-z-nav-forward:active {
+    transform: scale(0.9);
+    box-shadow:
+        0 2px 12px rgba(76, 175, 80, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.mobile-z-nav-forward:active::after {
+    opacity: 1;
+}
+
+/* ── Backward (Down Arrow) — Red tinted glass ── */
+.mobile-z-nav-backward {
+    background: linear-gradient(180deg,
+            rgba(244, 67, 54, 0.5) 0%,
+            rgba(183, 28, 28, 0.55) 100%);
+    box-shadow:
+        0 4px 20px rgba(244, 67, 54, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.mobile-z-nav-backward::after {
+    background: radial-gradient(circle,
+            rgba(244, 67, 54, 0.4) 0%,
+            transparent 70%);
+}
+
+.mobile-z-nav-backward:active {
+    transform: scale(0.9);
+    box-shadow:
+        0 2px 12px rgba(244, 67, 54, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.mobile-z-nav-backward:active::after {
+    opacity: 1;
+}
+
+/* SVG arrow icons */
+.mobile-z-nav-btn svg {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    transition: transform 0.2s ease;
+}
+
+.mobile-z-nav-btn:active svg {
+    transform: scale(0.85);
+}
+
+/* Smaller buttons on very small screens */
+@media (max-width: 380px) {
+    .mobile-z-nav-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mobile-z-nav-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .mobile-z-nav {
+        right: 0.75rem;
+        gap: 10px;
     }
 }

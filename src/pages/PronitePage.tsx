@@ -86,6 +86,7 @@ const PronitePage: React.FC = () => {
         );
     });
 
+
     const navigate = useNavigate();
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -391,6 +392,9 @@ const PronitePage: React.FC = () => {
             const contentBlock = element.querySelector(
                 ".artist-content",
             ) as HTMLElement | null;
+            const sponsorRow = element.querySelector(
+                ".sponsor-row",
+            ) as HTMLElement | null;
 
             // Image refs
             const rightImgLayer = layerRefs.current[`${artistKey}_right`];
@@ -425,6 +429,12 @@ const PronitePage: React.FC = () => {
                     });
                 }
                 if (contentBlock) gsap.set(contentBlock, { y: 0 });
+                if (sponsorRow) {
+                    gsap.set(sponsorRow, {
+                        clipPath: `inset(0 0 ${(1 - t) * 100}% 0)`,
+                        y: 0,
+                    });
+                }
 
                 // --- Text Move Down: phase 0.20 – 0.40 ---
             } else if (phase <= 0.4) {
@@ -442,6 +452,11 @@ const PronitePage: React.FC = () => {
                         y: 0,
                     });
                 if (contentBlock) gsap.set(contentBlock, { y: `${t * 30}vh` });
+                if (sponsorRow)
+                    gsap.set(sponsorRow, {
+                        clipPath: "inset(0 0 0% 0)",
+                        y: 0,
+                    });
 
                 // --- Text at bottom (images active): phase 0.40 – 0.80 ---
             } else if (phase <= 0.8) {
@@ -450,6 +465,8 @@ const PronitePage: React.FC = () => {
                 if (dateInner)
                     gsap.set(dateInner, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
                 if (contentBlock) gsap.set(contentBlock, { y: "30vh" });
+                if (sponsorRow)
+                    gsap.set(sponsorRow, { clipPath: "inset(0 0 0% 0)" });
 
                 // --- Text Exit: phase 0.80 – 1.0 ---
             } else {
@@ -466,6 +483,14 @@ const PronitePage: React.FC = () => {
                     gsap.set(dateInner, {
                         clipPath: `inset(0 0 ${dateT * 100}% 0)`,
                         opacity: 1,
+                        y: 0,
+                    });
+
+                // Sponsor exits last (top-to-bottom ripple: 0.82 -> 1.0)
+                const sponsorExitT = easeInCubic(clamp((phase - 0.82) / 0.18, 0, 1));
+                if (sponsorRow)
+                    gsap.set(sponsorRow, {
+                        clipPath: `inset(0 0 ${sponsorExitT * 100}% 0)`,
                         y: 0,
                     });
             }
@@ -744,409 +769,647 @@ const PronitePage: React.FC = () => {
         });
     };
 
+    // =====================================================================
+    // MOBILE/TABLET Z-AXIS NAVIGATION — Phase-Aware State Machine
+    // =====================================================================
+    // For non-artist regions: scroll exactly one viewport-height per click.
+    // For artist layers: step through animation sub-phases on each click
+    //   Forward:  Enter → Text Reveal → Text Shift Down → Images → Text Exit → Leave
+    //   Backward: exact reverse order
+    // =====================================================================
+
+    const NAV_DURATION = 1.8; // seconds for each smooth scroll animation
+
+    // Sub-phase waypoints within an artist layer (phase 0→1)
+    // Each click advances to the next stop. Both images get symmetric treatment.
+    //
+    // Right image range: phase 0.25 → 0.55  (rightT = (phase − 0.25) / 0.30)
+    // Left  image range: phase 0.55 → 0.85  (leftT  = (phase − 0.55) / 0.30)
+    //
+    const ARTIST_PHASE_STOPS = [
+        0.10,   // 1. Text reveal playing            (name + date clip-mask animate in)
+        0.30,   // 2. Text shifted down               (content slides to +30vh)
+        0.34,   // 3. Right image lightly revealed     (rightT ≈ 0.30 — approaching, semi-transparent)
+        0.47,   // 4. Right image fully at camera      (rightT ≈ 0.73 — scale 1, full opacity)
+        0.56,   // 5. Right image passes + left begins (rightT → 1.0, leftT ≈ 0.03)
+        0.64,   // 6. Left image lightly revealed      (leftT ≈ 0.30 — approaching, semi-transparent)
+        0.77,   // 7. Left image fully at camera       (leftT ≈ 0.73 — scale 1, full opacity)
+        0.90,   // 8. Text exit playing                (name + date clip-mask animate out)
+    ];
+
+    // Helper: convert a target Z-depth to a scroll position
+    const zToScroll = (targetZ: number): number => {
+        if (!totalDistanceRef.current) return 0;
+        const totalDist = totalDistanceRef.current;
+        const maxScroll = totalDist - window.innerHeight;
+        return (-targetZ * maxScroll) / totalDist;
+    };
+
+    // Helper: convert a target artist phase to a cameraZ value
+    // phase = (relativeZ - phaseStart) / totalPhaseRange
+    // relativeZ = depth - cameraZ
+    // so: cameraZ = depth - phaseStart - phase * totalPhaseRange
+    const artistPhaseToZ = (artistDepth: number, artistRange: number, targetPhase: number): number => {
+        const phaseStart = -200;
+        const totalPhaseRange = artistRange + 200; // phaseEnd - phaseStart = artistRange - (-200)
+        const relativeZ = phaseStart + targetPhase * totalPhaseRange;
+        return artistDepth - relativeZ;
+    };
+
+    // Helper: determine current artist phase (returns null if not inside an artist)
+    const getCurrentArtistInfo = (currentZ: number) => {
+        const artistKeys = ['artist1', 'artist2', 'artist3'];
+        for (const key of artistKeys) {
+            const el = layerRefs.current[key];
+            if (!el) continue;
+            const depth = parseFloat(el.dataset.z || '0');
+            const artistRange = parseFloat(el.dataset.artistRange || '7000');
+            const phaseStart = -200;
+            const totalPhaseRange = artistRange + 200;
+            const relativeZ = depth - currentZ;
+            const rawPhase = (relativeZ - phaseStart) / totalPhaseRange;
+            // Consider "inside" if phase is between -0.02 and 1.02 (slight buffer)
+            if (rawPhase >= -0.02 && rawPhase <= 1.02) {
+                return {
+                    key,
+                    depth,
+                    artistRange,
+                    phase: Math.max(0, Math.min(1, rawPhase)),
+                    phaseStart,
+                    totalPhaseRange,
+                };
+            }
+        }
+        return null;
+    };
+
+    const handleMobileZNav = (direction: 'forward' | 'backward') => {
+        if (!lenisRef.current || !totalDistanceRef.current) return;
+
+        // Prime audio context on first interaction
+        if (!userInteractedRef.current) {
+            userInteractedRef.current = true;
+            setIsGlobalPlaying(true);
+        }
+
+        const totalDist = totalDistanceRef.current;
+        const windowHeight = window.innerHeight;
+        const maxScroll = totalDist - windowHeight;
+        const currentScroll = lenisRef.current.scroll;
+        const currentZ = -(currentScroll / maxScroll) * totalDist;
+
+        // Check if we're currently inside an artist layer
+        const artistInfo = getCurrentArtistInfo(currentZ);
+
+        let targetScroll: number;
+
+        if (artistInfo) {
+            // ── INSIDE AN ARTIST LAYER: step through sub-phases ──
+            const { depth, artistRange, phase } = artistInfo;
+
+            if (direction === 'forward') {
+                // Find the next phase stop that is ahead of our current phase
+                const nextPhase = ARTIST_PHASE_STOPS.find(p => p > phase + 0.02);
+
+                if (nextPhase !== undefined) {
+                    // Jump to the next sub-phase within this artist
+                    const targetZ = artistPhaseToZ(depth, artistRange, nextPhase);
+                    targetScroll = zToScroll(targetZ);
+                } else {
+                    // We're past the last sub-phase — exit this artist layer
+                    // Scroll one viewport-height forward to move out
+                    targetScroll = Math.min(currentScroll + windowHeight, maxScroll);
+                }
+            } else {
+                // BACKWARD: find the previous phase stop behind current phase
+                const prevPhases = ARTIST_PHASE_STOPS.filter(p => p < phase - 0.02);
+                const prevPhase = prevPhases.length > 0 ? prevPhases[prevPhases.length - 1] : undefined;
+
+                if (prevPhase !== undefined) {
+                    // Jump to the previous sub-phase within this artist
+                    const targetZ = artistPhaseToZ(depth, artistRange, prevPhase);
+                    targetScroll = zToScroll(targetZ);
+                } else {
+                    // We're before the first sub-phase — exit this artist backwards
+                    // Scroll one viewport-height backward to move out
+                    targetScroll = Math.max(currentScroll - windowHeight, 0);
+                }
+            }
+        } else {
+            // ── OUTSIDE ARTIST LAYERS: fixed-distance scroll ──
+            if (direction === 'forward') {
+                // Check if scrolling forward would land us inside an artist layer
+                const prospectiveScroll = Math.min(currentScroll + windowHeight, maxScroll);
+                const prospectiveZ = -(prospectiveScroll / maxScroll) * totalDist;
+                const prospectiveArtist = getCurrentArtistInfo(prospectiveZ);
+
+                if (prospectiveArtist && prospectiveArtist.phase > 0.05) {
+                    // Would land mid-artist — instead snap to the first phase stop
+                    const targetZ = artistPhaseToZ(
+                        prospectiveArtist.depth,
+                        prospectiveArtist.artistRange,
+                        ARTIST_PHASE_STOPS[0],
+                    );
+                    targetScroll = zToScroll(targetZ);
+                } else {
+                    targetScroll = prospectiveScroll;
+                }
+            } else {
+                // Backward: check if we'd land inside an artist layer
+                const prospectiveScroll = Math.max(currentScroll - windowHeight, 0);
+                const prospectiveZ = -(prospectiveScroll / maxScroll) * totalDist;
+                const prospectiveArtist = getCurrentArtistInfo(prospectiveZ);
+
+                if (prospectiveArtist && prospectiveArtist.phase < 0.95) {
+                    // Would land mid-artist — snap to last phase stop
+                    const lastStop = ARTIST_PHASE_STOPS[ARTIST_PHASE_STOPS.length - 1];
+                    const targetZ = artistPhaseToZ(
+                        prospectiveArtist.depth,
+                        prospectiveArtist.artistRange,
+                        lastStop,
+                    );
+                    targetScroll = zToScroll(targetZ);
+                } else {
+                    targetScroll = prospectiveScroll;
+                }
+            }
+        }
+
+        // Clamp to valid scroll range
+        targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+
+        // Already at the boundary or same position — nothing to do
+        if (Math.abs(targetScroll - currentScroll) < 1) return;
+
+        // Subtle star speed boost during movement
+        gsap.to(starSpeed, { current: 10, duration: NAV_DURATION * 0.4, ease: 'power2.in' });
+
+        // Smooth quintic ease-in-out — video-game camera feel
+        lenisRef.current.scrollTo(targetScroll, {
+            duration: NAV_DURATION,
+            easing: (t: number) =>
+                t < 0.5
+                    ? 16 * t * t * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 5) / 2,
+            onComplete: () => {
+                gsap.to(starSpeed, {
+                    current: 1,
+                    duration: NAV_DURATION * 0.5,
+                    ease: 'power2.out',
+                });
+            },
+        });
+    };
+
     return (
-      <div className="pronite-page" ref={containerRef}>
-        <Starfield />
-        <div ref={cursorRef} className="cursor">
-          <div ref={cursorDotRef} className="cursor-dot"></div>
-          <div className="cursor-circle"></div>
-        </div>
+        <div className="pronite-page" ref={containerRef}>
+            <Starfield />
+            <div ref={cursorRef} className="cursor">
+                <div ref={cursorDotRef} className="cursor-dot"></div>
+                <div className="cursor-circle"></div>
+            </div>
 
-        <nav className="nav">
-          <div className="nav-left">
+            <nav className="nav">
+                <div className="nav-left">
+                    <button
+                        className="exit-btn"
+                        onClick={() => navigate("/")}
+                        aria-label="Exit to Home"
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+
             <button
-              className="exit-btn"
-              onClick={() => navigate("/")}
-              aria-label="Exit to Home"
+                className={`explore-btn${activeArtist ? " card-active" : ""}`}
+                onClick={handleExploreClick}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+                {buttonLabel}
             </button>
-          </div>
-        </nav>
 
-        <button
-          className={`explore-btn${activeArtist ? " card-active" : ""}`}
-          onClick={handleExploreClick}
-        >
-          {buttonLabel}
-        </button>
-
-        <div className="scroll-progress-container">
-          <div className="scroll-track">
-            <div className="progress-fill"></div>
-            <div className="logo-bottom-wrapper">
-              <img
-                src="/ryoku_emoji.png"
-                className="progress-logo-bottom"
-                alt="Ryoku"
-              />
+            <div className="scroll-progress-container">
+                <div className="scroll-track">
+                    <div className="logo-bottom-wrapper">
+                        <img
+                            src="/ryoku_emoji.png"
+                            className="progress-logo-bottom"
+                            alt="Ryoku"
+                        />
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <div id="z-space-container" ref={containerRef}>
-          <Starfield speedRef={starSpeed} />
-
-          <div ref={tiltRef} className="tilt-layer">
-            <div className="z-content">
-              {/* HERO */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["hero"] = el;
-                }}
-                className="z-layer hero-layer"
-                data-z="-100"
-                data-persist="15000"
-              >
-                <div className="hero-partners-row">
-                  <div className="hero-partner-item">
-                    <img
-                      src="pronite/TribeVibe.svg"
-                      alt="TribeVibe"
-                      className="tribe-vibe-logo"
-                    />
-                  </div>
-                  <div className="hero-partner-divider"></div>
-                  <div className="hero-partner-item">
-                    <img
-                      src="/incridea.png"
-                      alt="Incridea"
-                      className="incridea-logo"
-                    />
-                  </div>
-                </div>
-                <h1 className="hero-title">
-                  <img
-                    src="pronite/inc_chrome.svg"
-                    alt="Pronite"
-                    className="pronite-main-logo"
-                  />
-                </h1>
-              </section>
-
-              {/* ABOUT */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["about"] = el;
-                }}
-                className="z-layer about-layer"
-                data-z="-900"
-                data-persist="15000"
-                data-fade-exp="25"
-              >
-                <div>
-                  <h2 className="about-text">PRESENTING TO YOU</h2>
-                </div>
-              </section>
-
-              {/* ABOUT 2 */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["about2"] = el;
-                }}
-                className="z-layer about-layer"
-                data-z="-1900"
-                data-persist="15000"
-                data-fade-exp="25"
-              >
-                <div>
-                  <h2 className="about-text">PRONITE ARTIST</h2>
-                </div>
-              </section>
-
-              {/* ARMAAN MALIK (Artist 1) */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist1"] = el;
-                }}
-                className="z-layer artist-layer"
-                data-z="-3500"
-                data-pin="true"
-                data-persist="7000"
-                data-artist-id="artist1"
-                data-artist-range="7000"
-                data-fade-exp="25"
-              >
-                <div className="artist-content">
-                  <div className="text-mask text-mask-name">
-                    <img
-                      src="pronite/ArmaanMalik.svg"
-                      alt="Armaan Malik"
-                      className="artist-name-svg"
-                    />
-                  </div>
-                  <div className="text-mask text-mask-date">
-                    <p className="artist-date">5th Mar · 9:00 PM</p>
-                  </div>
-                </div>
-              </section>
-
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist1_right"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-5200"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <img
-                    src="pronite/artist1-right.jpg"
-                    alt="Armaan Malik Right"
-                    className="artist-img right"
-                  />
-                </div>
-              </section>
-
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist1_left"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-5800"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <video
-                    muted
-                    autoPlay
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="artist-img left"
-                    style={{ filter: "none" }}
-                  >
-                    <source src={armaanVideo} type="video/webm" />
-                  </video>
-                </div>
-              </section>
-
-              {/* NIKHITA GANDHI (Artist 2) */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist2"] = el;
-                }}
-                className="z-layer artist-layer"
-                data-z="-11000"
-                data-pin="true"
-                data-persist="7000"
-                data-artist-id="artist2"
-                data-artist-range="7000"
-                data-fade-exp="25"
-              >
-                <div className="artist-content">
-                  <div className="text-mask text-mask-name">
-                    <img
-                      src="pronite/NikhitaGandhi.svg"
-                      alt="Nikhita Gandhi"
-                      className="artist-name-svg"
-                    />
-                  </div>
-                  <div className="text-mask text-mask-date">
-                    <p className="artist-date">5th Mar · 11:30 PM</p>
-                  </div>
-                </div>
-              </section>
-
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist2_right"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-13500"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <img
-                    src="pronite/artist1-right.jpg"
-                    alt="Nikhita Gandhi Right"
-                    className="artist-img right"
-                  />
-                </div>
-              </section>
-              
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist2_left"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-14500"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <video
-                    muted
-                    autoPlay
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="artist-img left"
-                    style={{ filter: "none" }}
-                  >
-                    <source src={nikhitaVideo} type="video/webm" />
-                  </video>
-                </div>
-              </section>
-
-              {/* ALO (Artist 3) */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist3"] = el;
-                }}
-                className="z-layer artist-layer"
-                data-z="-18500"
-                data-pin="true"
-                data-persist="7000"
-                data-artist-id="artist3"
-                data-artist-range="7000"
-                data-fade-exp="25"
-              >
-                <div className="artist-content">
-                  <div className="text-mask text-mask-name">
-                    <img
-                      src="pronite/ALO.svg"
-                      alt="ALO"
-                      className="artist-name-svg alo-svg"
-                    />
-                  </div>
-                  <div className="text-mask text-mask-date">
-                    <p className="artist-date">6th Mar · 1:30 AM</p>
-                  </div>
-                </div>
-              </section>
-
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist3_right"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-21000"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <img
-                    src="pronite/artist3-right.jpg"
-                    alt="ALO Right"
-                    className="artist-img right"
-                  />
-                </div>
-              </section>
-
-              <section
-                ref={(el) => {
-                  layerRefs.current["artist3_left"] = el;
-                }}
-                className="z-layer artist-image-layer"
-                data-z="-22000"
-                data-pin="false"
-                data-artist-image="true"
-              >
-                <div className="artist-img-wrapper">
-                  <video
-                    muted
-                    autoPlay
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="artist-img left"
-                    style={{ filter: "none" }}
-                  >
-                    <source src={aloVideo} type="video/webm" />
-                  </video>
-                </div>
-              </section>
-
-              {/* FINAL REVEAL */}
-              <section
-                ref={(el) => {
-                  layerRefs.current["final-reveal"] = el;
-                }}
-                className="z-layer"
-                data-z="-27500"
-                data-pin="true"
-                data-persist="5000"
-                style={{ opacity: 0, pointerEvents: "none" }}
-              >
-                <FinalReveal
-                  ref={finalRevealRef}
-                  artists={[
-                    {
-                      name: (
-                        <>
-                          NIKITHA
-                          <br />
-                          GANDHI
-                        </>
-                      ),
-                      role: "Special Guest",
-                      time: "09:00 PM",
-                      image: ARTISTS.artist2.profileImage,
-                      className: "md:col-span-4",
-                    },
-                    {
-                      name: "ARMAAN MALIK",
-                      role: "HEADLINER",
-                      time: "11:30 PM",
-                      image: ARTISTS.artist1.profileImage,
-                      isHeadliner: true,
-                      className: "md:col-span-6",
-                    },
-                    {
-                      name: (
-                        <>
-                          ALO
-                          <br />
-                          THE BAND
-                        </>
-                      ),
-                      role: "Encore Act",
-                      time: "01:30 AM",
-                      image: ARTISTS.artist3.profileImage,
-                      className: "md:col-span-3",
-                    },
-                  ]}
-                />
-              </section>
+            {/* Mobile/Tablet Z-Axis Navigation Buttons — CSS controls visibility */}
+            <div className="mobile-z-nav">
+                <button
+                    className="mobile-z-nav-btn mobile-z-nav-forward"
+                    onClick={() => handleMobileZNav('forward')}
+                    aria-label="Navigate Forward"
+                >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 4L12 20M12 4L6 10M12 4L18 10"
+                            stroke="white"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
+                <button
+                    className="mobile-z-nav-btn mobile-z-nav-backward"
+                    onClick={() => handleMobileZNav('backward')}
+                    aria-label="Navigate Backward"
+                >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 20L12 4M12 20L6 14M12 20L18 14"
+                            stroke="white"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
             </div>
-          </div>
-        </div>
 
-        <AnimatePresence mode="wait">
-          {activeArtist && (
-            <ProniteCard
-              key={activeArtist.id}
-              artistName={activeArtist.name}
-              artistDate={activeArtist.date}
-              artistImage={activeArtist.profileImage}
-              accentColor={activeArtist.accent}
-              songUrl={activeArtist.song}
-              onNext={() => handleArtistNavigation("next")}
-              onPrev={() => handleArtistNavigation("prev")}
-              isMuted={isGlobalMuted}
-              onMuteToggle={handleMuteToggle}
-              isPlaying={isGlobalPlaying}
-              onPlayToggle={() => setIsGlobalPlaying(!isGlobalPlaying)}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+            <div id="z-space-container" ref={containerRef}>
+                <Starfield speedRef={starSpeed} />
+
+                <div ref={tiltRef} className="tilt-layer">
+                    <div className="z-content">
+                        {/* HERO */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["hero"] = el;
+                            }}
+                            className="z-layer hero-layer"
+                            data-z="-100"
+                            data-persist="15000"
+                        >
+                            <div className="hero-partners-row">
+                                <div className="hero-partner-item">
+                                    <img
+                                        src="pronite/nmamit.svg"
+                                        alt="NMAMIT"
+                                        className="nmamit-logo"
+                                    />
+                                </div>
+                                <div className="hero-partner-divider"></div>
+                                <div className="hero-partner-item">
+                                    <img
+                                        src="/incridea.png"
+                                        alt="Incridea"
+                                        className="incridea-logo"
+                                    />
+                                </div>
+                            </div>
+                            <h1 className="hero-title">
+                                <img
+                                    src="pronite/inc_chrome.svg"
+                                    alt="Pronite"
+                                    className="pronite-main-logo"
+                                />
+                            </h1>
+                        </section>
+
+                        {/* ABOUT */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["about"] = el;
+                            }}
+                            className="z-layer about-layer"
+                            data-z="-900"
+                            data-persist="15000"
+                            data-fade-exp="25"
+                        >
+                            <div>
+                                <h2 className="about-text">PRESENTING TO YOU</h2>
+                            </div>
+                        </section>
+
+                        {/* ABOUT 2 */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["about2"] = el;
+                            }}
+                            className="z-layer about-layer"
+                            data-z="-1900"
+                            data-persist="15000"
+                            data-fade-exp="25"
+                        >
+                            <div>
+                                <h2 className="about-text">PRONITE ARTIST</h2>
+                            </div>
+                        </section>
+
+                        {/* ARMAAN MALIK (Artist 1) */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist1"] = el;
+                            }}
+                            className="z-layer artist-layer"
+                            data-z="-3500"
+                            data-pin="true"
+                            data-persist="7000"
+                            data-artist-id="artist1"
+                            data-artist-range="7000"
+                            data-fade-exp="25"
+                        >
+                            <div className="artist-content">
+                                <div className="sponsor-row sponsor-row-3">
+                                    <img src="pronite/TribeVibe.svg" alt="Sponsor 1" className="sponsor-logo" />
+                                    <img src="pronite/Incridea.svg" alt="Sponsor 2" className="sponsor-logo" />
+                                    <img src="pronite/NMAMIT.svg" alt="Sponsor 3" className="sponsor-logo" />
+                                </div>
+                                <div className="text-mask text-mask-name">
+                                    <img
+                                        src="pronite/ArmaanMalik.svg"
+                                        alt="Armaan Malik"
+                                        className="artist-name-svg"
+                                    />
+                                </div>
+                                <div className="text-mask text-mask-date">
+                                    <p className="artist-date">5th Mar · 9:00 PM</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist1_right"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-5200"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <img
+                                    src="pronite/artist1-right.jpg"
+                                    alt="Armaan Malik Right"
+                                    className="artist-img right"
+                                />
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist1_left"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-5800"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <video
+                                    muted
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    preload="auto"
+                                    className="artist-img left"
+                                    style={{ filter: "none" }}
+                                >
+                                    <source src={armaanVideo} type="video/webm" />
+                                </video>
+                            </div>
+                        </section>
+
+                        {/* NIKHITA GANDHI (Artist 2) */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist2"] = el;
+                            }}
+                            className="z-layer artist-layer"
+                            data-z="-11000"
+                            data-pin="true"
+                            data-persist="7000"
+                            data-artist-id="artist2"
+                            data-artist-range="7000"
+                            data-fade-exp="25"
+                        >
+                            <div className="artist-content">
+                                <div className="sponsor-row sponsor-row-2">
+                                    <img src="pronite/sponsor-placeholder.svg" alt="Sponsor 1" className="sponsor-logo" />
+                                    <img src="pronite/sponsor-placeholder.svg" alt="Sponsor 2" className="sponsor-logo" />
+                                </div>
+                                <div className="text-mask text-mask-name">
+                                    <img
+                                        src="pronite/NikhitaGandhi.svg"
+                                        alt="Nikhita Gandhi"
+                                        className="artist-name-svg"
+                                    />
+                                </div>
+                                <div className="text-mask text-mask-date">
+                                    <p className="artist-date">5th Mar · 11:30 PM</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist2_right"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-13500"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <img
+                                    src="pronite/artist1-right.jpg"
+                                    alt="Nikhita Gandhi Right"
+                                    className="artist-img right"
+                                />
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist2_left"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-14500"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <video
+                                    muted
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    preload="auto"
+                                    className="artist-img left"
+                                    style={{ filter: "none" }}
+                                >
+                                    <source src={nikhitaVideo} type="video/webm" />
+                                </video>
+                            </div>
+                        </section>
+
+                        {/* ALO (Artist 3) */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist3"] = el;
+                            }}
+                            className="z-layer artist-layer"
+                            data-z="-18500"
+                            data-pin="true"
+                            data-persist="7000"
+                            data-artist-id="artist3"
+                            data-artist-range="7000"
+                            data-fade-exp="25"
+                        >
+                            <div className="artist-content">
+                                <div className="sponsor-row sponsor-row-2">
+                                    <img src="pronite/sponsor-placeholder.svg" alt="Sponsor 1" className="sponsor-logo" />
+                                    <img src="pronite/sponsor-placeholder.svg" alt="Sponsor 2" className="sponsor-logo" />
+                                </div>
+                                <div className="text-mask text-mask-name">
+                                    <img
+                                        src="pronite/ALO.svg"
+                                        alt="ALO"
+                                        className="artist-name-svg alo-svg"
+                                    />
+                                </div>
+                                <div className="text-mask text-mask-date">
+                                    <p className="artist-date">6th Mar · 1:30 AM</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist3_right"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-21000"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <img
+                                    src="pronite/artist3-right.jpg"
+                                    alt="ALO Right"
+                                    className="artist-img right"
+                                />
+                            </div>
+                        </section>
+
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["artist3_left"] = el;
+                            }}
+                            className="z-layer artist-image-layer"
+                            data-z="-22000"
+                            data-pin="false"
+                            data-artist-image="true"
+                        >
+                            <div className="artist-img-wrapper">
+                                <video
+                                    muted
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    preload="auto"
+                                    className="artist-img left"
+                                    style={{ filter: "none" }}
+                                >
+                                    <source src={aloVideo} type="video/webm" />
+                                </video>
+                            </div>
+                        </section>
+
+                        {/* FINAL REVEAL */}
+                        <section
+                            ref={(el) => {
+                                layerRefs.current["final-reveal"] = el;
+                            }}
+                            className="z-layer"
+                            data-z="-27500"
+                            data-pin="true"
+                            data-persist="5000"
+                            style={{ opacity: 0, pointerEvents: "none" }}
+                        >
+                            <FinalReveal
+                                ref={finalRevealRef}
+                                artists={[
+                                    {
+                                        name: (
+                                            <>
+                                                NIKITHA
+                                                <br />
+                                                GANDHI
+                                            </>
+                                        ),
+                                        role: "Special Guest",
+                                        time: "09:00 PM",
+                                        image: ARTISTS.artist2.profileImage,
+                                        className: "md:col-span-4",
+                                    },
+                                    {
+                                        name: "ARMAAN MALIK",
+                                        role: "HEADLINER",
+                                        time: "11:30 PM",
+                                        image: ARTISTS.artist1.profileImage,
+                                        isHeadliner: true,
+                                        className: "md:col-span-6",
+                                    },
+                                    {
+                                        name: (
+                                            <>
+                                                ALO
+                                                <br />
+                                                THE BAND
+                                            </>
+                                        ),
+                                        role: "Encore Act",
+                                        time: "01:30 AM",
+                                        image: ARTISTS.artist3.profileImage,
+                                        className: "md:col-span-3",
+                                    },
+                                ]}
+                            />
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+                {activeArtist && (
+                    <ProniteCard
+                        key={activeArtist.id}
+                        artistName={activeArtist.name}
+                        artistDate={activeArtist.date}
+                        artistImage={activeArtist.profileImage}
+                        accentColor={activeArtist.accent}
+                        songUrl={activeArtist.song}
+                        onNext={() => handleArtistNavigation("next")}
+                        onPrev={() => handleArtistNavigation("prev")}
+                        isMuted={isGlobalMuted}
+                        onMuteToggle={handleMuteToggle}
+                        isPlaying={isGlobalPlaying}
+                        onPlayToggle={() => setIsGlobalPlaying(!isGlobalPlaying)}
+                    />
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 

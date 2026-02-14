@@ -28,7 +28,6 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         if (!containerRef.current) return;
 
         const layers = containerRef.current.querySelectorAll<HTMLElement>('.z-layer');
-        const progressFill = document.querySelector<HTMLElement>('.progress-fill');
         const rocketWrapper = document.querySelector<HTMLElement>('.logo-bottom-wrapper');
 
         // Parse depths & Init
@@ -84,7 +83,6 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
         // Initialize elements
         if (rocketWrapper) gsap.set(rocketWrapper, { bottom: '0%' });
-        if (progressFill) gsap.set(progressFill, { height: '0%' });
 
         lenis.on('scroll', ({ progress }: { progress: number }) => {
             targetZRef.current = -progress * totalDistance;
@@ -92,9 +90,6 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             // Sync Scroll Progress Bar
             const p = Math.max(0, Math.min(1, progress));
 
-            if (progressFill) {
-                progressFill.style.height = `${p * 100}%`;
-            }
             if (rocketWrapper) {
                 rocketWrapper.style.bottom = `${p * 100}%`;
             }
