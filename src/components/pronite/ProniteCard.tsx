@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import gsap from "gsap";
 import {
   Heart,
   Play,
@@ -273,53 +274,62 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
     if (!isLiked) triggerBurst(btnRef);
     setIsLiked(!isLiked);
   };
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio) return;
 
-    audio.muted = isMuted;
+  // 1. SILENCE IMMEDIATELY
+  // We force the volume to 0.001 (nearly silent) before the browser even thinks about playing.
+  audio.volume = 0;
+  audio.muted = isMuted;
 
-    const attemptPlay = () => {
-      if (isPlaying) {
-        // Attempt to play with promise handling
-        setTimeout(() => {
-          audio
-            .play()
-            .then(() => {
-              console.log("Audio playing successfully");
-            })
-            .catch((error) => {
-              console.log(
-                "Autoplay blocked, awaiting user interaction:",
-                error.name,
-              );
-              // Autoplay was blocked - user interaction needed
-            });
-        }, 50);
-      } else {
-        audio.pause();
-      }
-    };
+  const handlePlay = () => {
+    if (isPlaying) {
+      audio
+        .play()
+        .then(() => {
+          // 2. LONG CINEMATIC SWELL (4 Seconds)
+          // We use 'expo.out' which starts the volume very low and builds smoothly.
+          gsap.to(audio, {
+            volume: 1,
+            duration: 4,
+            ease: "sine.inOut",
+            overwrite: "auto",
+          });
+        })
+        .catch(() => console.log("Awaiting interaction..."));
+    } else {
+      // 3. SMOOTH PAUSE (2 Seconds)
+      gsap.to(audio, {
+        volume: 0,
+        duration: 2,
+        ease: "sine.inOut",
+        onComplete: () => {
+          if (!isPlaying) audio.pause();
+        },
+      });
+    }
+  };
 
-    // Initial play attempt
-    attemptPlay();
+  handlePlay();
 
-    // Add robust user interaction listeners for multiple triggers
-    const handleUserInteraction = () => {
-      attemptPlay();
-    };
+  // 4. THE LONG SCROLL EXIT (3 Seconds)
+  return () => {
+    const currentAudio = audio;
+    // We kill existing swell tweens so they don't fight the fade-out
+    gsap.killTweensOf(currentAudio);
 
-    // Listen for multiple interaction types
-    window.addEventListener("click", handleUserInteraction);
-    window.addEventListener("touchstart", handleUserInteraction);
-    document.addEventListener("keydown", handleUserInteraction);
-
-    return () => {
-      window.removeEventListener("click", handleUserInteraction);
-      window.removeEventListener("touchstart", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
-  }, [isPlaying, isMuted, songUrl]);
+    gsap.to(currentAudio, {
+      volume: 0,
+      duration: 3,
+      ease: "power1.in", // Power1.in is perfect for trailing off sound
+      onComplete: () => {
+        currentAudio.pause();
+        currentAudio.src = "";
+      },
+    });
+  };
+}, [isPlaying, isMuted, songUrl]);
 
   const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.85, y: 40 },
@@ -383,7 +393,7 @@ const ProniteCard: React.FC<ProniteCardProps> = ({
 
       {/* ─── Card ─── */}
       <div className="pronite-card-container">
-        <audio ref={audioRef} src={songUrl} loop />
+        <audio ref={audioRef} src={songUrl} loop playsInline preload="auto" />
 
         <motion.div
           variants={cardVariants}
