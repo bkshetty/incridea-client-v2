@@ -35,12 +35,6 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
                         </div>
-                        <div className="absolute top-2 md:top-6 right-2 md:right-6 z-10">
-                            <span className="bg-primary text-white text-[8px] md:text-[10px] font-black px-2 md:px-3 py-1 md:py-2 rounded-full tracking-widest shadow-lg flex items-center gap-2 border border-white/20">
-                                <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full animate-ping"></span>
-                                HEADLINER
-                            </span>
-                        </div>
                         <div className="relative z-10 w-full p-4 md:p-8">
                             <h3 className="text-3xl md:text-6xl font-black text-white mb-1 md:mb-3 tracking-tighter text-glow drop-shadow-lg leading-none">
                                 {name}

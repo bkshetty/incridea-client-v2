@@ -145,7 +145,7 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                         />
                         <div className="h-5 w-[1px] bg-white/30"></div>
                         <img
-                            src="/pronite_1.png"
+                            src="pronite/pronite_1.png"
                             alt="Pronite"
                             className="h-7 md:h-16 animate-pulse-slow drop-shadow-[0_0_20px_rgba(238,43,111,0.5)]"
                         />
