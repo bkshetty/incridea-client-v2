@@ -375,5 +375,5 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         };
     }, [containerRef, onUpdate, onLayerEnter, onLayerExit, onLayerScrollProgress]);
 
-    return { lenisRef, totalDistanceRef };
+    return { lenisRef, totalDistanceRef, currentZRef };
 };

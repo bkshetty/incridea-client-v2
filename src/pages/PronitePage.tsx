@@ -66,6 +66,9 @@ const SCROLL_STOPS = [
     { id: "final-reveal", z: -27500, label: "BACK TO TOP" },
 ];
 
+// Target phase for artist SVG viewing (0.15 = SVG fully revealed, centered, not sliding down yet)
+const ARTIST_VIEW_PHASE = 0.15;
+
 // --- Easing helpers ---
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInCubic = (t: number) => t * t * t;
@@ -467,7 +470,7 @@ const PronitePage: React.FC = () => {
         }
     };
 
-    const { lenisRef, totalDistanceRef } = useZScroll(containerRef, {
+    const { lenisRef, totalDistanceRef, currentZRef } = useZScroll(containerRef, {
         onLayerEnter,
         onLayerExit,
         onUpdate,
@@ -566,7 +569,7 @@ const PronitePage: React.FC = () => {
     const handleExploreClick = () => {
         const primer = new Audio();
         primer.src =
-            "data:audio/wav;base64,UklGRiQAAABXQVZFRm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
+            "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
         primer
             .play()
             .then(() => primer.pause())
@@ -581,16 +584,21 @@ const PronitePage: React.FC = () => {
                 ease: "power2.in",
             });
             lenisRef.current.scrollTo(0, {
-                duration: 3.5,
-                easing: (t: number) =>
-                    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-                onComplete: () => {
-                    gsap.to(starSpeed, {
-                        current: 1,
-                        duration: 2,
-                        ease: "power2.out",
-                    });
-                },
+                force: true,
+                immediate: true,
+            });
+            // Snap the Z position immediately to avoid slow lerp convergence
+            currentZRef.current = 0;
+            // Reset state immediately
+            setButtonLabel("EXPLORE LINEUP");
+            setActiveArtist(null);
+            lastActiveArtistKey.current = null;
+            finalRevealAnimationTriggered.current = false;
+            finalRevealRef.current?.resetAnimation();
+            gsap.to(starSpeed, {
+                current: 1,
+                duration: 1,
+                ease: "power2.out",
             });
             return;
         }
@@ -604,12 +612,9 @@ const PronitePage: React.FC = () => {
         const currentZ = -(currentScroll / maxScroll) * totalDist;
 
         // Find the current active section index
-        // Use a slightly larger buffer (1000px) to ensure we catch the current section even if slightly scrolled past
         let currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
             const nextStop = SCROLL_STOPS[i + 1];
-            if (!nextStop) return true; // Last section always matches if we're past the second-to-last
-            // Check if we are within the range of this section (from its start to the next section's start)
-            // Adding buffer to ensure smooth transition detection
+            if (!nextStop) return true;
             return currentZ <= s.z + 1000 && currentZ > nextStop.z + 1000;
         });
 
@@ -626,12 +631,46 @@ const PronitePage: React.FC = () => {
             ease: "power2.in",
         });
 
-        const targetZ = nextStop.z;
+        // If wrapping back to hero (index 0), scroll to top with state resets
+        if (nextIndex === 0) {
+            lenisRef.current.scrollTo(0, {
+                force: true,
+                immediate: true,
+            });
+            currentZRef.current = 0;
+            setButtonLabel("EXPLORE LINEUP");
+            setActiveArtist(null);
+            lastActiveArtistKey.current = null;
+            finalRevealAnimationTriggered.current = false;
+            finalRevealRef.current?.resetAnimation();
+            gsap.to(starSpeed, {
+                current: 1,
+                duration: 1,
+                ease: "power2.out",
+            });
+            return;
+        }
+
+        // Dynamically compute scroll target from the actual section's data-z
+        // For artist sections: target ARTIST_VIEW_PHASE so SVG is fully revealed & centered
+        // For non-artist sections: use the SCROLL_STOPS z-value directly
+        let targetZ: number;
+        const nextEl = layerRefs.current[nextStop.id];
+        if (nextEl && nextEl.dataset.artistId) {
+            const dataZ = parseFloat(nextEl.dataset.z || "0");
+            const artistRange = parseFloat(nextEl.dataset.artistRange || "7000");
+            // phase = (relativeZ + 200) / (artistRange + 200)
+            // relativeZ = phase * (artistRange + 200) - 200
+            // targetZ = dataZ - relativeZ
+            const offset = ARTIST_VIEW_PHASE * (artistRange + 200) - 200;
+            targetZ = dataZ - offset;
+        } else {
+            targetZ = nextStop.z;
+        }
+
         let targetScroll = (-targetZ * maxScroll) / totalDist;
 
         // Smooth scroll to target
-        // Reduced duration from 10s to 3.5s for better responsiveness while keeping it smooth
-        // Changed easing to easeInOutCubic for a more natural start/stop feel
         lenisRef.current.scrollTo(targetScroll, {
             duration: 3.5,
             easing: (t: number) =>
