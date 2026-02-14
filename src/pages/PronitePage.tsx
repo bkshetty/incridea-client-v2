@@ -979,24 +979,7 @@ const PronitePage: React.FC = () => {
                   />
                 </div>
               </section>
-
-              {/* <section
-                            ref={(el) => {
-                                layerRefs.current["artist2_left"] = el;
-                            }}
-                            className="z-layer artist-image-layer"
-                            data-z="-14500"
-                            data-pin="false"
-                            data-artist-image="true"
-                        >
-                            <div className="artist-img-wrapper">
-                                <img
-                                    src="pronite/artist1-right.jpg"
-                                    alt="Nikhita Gandhi Left"
-                                    className="artist-img left"
-                                />
-                            </div>
-                        </section> */}
+              
               <section
                 ref={(el) => {
                   layerRefs.current["artist2_left"] = el;
