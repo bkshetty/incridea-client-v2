@@ -651,6 +651,7 @@ const PronitePage: React.FC = () => {
             <Starfield />
             <div ref={cursorRef} className="cursor">
                 <div ref={cursorDotRef} className="cursor-dot"></div>
+                <div className="cursor-circle"></div>
             </div>
 
             <nav className="nav">
