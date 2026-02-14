@@ -653,6 +653,23 @@
 
     .pronite-page .artist-content {
         gap: 1.5rem;
+        /* Mobile: push name down to screenshot level */
+        flex-direction: column-reverse;
+    }
+
+    /* Mobile: Artist text container slides down */
+    .pronite-page .text-mask-name {
+        transform: translateY(-130px);
+    }
+
+    /* Mobile: Artist date follows the name */
+    .pronite-page .text-mask-date {
+        transform: translateY(-130px);
+    }
+
+    /* Mobile: Artist images positioned higher */
+    .pronite-page .artist-image-layer {
+        transform: translateY(-100px) !important;
     }
 
     /* Explore button — smooth transition, lifts when card appears */

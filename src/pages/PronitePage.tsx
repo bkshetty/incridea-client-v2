@@ -993,7 +993,7 @@ const PronitePage: React.FC = () => {
                                         role: "Special Guest",
                                         time: "09:00 PM",
                                         image: ARTISTS.artist2.profileImage,
-                                        className: "md:col-span-3",
+                                        className: "md:col-span-4",
                                     },
                                     {
                                         name: "ARMAAN MALIK",
