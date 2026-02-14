@@ -3,7 +3,6 @@ import "./FinalReveal.css";
 
 interface ArtistCardProps {
     name: React.ReactNode;
-    role: string;
     time: string;
     image: string;
     isHeadliner?: boolean;
@@ -13,7 +12,6 @@ interface ArtistCardProps {
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
     name,
-    role,
     time,
     image,
     isHeadliner = false,
@@ -35,11 +33,11 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
                         </div>
-                        <div className="relative z-10 w-full p-4 md:p-8">
+                        <div className="relative z-10 w-full p-4 md:p-8 text-center">
                             <h3 className="text-3xl md:text-6xl font-black text-white mb-1 md:mb-3 tracking-tighter text-glow drop-shadow-lg leading-none">
                                 {name}
                             </h3>
-                            <p className="text-primary font-bold text-xs md:text-lg tracking-[0.25em] flex items-center gap-2 md:gap-3">
+                            <p className="text-primary font-bold text-xs md:text-lg tracking-[0.25em] flex items-center justify-center gap-2 md:gap-3">
                                 <span className="w-6 md:w-12 h-[2px] bg-primary animate-pulse shadow-[0_0_10px_#ee2b6f]"></span>
                                 {time}
                             </p>
@@ -56,16 +54,13 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                 <div className="h-full glass-card rounded-2xl overflow-hidden relative group flex flex-col justify-end">
                     <div className="absolute inset-0 z-0">
                         <img
-                            alt={role}
                             className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
                             src={image}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/10 to-transparent"></div>
                     </div>
-                    <div className="relative z-10 w-full p-3 md:p-6">
-                        <span className="text-primary text-[8px] md:text-[10px] font-bold tracking-widest uppercase mb-0.5 md:mb-1 block drop-shadow-md">
-                            {role}
-                        </span>
+                    <div className="relative z-10 w-full p-3 md:p-6 text-center">
+
                         <h3 className="text-lg md:text-2xl font-bold text-white leading-tight drop-shadow-lg">
                             {name}
                         </h3>

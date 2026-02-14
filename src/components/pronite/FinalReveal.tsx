@@ -157,7 +157,6 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                     <div ref={(el) => { cardRefs.current[0] = el; }} className="md:col-start-2 md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[0].name}
-                            role={artists[0].role}
                             time={artists[0].time}
                             image={artists[0].image}
                             isHeadliner={artists[0].isHeadliner}
@@ -169,7 +168,6 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                     <div ref={(el) => { cardRefs.current[1] = el; }} className="md:col-span-4 flex-1 min-h-0 md:z-10" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[1].name}
-                            role={artists[1].role}
                             time={artists[1].time}
                             image={artists[1].image}
                             isHeadliner={artists[1].isHeadliner}
@@ -181,7 +179,6 @@ const FinalReveal = forwardRef<FinalRevealRef, FinalRevealProps>(({ artists }, r
                     <div ref={(el) => { cardRefs.current[2] = el; }} className="md:col-span-3 flex-1 min-h-0" style={{ willChange: 'transform, opacity', opacity: 0 }}>
                         <ArtistCard
                             name={artists[2].name}
-                            role={artists[2].role}
                             time={artists[2].time}
                             image={artists[2].image}
                             isHeadliner={artists[2].isHeadliner}
