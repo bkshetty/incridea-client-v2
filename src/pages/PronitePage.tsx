@@ -32,8 +32,8 @@ const ARTISTS: Record<string, ArtistData> = {
     id: "a1",
     name: "Armaan Malik",
     date: "5th Mar @ 9PM",
-    image: "/artist1-right.jpg",
-    profileImage: "/Armaan_Malik_Profile.jpg",
+    image: "pronite/artist1-right.jpg",
+    profileImage: "pronite/Armaan_Malik_Profile.jpg",
     accent: "#D84D7D",
     song: armaanSong,
   },
@@ -41,8 +41,8 @@ const ARTISTS: Record<string, ArtistData> = {
     id: "a2",
     name: "Nikhita Gandhi",
     date: "5th Mar @ 11:30PM",
-    image: "/artist2-right.jpg",
-    profileImage: "/Nikhita_Gandhi_profile.jpg",
+    image: "pronite/artist2-right.jpg",
+    profileImage: "pronite/Nikhita_Gandhi_profile.jpg",
     accent: "#4DA6D8",
     song: nikhitaSong,
   },
@@ -50,8 +50,8 @@ const ARTISTS: Record<string, ArtistData> = {
     id: "a3",
     name: "ALO",
     date: "6th Mar @ 1:30AM",
-    image: "/artist3-right.jpg",
-    profileImage: "/The_alo_band_profile.jpg",
+    image: "pronite/artist3-right.jpg",
+    profileImage: "pronite/The_alo_band_profile.jpg",
     accent: "#D84D7D",
     song: aloSong,
   },
@@ -675,7 +675,7 @@ const PronitePage: React.FC = () => {
               <div className="hero-partners-row">
                 <div className="hero-partner-item">
                   <img
-                    src="/TribeVibe.svg"
+                    src="pronite/TribeVibe.svg"
                     alt="TribeVibe"
                     className="tribe-vibe-logo"
                   />
@@ -691,7 +691,7 @@ const PronitePage: React.FC = () => {
               </div>
               <h1 className="hero-title">
                 <img
-                  src="/inc_chrome.svg"
+                  src="pronite/inc_chrome.svg"
                   alt="Pronite"
                   className="pronite-main-logo"
                 />
@@ -744,7 +744,7 @@ const PronitePage: React.FC = () => {
               <div className="artist-content">
                 <div className="text-mask text-mask-name">
                   <img
-                    src="/ArmaanMalik.svg"
+                    src="pronite/ArmaanMalik.svg"
                     alt="Armaan Malik"
                     className="artist-name-svg"
                   />
@@ -766,7 +766,7 @@ const PronitePage: React.FC = () => {
             >
               <div className="artist-img-wrapper">
                 <img
-                  src="/artist1-right.jpg"
+                  src="pronite/artist1-right.jpg"
                   alt="Armaan Malik Right"
                   className="artist-img right"
                 />
@@ -813,7 +813,7 @@ const PronitePage: React.FC = () => {
               <div className="artist-content">
                 <div className="text-mask text-mask-name">
                   <img
-                    src="/NikhitaGandhi.svg"
+                    src="pronite/NikhitaGandhi.svg"
                     alt="Nikhita Gandhi"
                     className="artist-name-svg"
                   />
@@ -835,7 +835,7 @@ const PronitePage: React.FC = () => {
             >
               <div className="artist-img-wrapper">
                 <img
-                  src="/artist1-right.jpg"
+                  src="pronite/artist1-right.jpg"
                   alt="Nikhita Gandhi Right"
                   className="artist-img right"
                 />
@@ -853,7 +853,7 @@ const PronitePage: React.FC = () => {
             >
               <div className="artist-img-wrapper">
                 <img
-                  src="/artist1-right.jpg"
+                  src="pronite/artist1-right.jpg"
                   alt="Nikhita Gandhi Left"
                   className="artist-img left"
                 />
@@ -876,7 +876,7 @@ const PronitePage: React.FC = () => {
               <div className="artist-content">
                 <div className="text-mask text-mask-name">
                   <img
-                    src="/ALO.svg"
+                    src="pronite/ALO.svg"
                     alt="ALO"
                     className="artist-name-svg alo-svg"
                   />
@@ -898,7 +898,7 @@ const PronitePage: React.FC = () => {
             >
               <div className="artist-img-wrapper">
                 <img
-                  src="/artist3-right.jpg"
+                  src="pronite/artist3-right.jpg"
                   alt="ALO Right"
                   className="artist-img right"
                 />
