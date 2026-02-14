@@ -80,6 +80,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
             // Sync Scroll Progress Bar
             const p = Math.max(0, Math.min(1, progress));
+
             if (progressFill) {
                 progressFill.style.height = `${p * 100}%`;
             }
@@ -90,22 +91,11 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
         // ============================================================
         // DRAGGABLE SCROLL TRACK
-        // All drag state lives here, co-located with the Lenis instance.
-        // During drag we directly update ALL state (visual bar + camera Z)
-        // in the same frame — no waiting for events, no lerp lag.
+        // Smooth drag handling that integrates with Lenis scroll system
         // ============================================================
         const scrollContainer = document.querySelector<HTMLElement>('.scroll-progress-container');
         const scrollTrackEl = document.querySelector<HTMLElement>('.scroll-track');
         const rocketImg = document.querySelector<HTMLElement>('.progress-logo-bottom');
-
-        // Debug: verify elements are found
-        console.log('[useZScroll] Drag setup:', {
-            scrollContainer: !!scrollContainer,
-            scrollTrackEl: !!scrollTrackEl,
-            rocketImg: !!rocketImg,
-            lenisLimit: lenis.limit,
-            totalDistance,
-        });
 
         // Prevent native browser image drag on the rocket
         if (rocketImg) {
@@ -127,6 +117,14 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
 
         const onDragStart = (e: MouseEvent | TouchEvent) => {
             if (!scrollTrackEl) return;
+
+            // CRITICAL FIX: Only start drag if the event target is the scroll track or its children
+            // This prevents the drag from interfering with normal page scrolling on mobile
+            const target = e.target as HTMLElement;
+            if (!target.closest('.scroll-track') && target !== scrollTrackEl) {
+                return;
+            }
+
             isDragging = true;
             dragStartY = getClientY(e);
             dragStartScroll = lenis.scroll;
@@ -153,31 +151,22 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             const clientY = getClientY(e);
             const deltaY = clientY - dragStartY;
             const trackRect = scrollTrackEl.getBoundingClientRect();
-            const trackHeight = trackRect.height || 1; // avoid divide by zero
-            const maxScroll = lenis.limit || totalDistance || 1; // fallback
+            const trackHeight = trackRect.height || 1;
+            const maxScroll = lenis.limit || totalDistance || 1;
 
-            // Dragging UP (negative deltaY) = scroll forward (increase)
-            const scrollDelta = -(deltaY / trackHeight) * maxScroll;
+            // Calculate new scroll position
+            const sensitivity = 1.2;
+            const scrollDelta = -(deltaY / trackHeight) * maxScroll * sensitivity;
             const targetScroll = clamp(dragStartScroll + scrollDelta, 0, maxScroll);
 
-            // Use lenis.scrollTo to set position
-            lenis.scrollTo(targetScroll, { immediate: true });
-
-            // Directly sync visuals — don't wait for Lenis event
-            const p = clamp(targetScroll / maxScroll, 0, 1);
-
-            // Visual progress bar
-            if (progressFill) progressFill.style.height = `${p * 100}%`;
-            if (rocketWrapper) rocketWrapper.style.bottom = `${p * 100}%`;
-
-            // Camera Z — directly, no lerp
-            targetZRef.current = -p * totalDistance;
-            currentZRef.current = targetZRef.current;
+            // Update Lenis scroll immediately without animation
+            lenis.scrollTo(targetScroll, { immediate: true, force: true });
         };
 
         const onDragEnd = () => {
             if (!isDragging) return;
             isDragging = false;
+
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
         };
@@ -187,7 +176,7 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             scrollContainer.addEventListener('touchstart', onDragStart, { passive: false });
         }
 
-        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mousemove', onDragMove, { passive: false });
         window.addEventListener('mouseup', onDragEnd);
         window.addEventListener('touchmove', onDragMove, { passive: false });
         window.addEventListener('touchend', onDragEnd);
@@ -196,12 +185,20 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         const update = (time: number) => {
             lenis.raf(time * 1000);
 
-            // During drag, camera Z was already set directly by syncEverything()
-            // so we skip lerp. When not dragging, smooth lerp resumes.
+            // Get the current scroll progress to calculate camera Z
+            const maxScroll = lenis.limit || totalDistance || 1;
+            const scrollProgress = maxScroll > 0 ? lenis.scroll / maxScroll : 0;
+            const newTargetZ = -scrollProgress * totalDistance;
+
+            // Update target Z position based on current scroll
+            targetZRef.current = newTargetZ;
+
+            // During drag, use the new Z directly without lerp for responsiveness
+            // When not dragging, apply smooth lerp
             if (isDragging) {
-                // currentZRef already set by syncEverything — just use it
+                currentZRef.current = newTargetZ;
             } else {
-                currentZRef.current = lerp(currentZRef.current, targetZRef.current, 0.08);
+                currentZRef.current = lerp(currentZRef.current, newTargetZ, 0.08);
             }
             const currentZ = currentZRef.current;
 

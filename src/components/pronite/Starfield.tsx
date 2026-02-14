@@ -22,11 +22,13 @@ const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
         });
 
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Optimize pixel ratio for mobile - lower = better performance
+        const isMobile = window.innerWidth < 768;
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 
-        // 2. Create Stars
+        // 2. Create Stars - Reduce count on mobile for better performance
         const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 3000;
+        const starsCount = isMobile ? 1000 : 3000; // 1/3 stars on mobile
         const posArray = new Float32Array(starsCount * 3);
 
         for (let i = 0; i < starsCount * 3; i++) {
@@ -37,10 +39,10 @@ const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
         const material = new THREE.PointsMaterial({
-            size: 0.003,
+            size: 0.008,
             color: 0xffffff,
             transparent: true,
-            opacity: 0.8,
+            opacity: 1.0,
             sizeAttenuation: true
         });
 
@@ -49,30 +51,27 @@ const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
         camera.position.z = 2;
 
 
-        // 4. Handle Resize
+        // 4. Resize Handler - Debounced for performance
+        let resizeTimeout: number;
         const handleResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                // Update pixel ratio on resize (in case of device rotation)
+                const isMobileNow = window.innerWidth < 768;
+                renderer.setPixelRatio(isMobileNow ? 1 : Math.min(window.devicePixelRatio, 2));
+            }, 150); // Debounce resize events
         };
-        window.addEventListener('resize', handleResize);
 
-        // 5. Mouse Shake Logic
-        const targetShake = { value: 0 };
-        const handleMouseMove = (e: MouseEvent) => {
-            const y = e.clientY / window.innerHeight;
-            // If bottom 20%, trigger shake
-            if (y > 0.8) {
-                targetShake.value = 1.0;
-            } else {
-                targetShake.value = 0.0;
-            }
-        };
-        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('resize', handleResize, { passive: true });
+
+
 
         // Animation Loop
         let animationId: number;
-        let shakeIntensity = 0;
+
 
         const animate = () => {
             animationId = requestAnimationFrame(animate);
@@ -82,22 +81,7 @@ const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
             starMesh.rotation.y += 0.0003 * currentSpeed;
             starMesh.rotation.x += 0.0001 * currentSpeed;
 
-            // Camera Shake
-            // Smoothly interpolate intensity
-            shakeIntensity += (targetShake.value - shakeIntensity) * 0.1;
 
-            if (shakeIntensity > 0.01) {
-                const shakeAmount = 0.05 * shakeIntensity;
-                camera.position.x = (Math.random() - 0.5) * shakeAmount;
-                camera.position.y = (Math.random() - 0.5) * shakeAmount;
-                // Maybe slight zoom too?
-                camera.position.z = 2 - (0.2 * shakeIntensity);
-            } else {
-                // Reset
-                camera.position.x = 0;
-                camera.position.y = 0;
-                camera.position.z = 2;
-            }
 
             renderer.render(scene, camera);
         };
@@ -106,7 +90,6 @@ const Starfield: React.FC<StarfieldProps> = ({ speedRef }) => {
         return () => {
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', handleResize);
-            window.removeEventListener('mousemove', handleMouseMove);
             // Cleanup Three.js resources
             starsGeometry.dispose();
             material.dispose();
