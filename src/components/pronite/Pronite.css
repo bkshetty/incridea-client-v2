@@ -2,23 +2,23 @@
 
 /* Scope variables to the page container */
 .pronite-page {
-  --pronite-bg: #050505;
-  --pronite-text: #ffffff;
-  --font-primary: "mocoSans", sans-serif;
-  --font-display: "mocoSans", sans-serif;
-  font-family: "mocoSans", sans-serif;
-  font-weight: 700;
+    --pronite-bg: #050505;
+    --pronite-text: #ffffff;
+    --font-primary: "mocoSans", sans-serif;
+    --font-display: "mocoSans", sans-serif;
+    font-family: "mocoSans", sans-serif;
+    font-weight: 700;
 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  cursor: none;
-  background: var(--pronite-bg);
-  color: var(--pronite-text);
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: none;
+    background: var(--pronite-bg);
+    color: var(--pronite-text);
+    z-index: 1000;
 }
 
 /* Show default cursor on mobile/touch devices */
@@ -34,221 +34,221 @@
 
 /* Reset for children of pronite-page only */
 .pronite-page * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 /* 3D Space */
 .pronite-page #z-space-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  perspective: 1000px;
-  perspective-origin: 50% 50%;
-  overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+    perspective-origin: 50% 50%;
+    overflow: hidden;
 }
 
 .pronite-page .z-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
 }
 
 .pronite-page .z-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-  will-change: transform, opacity;
-  transform: translate3d(0, 0, 0);
-  opacity: 0;
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .pronite-page .hero-layer {
-  opacity: 1;
-  flex-direction: column;
-  text-align: center;
+    opacity: 1;
+    flex-direction: column;
+    text-align: center;
 }
 
 /* Hero Partners Row - TribeVibe | Incridea */
 .pronite-page .hero-partners-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2.5rem;
-  margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
 }
 
 .pronite-page .hero-partner-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pronite-page .tribe-vibe-logo {
-  height: 55px;
-  width: auto;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.9;
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
 }
 
 .pronite-page .incridea-logo {
-  height: 65px;
-  width: auto;
-  object-fit: contain;
+    height: 65px;
+    width: auto;
+    object-fit: contain;
 }
 
 .pronite-page .hero-partner-divider {
-  width: 2px;
-  height: 45px;
-  background: rgba(255, 255, 255, 0.25);
+    width: 2px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .pronite-page .pronite-main-logo {
-  max-width: 45%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+    max-width: 45%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Cursor */
 .pronite-page .cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
 }
 
 .pronite-page .cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: white;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
 }
 
 .pronite-page .cursor-circle {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
-  transition:
-    width 0.3s,
-    height 0.3s,
-    background 0.3s;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    transition:
+        width 0.3s,
+        height 0.3s,
+        background 0.3s;
 }
 
 .pronite-page .cursor.hover .cursor-circle {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.1);
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Navigation */
 .pronite-page .nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 2rem 3rem;
-  z-index: 1000;
-  mix-blend-mode: difference;
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 3rem;
+    z-index: 1000;
+    mix-blend-mode: difference;
+    pointer-events: none;
 }
 
-.pronite-page .nav > * {
-  pointer-events: auto;
+.pronite-page .nav>* {
+    pointer-events: auto;
 }
 
 .pronite-page .menu-btn {
-  background: none;
-  border: none;
-  cursor: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    background: none;
+    border: none;
+    cursor: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .pronite-page .menu-btn span {
-  display: block;
-  width: 30px;
-  height: 2px;
-  background: white;
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: white;
 }
 
 /* Scroll Progress */
 .pronite-page .scroll-progress-container {
-  position: fixed;
-  right: 4rem;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 60vh;
-  width: 60px;
-  z-index: 100;
-  pointer-events: auto;
-  display: flex;
-  justify-content: center;
-  touch-action: none;
-  cursor: grab;
+    position: fixed;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60vh;
+    width: 60px;
+    z-index: 100;
+    pointer-events: auto;
+    display: flex;
+    justify-content: center;
+    touch-action: none;
+    cursor: grab;
 }
 
 .pronite-page .scroll-progress-container:active {
-  cursor: grabbing;
+    cursor: grabbing;
 }
 
 .pronite-page .scroll-track {
-  position: relative;
-  width: 6px;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
-  overflow: visible;
+    position: relative;
+    width: 6px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    overflow: visible;
 }
 
 .pronite-page .progress-fill {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 0%;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-  transition: height 0.05s linear;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    transition: height 0.05s linear;
 }
 
 .pronite-page .logo-bottom-wrapper {
-  position: absolute;
-  bottom: 0%;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  width: 70px;
-  display: flex;
-  justify-content: center;
-  z-index: 3;
-  transition: bottom 0.1s linear;
-  padding-bottom: 5px;
+    position: absolute;
+    bottom: 0%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    z-index: 3;
+    transition: bottom 0.1s linear;
+    padding-bottom: 5px;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -272,543 +272,553 @@
 }
 
 .pronite-page .progress-logo-bottom {
-  width: 40%;
-  height: auto;
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.8));
-  display: block;
+    width: 40%;
+    height: auto;
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.8));
+    display: block;
 }
 
 /* Layers */
 .pronite-page .about-layer,
 .pronite-page .project-layer,
 .pronite-page .contact-layer {
-  opacity: 0;
-  transform: translateY(40px);
-  pointer-events: none;
+    opacity: 0;
+    transform: translateY(40px);
+    pointer-events: none;
 }
 
 .pronite-page .about-layer {
-  text-align: center;
-  padding: 0 2rem;
+    text-align: center;
+    padding: 0 2rem;
 }
 
 /* Artist Layer - IMPROVED SPACING */
 .pronite-page .artist-content {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2.5rem;
-  padding: 2rem 0;
-  will-change: transform, clip-path;
-  transition: none;
-  /* GSAP controls all transforms */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2rem 0;
+    will-change: transform, clip-path;
+    transition: none;
+    /* GSAP controls all transforms */
 }
 
 /* Artist Name SVG Styling */
 .pronite-page .artist-name-svg {
-  display: block;
-  width: 100%;
-  max-width: 700px;
-  /* INCREASED for larger appearance */
-  height: auto;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  margin: 0 auto;
-  text-align: center;
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    /* INCREASED for larger appearance */
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    margin: 0 auto;
+    text-align: center;
 }
 
 /* ALO is shorter, so smaller max-width */
 .pronite-page .artist-name-svg.alo-svg {
-  max-width: 350px;
+    max-width: 350px;
 }
 
 .pronite-page .artist-date {
-  font-family: "Outfit", sans-serif;
-  font-weight: 300;
-  font-size: 1.1rem;
-  letter-spacing: 0.25em;
-  opacity: 1;
-  text-transform: uppercase;
-  display: block;
-  margin-top: 0.5rem;
-  /* Neon core — bright white center like a real tube */
-  color: #fff;
-  /* Layered glow: tight core → mid bloom → wide ambient */
-  text-shadow:
-    0 0 1px #fff,
-    0 0 5px #fff,
-    0 0 20px #400f4c,
-    0 0 40px #400f4c,
-    0 0 80px #400f4c,
-    0 0 100px #400f4c;
-  /* Subtle neon pulse */
-  animation: neonPulse 2.5s ease-in-out infinite alternate;
+    font-family: "Outfit", sans-serif;
+    font-weight: 300;
+    font-size: 1.1rem;
+    letter-spacing: 0.25em;
+    opacity: 1;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 0.5rem;
+    /* Neon core — bright white center like a real tube */
+    color: #fff;
+    /* Layered glow: tight core → mid bloom → wide ambient */
+    text-shadow:
+        0 0 1px #fff,
+        0 0 5px #fff,
+        0 0 20px #400f4c,
+        0 0 40px #400f4c,
+        0 0 80px #400f4c,
+        0 0 100px #400f4c;
+    /* Subtle neon pulse */
+    animation: neonPulse 2.5s ease-in-out infinite alternate;
 }
 
 @keyframes neonPulse {
-  0% {
-    text-shadow:
-      0 0 2px #fff,
-      0 0 5px #fff,
-      0 0 20px #400f4c,
-      0 0 40px #400f4c,
-      0 0 80px #400f4c,
-      0 0 100px #400f4c;
-  }
+    0% {
+        text-shadow:
+            0 0 2px #fff,
+            0 0 5px #fff,
+            0 0 20px #400f4c,
+            0 0 40px #400f4c,
+            0 0 80px #400f4c,
+            0 0 100px #400f4c;
+    }
 
-  100% {
-    text-shadow:
-      0 0 2px #fff,
-      0 0 8px #fff,
-      0 0 15px #5a1a6e,
-      0 0 30px #5a1a6e,
-      0 0 55px #400f4c,
-      0 0 100px #400f4c;
-  }
+    100% {
+        text-shadow:
+            0 0 2px #fff,
+            0 0 8px #fff,
+            0 0 15px #5a1a6e,
+            0 0 30px #5a1a6e,
+            0 0 55px #400f4c,
+            0 0 100px #400f4c;
+    }
 }
 
 /* Text Mask - CRITICAL for animation */
 .pronite-page .text-mask {
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
 }
 
 /* Direct children selector for GSAP — non-artist layers use translateY */
-.pronite-page .about-layer .text-mask > img,
-.pronite-page .about-layer .text-mask > p,
-.pronite-page .about-layer .text-mask > h2,
-.pronite-page .about-layer .text-mask > div {
-  display: block;
-  margin: 0;
-  transform: translateY(110%);
-  will-change: transform;
+.pronite-page .about-layer .text-mask>img,
+.pronite-page .about-layer .text-mask>p,
+.pronite-page .about-layer .text-mask>h2,
+.pronite-page .about-layer .text-mask>div {
+    display: block;
+    margin: 0;
+    transform: translateY(110%);
+    will-change: transform;
 }
 
 /* Artist layers use clip-path masking instead of translateY */
-.pronite-page .artist-layer .text-mask > img,
-.pronite-page .artist-layer .text-mask > p {
-  display: block;
-  margin: 0;
-  transform: none;
-  clip-path: inset(0 0 100% 0);
-  /* Hidden by default — revealed top-to-bottom */
-  will-change: clip-path, opacity;
+.pronite-page .artist-layer .text-mask>img,
+.pronite-page .artist-layer .text-mask>p {
+    display: block;
+    margin: 0;
+    transform: none;
+    clip-path: inset(0 0 100% 0);
+    /* Hidden by default — revealed top-to-bottom */
+    will-change: clip-path, opacity;
 }
 
 /* Artist Image Layers - NEW STYLING */
 .pronite-page .artist-image-layer {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .pronite-page .artist-img-wrapper {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  transform-style: preserve-3d;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transform-style: preserve-3d;
 }
 
 /* Artist images — natural aspect ratio, constrained by max dimensions */
 .pronite-page .artist-img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  /* Let the image keep its natural aspect ratio */
-  width: auto;
-  height: auto;
-  max-width: min(420px, 80vw);
-  max-height: min(560px, 70vh);
-  object-fit: contain;
-  border-radius: 16px;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
-  visibility: hidden;
-  opacity: 0;
-  will-change: transform, opacity, visibility;
-  transform-origin: center center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Let the image keep its natural aspect ratio */
+    width: auto;
+    height: auto;
+    max-width: min(420px, 80vw);
+    max-height: min(560px, 70vh);
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
+    visibility: hidden;
+    opacity: 0;
+    will-change: transform, opacity, visibility;
+    transform-origin: center center;
 }
 
 /* Both images centered — scale() drives depth emergence */
 .pronite-page .artist-img.left,
 .pronite-page .artist-img.right {
-  transform: translate(-50%, -50%) scale(0.05);
+    transform: translate(-50%, -50%) scale(0.05);
 }
 
 /* Buttons */
 .pronite-page .cta-btn,
 .pronite-page .view-project-btn {
-  padding: 1rem 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 100px;
-  background: transparent;
-  color: white;
-  font-family: var(--font-primary);
-  font-size: 0.875rem;
-  cursor: none;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+    background: transparent;
+    color: white;
+    font-family: var(--font-primary);
+    font-size: 0.875rem;
+    cursor: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .pronite-page .cta-btn:hover,
 .pronite-page .view-project-btn:hover {
-  background: white;
-  color: black;
-  transform: translateY(-2px);
+    background: white;
+    color: black;
+    transform: translateY(-2px);
 }
 
 .pronite-page .about-text {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-weight: 300;
-  line-height: 1.4;
-  max-width: 800px;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.4;
+    max-width: 800px;
 }
 
 /* Starfield */
 .pronite-page #bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
 /* Pronite Card */
 .pronite-card {
-  position: fixed;
-  bottom: 2rem;
-  right: 5rem;
-  width: 320px;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  gap: 1rem;
-  z-index: 1000;
-  overflow: hidden;
+    position: fixed;
+    bottom: 2rem;
+    right: 5rem;
+    width: 320px;
+    height: 140px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    z-index: 1000;
+    overflow: hidden;
 }
 
 .light-ray {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 60px;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 1),
-    transparent
-  );
-  transform: skewX(-25deg);
-  pointer-events: none;
-  z-index: 2;
-  mix-blend-mode: screen;
-  filter: blur(2px) brightness(1.7);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
-  will-change: transform;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 1),
+            transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: screen;
+    filter: blur(2px) brightness(1.7);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+    will-change: transform;
 }
 
 .pronite-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .pronite-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .pronite-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  pointer-events: none;
-  z-index: -1;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .pronite-card::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    var(--accent-color, #ff0055) 0%,
-    transparent 50%
-  );
-  opacity: 0.15;
-  z-index: -2;
-  pointer-events: none;
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%,
+            var(--accent-color, #ff0055) 0%,
+            transparent 50%);
+    opacity: 0.15;
+    z-index: -2;
+    pointer-events: none;
 }
 
 .card-image-container {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
 }
 
 .card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card-icon {
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
 }
 
 .card-artist-name {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: white;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: white;
 }
 
 .card-artist-date {
-  font-family: var(--font-primary);
-  font-size: 0.85rem;
-  opacity: 0.8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-  .pronite-card {
-    bottom: 7rem;
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-    max-width: 400px;
-    margin: 0 auto;
-    transform: none !important;
-    height: auto;
-    padding: 0.75rem;
-    backdrop-filter: blur(16px);
-    background: rgba(20, 20, 20, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
+    .pronite-card {
+        bottom: 7rem;
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        max-width: 400px;
+        margin: 0 auto;
+        transform: none !important;
+        height: auto;
+        padding: 0.75rem;
+        backdrop-filter: blur(16px);
+        background: rgba(20, 20, 20, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
 
-  .card-image-container {
-    width: 70px;
-    height: 70px;
-  }
+    .card-image-container {
+        width: 70px;
+        height: 70px;
+    }
 
-  .card-artist-name {
-    font-size: 1.25rem;
-  }
+    .card-artist-name {
+        font-size: 1.25rem;
+    }
 
-  .card-artist-date {
-    font-size: 0.75rem;
-  }
+    .card-artist-date {
+        font-size: 0.75rem;
+    }
 
-  .card-icon {
-    width: 28px;
-    height: 28px;
-    top: -6px;
-    left: -6px;
-  }
+    .card-icon {
+        width: 28px;
+        height: 28px;
+        top: -6px;
+        left: -6px;
+    }
 
-  .card-icon svg {
-    width: 16px;
-    height: 16px;
-  }
+    .card-icon svg {
+        width: 16px;
+        height: 16px;
+    }
 
-  /* Mobile Artist Images — smaller max size, natural ratio */
-  .pronite-page .artist-img {
-    max-width: min(280px, 85vw);
-    max-height: min(380px, 60vh);
-  }
+    /* Mobile Artist Images — smaller max size, natural ratio */
+    .pronite-page .artist-img {
+        max-width: min(280px, 85vw);
+        max-height: min(380px, 60vh);
+    }
 
-  .pronite-page .artist-img.left,
-  .pronite-page .artist-img.right {
-    transform: translate(-50%, -50%) scale(0.05);
-  }
+    .pronite-page .artist-img.left,
+    .pronite-page .artist-img.right {
+        transform: translate(-50%, -50%) scale(0.05);
+    }
 
-  .pronite-page .hero-title {
-    font-size: clamp(3rem, 12vw, 5rem);
-  }
+    .pronite-page .hero-title {
+        font-size: clamp(3rem, 12vw, 5rem);
+    }
 
-  .pronite-page .artist-name-svg {
-    max-width: 85% !important;
-  }
+    .pronite-page .artist-name-svg {
+        max-width: 85% !important;
+    }
 
-  .pronite-page .artist-name-svg.alo-svg {
-    max-width: 200px !important;
-  }
+    .pronite-page .artist-name-svg.alo-svg {
+        max-width: 200px !important;
+    }
 
-  .pronite-page .hero-partners-row {
-    flex-direction: column;
-    gap: 1rem;
-  }
+    .pronite-page .hero-partners-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
 
-  .pronite-page .hero-partner-divider {
-    width: 50px;
-    height: 2px;
-  }
+    .pronite-page .hero-partner-divider {
+        width: 50px;
+        height: 2px;
+    }
 
-  .pronite-page .tribe-vibe-logo {
-    height: 40px;
-  }
+    .pronite-page .tribe-vibe-logo {
+        height: 40px;
+    }
 
-  .pronite-page .incridea-logo {
-    height: 50px;
-  }
+    .pronite-page .incridea-logo {
+        height: 50px;
+    }
 
-  .pronite-page .artist-content {
-    gap: 1.5rem;
-  }
+    .pronite-page .artist-content {
+        gap: 1.5rem;
+        /* Mobile: push name down to screenshot level */
+        flex-direction: column-reverse;
+    }
 
-  /* Explore button — smooth transition, lifts when card appears */
-  .explore-btn {
-    font-size: 0.75rem;
-    padding: 0.75rem 1.8rem;
-    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* Mobile: Artist text container slides down */
+    .pronite-page .text-mask-name {
+        transform: translateY(-130px);
+    }
 
-  .explore-btn.card-active {
-    bottom: 8rem;
-  }
+    /* Mobile: Artist date follows the name */
+    .pronite-page .text-mask-date {
+        transform: translateY(-130px);
+    }
 
-  /* Shorten and reposition scroll progress so it doesn't overlap the card */
-  .pronite-page .scroll-progress-container {
-    right: 1rem;
-    height: 35vh;
-    top: 40%;
-  }
+    /* Mobile: Artist images positioned higher */
+    .pronite-page .artist-image-layer {
+        transform: translateY(-100px) !important;
+    }
 
-  /* Hide the desktop heart in controls — mobile has its own in the top row */
-  .pronite-card-heart-desktop {
-    display: none !important;
-  }
+    /* Explore button — smooth transition, lifts when card appears */
+    .explore-btn {
+        font-size: 0.6rem;
+        padding: 0.5rem 1.2rem;
+        letter-spacing: 0.1em;
+        transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .explore-btn.card-active {
+        bottom: 8rem;
+    }
+
+    /* Shorten and reposition scroll progress so it doesn't overlap the card */
+    .pronite-page .scroll-progress-container {
+        right: 1rem;
+        height: 35vh;
+        top: 40%;
+    }
+
+    /* Hide the desktop heart in controls — mobile has its own in the top row */
+    .pronite-card-heart-desktop {
+        display: none !important;
+    }
 }
 
 .pronite-page .tilt-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transform: rotateX(0deg) rotateY(0deg);
-  transition: transform 0.1s ease-out;
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform: rotateX(0deg) rotateY(0deg);
+    transition: transform 0.1s ease-out;
+    pointer-events: none;
 }
 
-.pronite-page .tilt-layer > * {
-  pointer-events: auto;
+.pronite-page .tilt-layer>* {
+    pointer-events: auto;
 }
 
 .pronite-page .z-layer {
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
 }
 
 /* Disable expensive drop-shadow on video layers — prevents GPU rasterisation lag */
 .pronite-page .z-layer.artist-image-layer {
-  filter: none;
+    filter: none;
 }
 
 .explore-btn {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1rem 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 100px;
-  color: white;
-  font-family: var(--font-primary);
-  font-size: 0.9rem;
-  letter-spacing: 0.2em;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  overflow: hidden;
-  z-index: 1001;
-  pointer-events: auto;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 100px;
+    color: white;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    overflow: hidden;
+    z-index: 1001;
+    pointer-events: auto;
 }
 
 .explore-btn:hover {
-  background: white;
-  color: black;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-  transform: translateX(-50%) translateY(-2px);
+    background: white;
+    color: black;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    transform: translateX(-50%) translateY(-2px);
 }
 
 .explore-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: 0.5s;
 }
 
 .explore-btn:hover::before {
-  left: 100%;
+    left: 100%;
 }
 
 /* Exit Button Styling */

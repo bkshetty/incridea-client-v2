@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import armaanSong from "../assets/pronite/audios/pehla_pyar_armaan_malik.mp3";
 import nikhitaSong from "../assets/pronite/audios/jugnu_nikitha_gandhi.mp3";
 import aloSong from "../assets/pronite/audios/saibo_alo.mp3";
+import anthemSong from "../assets/pronite/audios/incredia_24_anthem.mp3";
 
 import armaanVideo from "../assets/pronite/videos/armaan_malik.webm";
 import aloVideo from "../assets/pronite/videos/alo.webm";
@@ -103,6 +104,19 @@ const PronitePage: React.FC = () => {
     const lastActiveArtistKey = useRef<string | null>(null);
     const finalRevealRef = useRef<FinalRevealRef>(null);
     const finalRevealAnimationTriggered = useRef(false);
+    const anthemRef = useRef<HTMLAudioElement | null>(null);
+
+    // Initialize anthem audio
+    useEffect(() => {
+        const audio = new Audio(anthemSong);
+        audio.loop = true;
+        audio.volume = 0; // Start silent
+        anthemRef.current = audio;
+        return () => {
+            audio.pause();
+            audio.src = "";
+        };
+    }, []);
     const handleArtistNavigation = (direction: "next" | "prev") => {
         if (!lenisRef.current || !totalDistanceRef.current) return;
         const artistKeys = Object.keys(ARTISTS);
@@ -174,16 +188,37 @@ const PronitePage: React.FC = () => {
 
             // Trigger GSAP animation when reaching z=-26000 (when section starts fading in)
             // Use opacity threshold to ensure cards animate as soon as section is visible
-            if (opacity > 0.1 && !finalRevealAnimationTriggered.current) {
-                finalRevealAnimationTriggered.current = true;
-                // Immediate animation, no delay
-                finalRevealRef.current?.playAnimation();
+            if (opacity > 0.1) {
+                if (!finalRevealAnimationTriggered.current) {
+                    finalRevealAnimationTriggered.current = true;
+                    // Immediate animation, no delay
+                    finalRevealRef.current?.playAnimation();
+                }
+
+                // Play Anthem if globally playing and not muted
+                if (anthemRef.current && anthemRef.current.paused && isGlobalPlaying && !isGlobalMuted) {
+                    anthemRef.current.volume = 1;
+                    anthemRef.current.play().catch(() => { });
+                }
             }
 
             // Reset animation if scrolling back up past the trigger point
-            if (opacity <= 0.05 && finalRevealAnimationTriggered.current) {
-                finalRevealAnimationTriggered.current = false;
-                finalRevealRef.current?.resetAnimation();
+            if (opacity <= 0.05) {
+                if (finalRevealAnimationTriggered.current) {
+                    finalRevealAnimationTriggered.current = false;
+                    finalRevealRef.current?.resetAnimation();
+                }
+
+                // Stop Anthem
+                if (anthemRef.current && !anthemRef.current.paused) {
+                    gsap.to(anthemRef.current, {
+                        volume: 0,
+                        duration: 1,
+                        onComplete: () => {
+                            anthemRef.current?.pause();
+                        }
+                    });
+                }
             }
         }
 
@@ -253,6 +288,29 @@ const PronitePage: React.FC = () => {
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, [isMobile]);
+
+    // Sync Global Mute with Anthem
+    useEffect(() => {
+        if (anthemRef.current) {
+            anthemRef.current.muted = isGlobalMuted;
+        }
+    }, [isGlobalMuted]);
+
+    // Sync Global Play/Pause with Anthem
+    useEffect(() => {
+        if (anthemRef.current) {
+            if (!isGlobalPlaying) {
+                anthemRef.current.pause();
+            } else {
+                // If we are in Final Reveal, we might want to resume?
+                // Checking if we are deep enough.
+                const finalRevealLayer = layerRefs.current["final-reveal"];
+                if (finalRevealLayer && window.getComputedStyle(finalRevealLayer).visibility === "visible") {
+                    anthemRef.current.play().catch(() => { });
+                }
+            }
+        }
+    }, [isGlobalPlaying]);
 
     // =====================================================
     // SCROLL-PHASE ANIMATION CALLBACK
@@ -569,7 +627,7 @@ const PronitePage: React.FC = () => {
     const handleExploreClick = () => {
         const primer = new Audio();
         primer.src =
-            "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
+            "data:audio/wav;base64,UklGRiQAAABXQVZFRm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
         primer
             .play()
             .then(() => primer.pause())
@@ -612,9 +670,12 @@ const PronitePage: React.FC = () => {
         const currentZ = -(currentScroll / maxScroll) * totalDist;
 
         // Find the current active section index
+        // Use a slightly larger buffer (1000px) to ensure we catch the current section even if slightly scrolled past
         let currentStopIndex = SCROLL_STOPS.findIndex((s, i) => {
             const nextStop = SCROLL_STOPS[i + 1];
-            if (!nextStop) return true;
+            if (!nextStop) return true; // Last section always matches if we're past the second-to-last
+            // Check if we are within the range of this section (from its start to the next section's start)
+            // Adding buffer to ensure smooth transition detection
             return currentZ <= s.z + 1000 && currentZ > nextStop.z + 1000;
         });
 
@@ -659,9 +720,6 @@ const PronitePage: React.FC = () => {
         if (nextEl && nextEl.dataset.artistId) {
             const dataZ = parseFloat(nextEl.dataset.z || "0");
             const artistRange = parseFloat(nextEl.dataset.artistRange || "7000");
-            // phase = (relativeZ + 200) / (artistRange + 200)
-            // relativeZ = phase * (artistRange + 200) - 200
-            // targetZ = dataZ - relativeZ
             const offset = ARTIST_VIEW_PHASE * (artistRange + 200) - 200;
             targetZ = dataZ - offset;
         } else {
@@ -690,6 +748,7 @@ const PronitePage: React.FC = () => {
             <Starfield />
             <div ref={cursorRef} className="cursor">
                 <div ref={cursorDotRef} className="cursor-dot"></div>
+                <div className="cursor-circle"></div>
             </div>
 
             <nav className="nav">
@@ -1032,7 +1091,7 @@ const PronitePage: React.FC = () => {
                                         role: "Special Guest",
                                         time: "09:00 PM",
                                         image: ARTISTS.artist2.profileImage,
-                                        className: "md:col-span-3",
+                                        className: "md:col-span-4",
                                     },
                                     {
                                         name: "ARMAAN MALIK",

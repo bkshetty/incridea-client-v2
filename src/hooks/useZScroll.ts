@@ -63,11 +63,22 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
         });
         document.body.appendChild(scrollTrack);
 
+        // Detect mobile for performance optimization
+        const isMobile = typeof window !== 'undefined' && (
+            window.innerWidth < 768 ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        );
+
         const lenis = new Lenis({
-            duration: 1.5,
+            // Faster, more responsive on mobile
+            duration: isMobile ? 0.8 : 1.5,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             orientation: 'vertical',
-            smoothWheel: true,
+            // Disable smooth wheel on mobile for better performance
+            smoothWheel: !isMobile,
+            // Mobile-specific optimizations
+            touchMultiplier: isMobile ? 1.5 : 2,
+            wheelMultiplier: isMobile ? 0.8 : 1,
         });
         lenisRef.current = lenis;
 
@@ -194,11 +205,13 @@ export const useZScroll = (containerRef: RefObject<HTMLDivElement | null>, optio
             targetZRef.current = newTargetZ;
 
             // During drag, use the new Z directly without lerp for responsiveness
-            // When not dragging, apply smooth lerp
+            // When not dragging, apply smooth lerp (faster on mobile for less lag)
             if (isDragging) {
                 currentZRef.current = newTargetZ;
             } else {
-                currentZRef.current = lerp(currentZRef.current, newTargetZ, 0.08);
+                // Mobile: 0.15 (faster, more responsive), Desktop: 0.08 (smoother)
+                const lerpFactor = isMobile ? 0.15 : 0.08;
+                currentZRef.current = lerp(currentZRef.current, newTargetZ, lerpFactor);
             }
             const currentZ = currentZRef.current;
 
